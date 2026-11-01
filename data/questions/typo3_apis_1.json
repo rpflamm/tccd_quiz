@@ -1,0 +1,2211 @@
+{
+  "questions": [
+    {
+      "id": "API-FF-001",
+      "domain": "typo3_apis",
+      "skill": "flexform_configuration_data_structure",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In TYPO3 v14, what is the recommended way to attach a FlexForm data structure to a new Extbase plugin?",
+      "code": {
+        "lang": "php",
+        "src": "// Configuration/TCA/Overrides/tt_content.php\nExtensionUtility::registerPlugin(\n    'MyExtension',\n    'MyPlugin',\n    'My Plugin Title',\n    'my-extension-icon',\n    'plugins',\n    'Plugin description',\n    ???\n);"
+      },
+      "answers": [
+        "Pass the FlexForm (e.g. 'FILE:EXT:my_extension/Configuration/FlexForms/Plugin.xml') as the $flexForm argument of ExtensionUtility::registerPlugin()",
+        "Call ExtensionManagementUtility::addPiFlexFormValue('*', 'FILE:...', 'myextension_plugin') in ext_localconf.php",
+        "Set 'ds_pointerField' => 'list_type,CType' and add the plugin signature as key to the 'ds' array of tt_content.pi_flexform",
+        "Register the file in $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['my_extension']['flexForms']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v14.0 registerPlugin() (Extbase) and ExtensionManagementUtility::addPlugin() (non-Extbase) accept the FlexForm directly and add it via columnsOverrides plus pi_flexform in showitem. addPiFlexFormValue() is deprecated and ds_pointerField was removed.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107047-FlexFormEnhancements.html",
+      "since": "14.0",
+      "tags": [
+        "flexform",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-FF-002",
+      "domain": "typo3_apis",
+      "skill": "flexform_configuration_data_structure",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the 'ds' option of a TCA field of type 'flex' are true for TYPO3 v14?",
+      "answers": [
+        "'ds' holds exactly one data structure, either inline XML or a 'FILE:' reference.",
+        "A data structure specific to one record type (e.g. a plugin CType) is assigned via ['types'][<type>]['columnsOverrides'][<field>]['config']['ds'].",
+        "'ds_pointerField' selects one entry of a multi-entry 'ds' array based on a record field.",
+        "The 'ds' array must always contain a 'default' key, otherwise FormEngine throws an exception.",
+        "FlexForm files are only found if they are stored in Configuration/FlexForms/ of the extension."
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Breaking #107047 removed ds_pointerField and the multi-entry 'ds' array: 'ds' is now a single value and type-specific structures go to columnsOverrides. The file location is free (it is referenced via FILE:EXT:...).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107047-RemovePointerFieldFunctionalityOfTCAFlex.html",
+      "since": "14.0",
+      "tags": [
+        "flexform",
+        "tca",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-FF-003",
+      "domain": "typo3_apis",
+      "skill": "flexform_configuration_data_structure",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which element must replace ??? in this FlexForm data structure?",
+      "code": {
+        "lang": "xml",
+        "src": "<T3DataStructure>\n    <sheets>\n        <sDEF>\n            ???\n                <sheetTitle>General</sheetTitle>\n                <type>array</type>\n                <el>\n                    <settings.limit>\n                        <label>Limit</label>\n                        <config><type>number</type></config>\n                    </settings.limit>\n                </el>\n            </???>\n        </sDEF>\n    </sheets>\n</T3DataStructure>"
+      },
+      "answers": [
+        "<ROOT>",
+        "<TCEforms>",
+        "<fields>",
+        "<config>"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Every sheet of a T3DataStructure starts with a <ROOT> element that has <type>array</type> and nests its fields inside <el>. The <TCEforms> wrapper was removed (TYPO3 v12) and must no longer be used.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlexForms/T3datastructure/Elements/Index.html",
+      "tags": [
+        "flexform"
+      ]
+    },
+    {
+      "id": "API-FFR-001",
+      "domain": "typo3_apis",
+      "skill": "accessing_flexform_data",
+      "type": "single",
+      "difficulty": 1,
+      "question": "A FlexForm of an Extbase plugin defines the field <settings.includeCategories>. How is its value accessed in the action controller?",
+      "answers": [
+        "$this->settings['includeCategories']",
+        "$this->settings['settings.includeCategories']",
+        "$this->request->getArgument('includeCategories')",
+        "$this->configurationManager->getContentObject()->data['includeCategories']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Only FlexForm fields prefixed with 'settings.' are merged into $this->settings, without the prefix. Non-empty FlexForm values override TypoScript settings of the same name.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlexForms/Reading/Index.html",
+      "tags": [
+        "flexform",
+        "extbase"
+      ]
+    },
+    {
+      "id": "API-FFR-002",
+      "domain": "typo3_apis",
+      "skill": "accessing_flexform_data",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In a non-Extbase controller you have the raw pi_flexform XML of a content element and need a simple array like ['settings' => ['limit' => '10']]. Which API is the v14 way to do this?",
+      "answers": [
+        "FlexFormTools->convertFlexFormContentToArray($flexFormString)",
+        "GeneralUtility::xml2array($flexFormString)",
+        "FlexFormTools->cleanFlexFormXML($table, $field, $row, $schema)",
+        "FlexFormService::parseFlexFormSettings($flexFormString)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In v14 FlexFormService was merged into FlexFormTools (Breaking #107945; FlexFormService remains as alias until v15). convertFlexFormContentToArray() flattens sheets/lDEF/vDEF; xml2array() keeps the internal data/sDEF/lDEF/vDEF structure.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107945-ClassFlexFormServiceMergedIntoFlexFormTools.html",
+      "since": "14.0",
+      "tags": [
+        "flexform",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-FFR-003",
+      "domain": "typo3_apis",
+      "skill": "accessing_flexform_data",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which of the following give you access to the value of the FlexForm field 'settings.categories' stored in tt_content.pi_flexform without writing PHP code?",
+      "answers": [
+        "TypoScript getText: data = flexform: pi_flexform:settings.categories",
+        "The 'flex-form' data processor (fieldName = pi_flexform) in a FLUIDTEMPLATE / PAGEVIEW",
+        "TypoScript: field = pi_flexform.settings.categories",
+        "Fluid: {data.pi_flexform.settings.categories} without any data processor",
+        "Page TSconfig TCAdefaults.tt_content.pi_flexform.settings.categories"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "The getText key 'flexform' and the flex-form data processor both parse the XML. Without a processor, {data.pi_flexform} is just the raw XML string, and TCAdefaults cannot target FlexForm values.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlexForms/Reading/Index.html",
+      "tags": [
+        "flexform",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-VH-001",
+      "domain": "typo3_apis",
+      "skill": "implementing_viewhelpers",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where does a custom ViewHelper extending AbstractViewHelper declare the arguments it accepts?",
+      "answers": [
+        "In initializeArguments() by calling $this->registerArgument()",
+        "As parameters of the render() method",
+        "In the constructor via $this->arguments = [...]",
+        "With @param annotations in the class DocBlock"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Arguments are registered in initializeArguments() (return type void) and read in render() from $this->arguments. Method-parameter based arguments of render() are no longer supported.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/DevelopCustomViewhelper.html",
+      "tags": [
+        "fluid",
+        "viewhelper"
+      ]
+    },
+    {
+      "id": "API-VH-002",
+      "domain": "typo3_apis",
+      "skill": "implementing_viewhelpers",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about custom ViewHelpers are true with Fluid 5 in TYPO3 v14?",
+      "answers": [
+        "initializeArguments() must declare the return type void, because ViewHelperInterface now requires return types.",
+        "Argument values are validated more strictly against the registered type; simple conversions such as int to string still happen.",
+        "In tag-based ViewHelpers a null value for an attribute leads to the attribute being omitted instead of rendered empty.",
+        "renderStatic() combined with the CompileWithRenderStatic trait is the recommended way to implement rendering.",
+        "Every ViewHelper class must additionally be registered in ext_localconf.php to be found."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Fluid 5 (Breaking #108148) enforces return types, stricter argument validation and omits null attributes. renderStatic() was deprecated in v13 and its support was removed with Fluid 5; ViewHelpers are resolved via namespaces, not registration.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-StrictTypesInFluidViewHelpers.html",
+      "since": "14.0",
+      "tags": [
+        "fluid",
+        "viewhelper",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-VH-003",
+      "domain": "typo3_apis",
+      "skill": "implementing_viewhelpers",
+      "type": "single",
+      "difficulty": 2,
+      "question": "This ViewHelper returns an <img> tag, but the markup appears HTML-escaped in the frontend. What is the correct fix?",
+      "code": {
+        "lang": "php",
+        "src": "final class GravatarViewHelper extends AbstractViewHelper\n{\n    public function initializeArguments(): void\n    {\n        $this->registerArgument('emailAddress', 'string', 'Email', true);\n    }\n\n    public function render(): string\n    {\n        $hash = md5($this->arguments['emailAddress']);\n        return '<img src=\"https://www.gravatar.com/avatar/' . $hash . '\" />';\n    }\n}"
+      },
+      "answers": [
+        "Set protected $escapeOutput = false; and make sure render() escapes all user-provided values itself",
+        "Set protected $escapeChildren = false; only",
+        "Return an object of type HtmlString instead of a string",
+        "Register an argument 'escape' with default false"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "ViewHelper output is passed through htmlspecialchars() by default. $escapeOutput = false disables this, which makes render() responsible for XSS protection; $escapeChildren only controls escaping of the tag content.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/DevelopCustomViewhelper.html",
+      "tags": [
+        "fluid",
+        "viewhelper",
+        "security"
+      ]
+    },
+    {
+      "id": "API-VH-004",
+      "domain": "typo3_apis",
+      "skill": "implementing_viewhelpers",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Since TYPO3 v14.1, where should an extension register the global Fluid namespace 'myext' so that <myext:demo /> works without an xmlns declaration?",
+      "answers": [
+        "In EXT:my_extension/Configuration/Fluid/Namespaces.php returning ['myext' => ['MyVendor\\\\MyExtension\\\\ViewHelpers']]",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['myext']",
+        "In Configuration/Services.yaml with the tag fluid.namespace",
+        "In the site set's settings.yaml under fluid.namespaces"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #108524 introduced Configuration/Fluid/Namespaces.php, which is merged across extensions in loading order (later extensions are checked first). Registering namespaces via TYPO3_CONF_VARS is deprecated since 14.1.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108524-ConfigurationFileToRegisterGlobalFluidNamespaces.html",
+      "since": "14.1",
+      "tags": [
+        "fluid",
+        "viewhelper",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-QB-001",
+      "domain": "typo3_apis",
+      "skill": "using_the_querybuilder",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How do you correctly obtain a QueryBuilder instance for the table tx_myext_domain_model_item?",
+      "answers": [
+        "$connectionPool->getQueryBuilderForTable('tx_myext_domain_model_item') with the ConnectionPool injected",
+        "GeneralUtility::makeInstance(QueryBuilder::class)",
+        "Constructor injection of TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder",
+        "$GLOBALS['TYPO3_DB']->getQueryBuilder('tx_myext_domain_model_item')"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The QueryBuilder must be created by the ConnectionPool (or $connection->createQueryBuilder()) so it is bound to the right connection and restriction setup. Instantiating it via DI or makeInstance() misses that runtime setup.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-QB-002",
+      "domain": "typo3_apis",
+      "skill": "using_the_querybuilder",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which method has to replace ??? to run this query, and what does it return?",
+      "code": {
+        "lang": "php",
+        "src": "$affected = $queryBuilder\n    ->update('pages')\n    ->set('hidden', 1)\n    ->where(\n        $queryBuilder->expr()->eq(\n            'uid',\n            $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)\n        )\n    )\n    ->???;"
+      },
+      "answers": [
+        "executeStatement() - returns the number of affected rows",
+        "executeQuery() - returns a Doctrine\\DBAL\\Result",
+        "execute() - returns true on success",
+        "fetchOne() - returns the updated uid"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "UPDATE, INSERT and DELETE queries are executed with executeStatement(), which returns the affected row count. executeQuery() is for SELECT/COUNT and returns a Result; execute() no longer exists in Doctrine DBAL 4.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-QB-003",
+      "domain": "typo3_apis",
+      "skill": "using_the_querybuilder",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the TYPO3 QueryBuilder (Doctrine DBAL 4) in TYPO3 v14 are correct?",
+      "answers": [
+        "Constraints are combined with $queryBuilder->expr()->and() and ->or().",
+        "For an IN() list of integers, use createNamedParameter($uids, Connection::PARAM_INT_ARRAY).",
+        "A QueryBuilder instance holds state and should not be reused for a different query.",
+        "Constraints are combined with $queryBuilder->expr()->andX() and ->orX().",
+        "join() calls are also applied to update() and delete() queries.",
+        "setMaxResults() limits the number of rows removed by a delete() query."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "andX()/orX() were removed with DBAL 3/4 in favour of and()/or(). Joins are only considered for select()/count(), and delete()/update() ignore setMaxResults(). One QueryBuilder per query is recommended.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-QB-004",
+      "domain": "typo3_apis",
+      "skill": "using_the_querybuilder",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the problem with this repository method?",
+      "code": {
+        "lang": "php",
+        "src": "public function findByTitle(string $title): array\n{\n    $qb = $this->connectionPool->getQueryBuilderForTable('tt_content');\n    return $qb->select('uid', 'header')\n        ->from('tt_content')\n        ->where($qb->expr()->eq('header', $title))\n        ->executeQuery()\n        ->fetchAllAssociative();\n}"
+      },
+      "answers": [
+        "The value is inserted unquoted; the second argument of expr()->eq() must be createNamedParameter() (or quoteIdentifier() for field names), otherwise SQL injection is possible",
+        "expr()->eq() only accepts integers, so the query fails for strings",
+        "executeQuery() must be replaced by executeStatement() for SELECT queries",
+        "fetchAllAssociative() is not available in Doctrine DBAL 4"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The ExpressionBuilder puts its second argument verbatim into the SQL. Always wrap input with createNamedParameter() as close to the expression as possible; quoteIdentifier() is only for field names.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database",
+        "security"
+      ]
+    },
+    {
+      "id": "API-QR-001",
+      "domain": "typo3_apis",
+      "skill": "using_query_restrictions",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which restrictions does the DefaultRestrictionContainer add to every SELECT/COUNT query of the QueryBuilder (if configured in the table's TCA ctrl section)?",
+      "answers": [
+        "DeletedRestriction",
+        "HiddenRestriction",
+        "StartTimeRestriction",
+        "EndTimeRestriction",
+        "FrontendGroupRestriction",
+        "WorkspaceRestriction"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The DefaultRestrictionContainer adds the deleted, hidden, starttime and endtime restrictions in every context (FE, BE, CLI). FrontendGroupRestriction and WorkspaceRestriction are part of the FrontendRestrictionContainer, which must be set explicitly.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/RestrictionBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-QR-002",
+      "domain": "typo3_apis",
+      "skill": "using_query_restrictions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which tt_content records does this query (used in a backend module) return?",
+      "code": {
+        "lang": "php",
+        "src": "$queryBuilder = $this->connectionPool->getQueryBuilderForTable('tt_content');\n$queryBuilder->getRestrictions()\n    ->removeAll()\n    ->add(GeneralUtility::makeInstance(DeletedRestriction::class));\n\n$rows = $queryBuilder->select('uid', 'header')\n    ->from('tt_content')\n    ->executeQuery()\n    ->fetchAllAssociative();"
+      },
+      "answers": [
+        "All records that are not soft-deleted, including hidden ones and those outside their start/end time",
+        "Only visible records whose start/end time is valid",
+        "All records including soft-deleted ones, because removeAll() disables all restrictions",
+        "Only records that are hidden or deleted"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "removeAll() drops all (non-enforced) restrictions, then only the DeletedRestriction is added again. This is the typical backend setup to administer hidden and timed records; the DeletedRestriction should be kept in almost all cases.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/RestrictionBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-QR-003",
+      "domain": "typo3_apis",
+      "skill": "using_query_restrictions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "An extension registers MyTenantRestriction in $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions']. The class implements EnforceableQueryRestrictionInterface and isEnforced() returns true. What happens when other code calls $queryBuilder->getRestrictions()->removeAll()?",
+      "answers": [
+        "MyTenantRestriction is still applied; it can only be removed explicitly with removeByType(MyTenantRestriction::class)",
+        "MyTenantRestriction is removed together with all other restrictions",
+        "removeAll() throws an exception because an enforced restriction is present",
+        "MyTenantRestriction is only applied to UPDATE and DELETE queries"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "removeAll() keeps restrictions implementing EnforceableQueryRestrictionInterface with isEnforced() = true; removeByType() removes even enforced restrictions. Restrictions are only applied to SELECT and COUNT queries.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/RestrictionBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "API-DBG-001",
+      "domain": "typo3_apis",
+      "skill": "typo3_debugging_utilities",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which TYPO3 utility outputs a human-readable, collapsible dump of a variable (including Extbase domain objects with lazy-loading proxies) from PHP code?",
+      "answers": [
+        "\\TYPO3\\CMS\\Extbase\\Utility\\DebuggerUtility::var_dump($variable)",
+        "\\TYPO3\\CMS\\Core\\Utility\\GeneralUtility::devLog($variable)",
+        "\\TYPO3\\CMS\\Core\\Log\\LogManager::dump($variable)",
+        "\\TYPO3\\CMS\\Extbase\\Utility\\ArrayUtility::debug($variable)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "DebuggerUtility::var_dump() renders a structured dump of any variable, e.g. also $queryBuilder->getSQL(). GeneralUtility::devLog() was removed long ago, the other methods do not exist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Debugging/Index.html",
+      "tags": [
+        "debugging"
+      ]
+    },
+    {
+      "id": "API-DBG-002",
+      "domain": "typo3_apis",
+      "skill": "typo3_debugging_utilities",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The global debug() function (wrapping DebugUtility::debug()) produces no output on a staging server. Which setting decides whether its output is shown to the current client?",
+      "answers": [
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']",
+        "$GLOBALS['TYPO3_CONF_VARS']['BE']['debug']",
+        "$GLOBALS['TYPO3_CONF_VARS']['FE']['debug']",
+        "$GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "debug() only outputs data if the client IP matches SYS.devIPmask. BE.debug shows additional debug information like field names in the backend for admins.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Debugging/Index.html",
+      "tags": [
+        "debugging",
+        "configuration"
+      ]
+    },
+    {
+      "id": "API-DBG-003",
+      "domain": "typo3_apis",
+      "skill": "typo3_debugging_utilities",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about debugging in TYPO3 v14 are correct?",
+      "answers": [
+        "<f:debug>{_all}</f:debug> dumps all variables available in the current template, partial or section.",
+        "Assigning a custom Fluid variable whose name starts with an underscore (e.g. <f:variable name=\"_dump\" ...>) throws an exception with Fluid 5.",
+        "With $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] enabled, admins see field names and item values in FormEngine.",
+        "DebuggerUtility::var_dump() can only be called inside Extbase action controllers.",
+        "The global debug() function writes its output to the sys_log table."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "{_all} is a reserved Fluid variable and still works, while user-defined variables with a leading underscore throw InvalidVariableIdentifierException in Fluid 5. DebuggerUtility can be used anywhere; debug() renders output, it does not log.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-FluidUnderscoreVariablePrefix.html",
+      "since": "14.0",
+      "tags": [
+        "debugging",
+        "fluid",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-LOG-001",
+      "domain": "typo3_apis",
+      "skill": "logging_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the recommended way in TYPO3 v14 to get a logger in a service class?",
+      "answers": [
+        "Constructor injection of Psr\\Log\\LoggerInterface",
+        "new \\TYPO3\\CMS\\Core\\Log\\Logger(__CLASS__)",
+        "$GLOBALS['TYPO3_LOGGER']",
+        "Extending \\TYPO3\\CMS\\Core\\Log\\AbstractLoggingService"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Dependency injection of the PSR-3 LoggerInterface is the recommended procedure; TYPO3 creates a logger whose component name is derived from the class (or from a #[Channel] attribute). Logger objects must not be created with new.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Logger/Index.html",
+      "tags": [
+        "logging",
+        "dependency-injection"
+      ]
+    },
+    {
+      "id": "API-LOG-002",
+      "domain": "typo3_apis",
+      "skill": "logging_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A fresh TYPO3 installation runs the following code with the default logging configuration. Where does the message end up?",
+      "code": {
+        "lang": "php",
+        "src": "$this->logger->info('Import of {count} records started', [\n    'count' => count($records),\n]);"
+      },
+      "answers": [
+        "Nowhere - the default FileWriter only handles WARNING and higher",
+        "In var/log/typo3_<hash>.log",
+        "In the sys_log table, visible in the Log module",
+        "In the PHP error log via the PhpErrorLogWriter"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "By default TYPO3 configures a FileWriter (var/log/typo3_<hash>.log) for LogLevel::WARNING and higher. An info() message is below that threshold and is discarded unless you configure a writer for INFO or DEBUG.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Quickstart/Index.html",
+      "tags": [
+        "logging"
+      ]
+    },
+    {
+      "id": "API-LOG-003",
+      "domain": "typo3_apis",
+      "skill": "logging_api",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Given the class and configuration below, which log calls of MyClass are written to security.log?",
+      "code": {
+        "lang": "php",
+        "src": "#[Channel('security')]\nfinal class MyClass\n{\n    public function __construct(private readonly LoggerInterface $logger) {}\n}\n\n// config/system/additional.php\n$GLOBALS['TYPO3_CONF_VARS']['LOG']['security']['writerConfiguration'] = [\n    LogLevel::ERROR => [\n        FileWriter::class => [\n            'logFile' => Environment::getVarPath() . '/log/security.log',\n        ],\n    ],\n];"
+      },
+      "answers": [
+        "$this->logger->error('...')",
+        "$this->logger->critical('...')",
+        "$this->logger->emergency('...')",
+        "$this->logger->warning('...')",
+        "$this->logger->info('...')"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The #[Channel('security')] attribute sets the component name to 'security', so LOG.security applies. A writer configured for a level handles that level and all more severe ones (ERROR, CRITICAL, ALERT, EMERGENCY), not WARNING or INFO.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Logger/Index.html",
+      "tags": [
+        "logging",
+        "configuration"
+      ]
+    },
+    {
+      "id": "API-SCH-001",
+      "domain": "typo3_apis",
+      "skill": "creating_scheduler_tasks_and_commands",
+      "type": "single",
+      "difficulty": 1,
+      "question": "A custom scheduler task extends \\TYPO3\\CMS\\Scheduler\\Task\\AbstractTask. Which method must it implement?",
+      "answers": [
+        "execute(): bool - returns true on success, false on failure",
+        "run(): int - returns a Command exit code",
+        "__invoke(ServerRequestInterface $request): ResponseInterface",
+        "process(array $taskParameters): void"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "All scheduler tasks extend AbstractTask and override execute(), which is called when the task runs and returns a boolean. getAdditionalInformation() is optional to show extra info in the module.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/main/en-us/DevelopersGuide/CreatingTasks/Index.html",
+      "tags": [
+        "scheduler"
+      ]
+    },
+    {
+      "id": "API-SCH-002",
+      "domain": "typo3_apis",
+      "skill": "creating_scheduler_tasks_and_commands",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Scheduler tasks are stored as records of the TCA table tx_scheduler_task since TYPO3 v14. How should a custom task type be registered?",
+      "code": {
+        "lang": "php",
+        "src": "// Configuration/TCA/Overrides/scheduler_my_task_type.php\nif (isset($GLOBALS['TCA']['tx_scheduler_task'])) {\n    ExtensionManagementUtility::???(\n        [\n            'label' => 'my_extension.messages:my_task.title',\n            'value' => MyTask::class,\n            'group' => 'my_extension',\n        ],\n        '--div--;core.tabs:general, tasktype, task_group, description, my_field',\n        [],\n        '',\n        'tx_scheduler_task'\n    );\n}"
+      },
+      "answers": [
+        "In a TCA override file, by adding a record type for tx_scheduler_task with ExtensionManagementUtility::addRecordType() whose value is the task class",
+        "Via $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][MyTask::class] in ext_localconf.php",
+        "By tagging the class with scheduler.task in Configuration/Services.yaml",
+        "By extending Symfony's Command class and adding #[AsCommand]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #106739/#107526 made scheduler tasks native TCA records; custom tasks are registered as record types (custom fields go into TCA columns instead of AdditionalFieldProviders). Registration via SC_OPTIONS is deprecated in v14 (#98453).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-98453-SchedulerTaskRegistrationViaSCOPTIONS.html",
+      "since": "14.0",
+      "tags": [
+        "scheduler",
+        "tca",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-SCH-003",
+      "domain": "typo3_apis",
+      "skill": "creating_scheduler_tasks_and_commands",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about running Symfony console commands from the Scheduler are true in TYPO3 v14?",
+      "answers": [
+        "Commands are schedulable by default and can be selected in the 'Execute console commands' task.",
+        "Adding #[AsNonSchedulableCommand] next to #[AsCommand] hides a command from the Scheduler.",
+        "When registering via the console.command tag in Services.yaml, schedulable: false hides the command from the Scheduler.",
+        "A command must implement a SchedulableCommandInterface to appear in the Scheduler.",
+        "Only commands registered in Services.yaml can be scheduled; #[AsCommand] commands are CLI-only."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Feature #107151 added #[AsNonSchedulableCommand]; without it (or schedulable: false in the tag) every command is schedulable. There is no special interface and #[AsCommand] commands are schedulable as well.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107151-AddAsNonSchedulableCommandAttribute.html",
+      "since": "14.0",
+      "tags": [
+        "scheduler",
+        "cli"
+      ]
+    },
+    {
+      "id": "API-CLI-001",
+      "domain": "typo3_apis",
+      "skill": "creating_cli_commands",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How is the following command executed in a Composer-based TYPO3 installation?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsCommand(\n    name: 'myextension:import',\n    description: 'Imports data from an external source',\n)]\nfinal class ImportCommand extends Command\n{\n    protected function execute(InputInterface $input, OutputInterface $output): int\n    {\n        return Command::SUCCESS;\n    }\n}"
+      },
+      "answers": [
+        "vendor/bin/typo3 myextension:import",
+        "php typo3/cli_dispatch.phpsh myextension:import",
+        "vendor/bin/typo3 extbase:myextension:import",
+        "vendor/bin/console myextension:import"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The TYPO3 CLI entry point is vendor/bin/typo3 (typo3/sysext/core/bin/typo3 in Classic mode), followed by the command name. cli_dispatch.phpsh and Extbase command controllers are long gone.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Tutorial.html",
+      "tags": [
+        "cli"
+      ]
+    },
+    {
+      "id": "API-CLI-002",
+      "domain": "typo3_apis",
+      "skill": "creating_cli_commands",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What must the execute() method of a TYPO3 console command return?",
+      "answers": [
+        "An integer exit code, preferably Command::SUCCESS or Command::FAILURE",
+        "A boolean indicating success",
+        "A PSR-7 ResponseInterface",
+        "Nothing (void); errors are signalled by exceptions only"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 console commands are Symfony commands: execute(InputInterface, OutputInterface): int must return an exit code. Returning a boolean is the contract of scheduler tasks, not commands.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Tutorial.html",
+      "tags": [
+        "cli"
+      ]
+    },
+    {
+      "id": "API-CLI-003",
+      "domain": "typo3_apis",
+      "skill": "creating_cli_commands",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A console command uses the DataHandler to create pages and fails with '[1.2.1]: Attempt to modify table \"pages\" without permission'. What is missing?",
+      "answers": [
+        "Calling Bootstrap::initializeBackendAuthentication() in execute() so the _cli_ backend user is initialized",
+        "Adding #[AsNonSchedulableCommand] to the command",
+        "Injecting the DataHandler via constructor instead of using GeneralUtility::makeInstance()",
+        "Setting TYPO3_CONTEXT=Development before running the command"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Commands run without a request and without a logged-in user. The DataHandler needs $GLOBALS['BE_USER']; Bootstrap::initializeBackendAuthentication() initializes the _cli_ admin user. The DataHandler must not be injected via DI.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DataHandler/UsingDataHandler/Index.html",
+      "tags": [
+        "cli",
+        "datahandler"
+      ]
+    },
+    {
+      "id": "API-CLI-004",
+      "domain": "typo3_apis",
+      "skill": "creating_cli_commands",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which ways register a console command in a TYPO3 v14 extension?",
+      "answers": [
+        "The PHP attribute #[\\Symfony\\Component\\Console\\Attribute\\AsCommand] on the command class",
+        "A service definition in Configuration/Services.yaml with the tag 'console.command' and a 'command' attribute",
+        "Only extending Symfony's Command class - autoconfigure: true detects it without attribute or tag",
+        "A file Configuration/Commands.php returning an array of commands",
+        "$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'] in ext_localconf.php"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Commands are registered via #[AsCommand] or the console.command tag. Despite autoconfigure: true, one of both is required; Configuration/Commands.php and Extbase command controllers were removed in earlier versions.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/CustomCommands.html",
+      "tags": [
+        "cli",
+        "dependency-injection"
+      ]
+    },
+    {
+      "id": "API-MAIL-001",
+      "domain": "typo3_apis",
+      "skill": "mail_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "This code worked in TYPO3 v13 but causes a fatal error in v14. What is the correct v14 replacement for the last line?",
+      "code": {
+        "lang": "php",
+        "src": "$email = new MailMessage();\n$email\n    ->to('contact@example.org')\n    ->subject('Hello')\n    ->text('Plain text body');\n$email->send();"
+      },
+      "answers": [
+        "Inject TYPO3\\CMS\\Core\\Mail\\MailerInterface and call $this->mailer->send($email)",
+        "Call $email->sendNow() instead",
+        "Call GeneralUtility::makeInstance(MailMessage::class)->send($email)",
+        "Call $email->getMailer()->flushQueue()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #108097 removed MailMessage->send() and isSent(); MailMessage is a pure data object now. Messages are sent by passing them to the injected MailerInterface.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108097-MailMessage-sendRemoved.html",
+      "since": "14.0",
+      "tags": [
+        "mail",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-MAIL-002",
+      "domain": "typo3_apis",
+      "skill": "mail_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which values are valid for $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport']?",
+      "answers": [
+        "smtp",
+        "sendmail",
+        "mbox",
+        "The class name of an implementation of Symfony\\Component\\Mailer\\Transport\\TransportInterface",
+        "spool",
+        "imap"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "TYPO3 supports smtp, sendmail, mbox (writes mails to a file) and a custom transport class name. Spooling is configured separately via transport_spool_type (memory or file); IMAP is not a sending transport.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
+      "tags": [
+        "mail",
+        "configuration"
+      ]
+    },
+    {
+      "id": "API-MAIL-003",
+      "domain": "typo3_apis",
+      "skill": "mail_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "When this FluidEmail is created with new FluidEmail() (or TemplatedEmailFactory->create()), where is the template 'TipsAndTricks' looked up?",
+      "code": {
+        "lang": "php",
+        "src": "$email\n    ->to('contact@example.org')\n    ->from(new Address('jeremy@example.org', 'Jeremy'))\n    ->subject('TYPO3 loves you')\n    ->format(FluidEmail::FORMAT_BOTH)\n    ->setTemplate('TipsAndTricks')\n    ->assign('mySecretIngredient', 'Tomato');\n$this->mailer->send($email);"
+      },
+      "answers": [
+        "In the paths of $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']",
+        "In plugin.tx_myextension.view.templateRootPaths of the current plugin",
+        "Always in EXT:my_extension/Resources/Private/Templates/Email/ of the calling extension",
+        "In the templateRootPaths of the site set 'typo3/mail'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "FluidEmail uses the global MAIL template/layout/partial root paths. Since 14.2 TemplatedEmailFactory->createFromRequest() can additionally add the paths configured for the site of a frontend request.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
+      "tags": [
+        "mail",
+        "fluid"
+      ]
+    },
+    {
+      "id": "API-MAIL-004",
+      "domain": "typo3_apis",
+      "skill": "mail_api",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Since TYPO3 v14.2, which call creates a FluidEmail in a frontend plugin that uses the email template paths configured for the current site and already carries the request?",
+      "answers": [
+        "$this->templatedEmailFactory->createFromRequest($request)",
+        "$this->templatedEmailFactory->create()",
+        "new FluidEmail(TemplatePaths::fromSite($site))",
+        "$site->getMailer()->createEmail()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TemplatedEmailFactory::createFromRequest() adds the settings of the site the request belongs to and passes the request on, so setRequest() is not needed. create() uses only the global $GLOBALS['TYPO3_CONF_VARS']['MAIL'] paths.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
+      "since": "14.2",
+      "tags": [
+        "mail",
+        "fluid"
+      ]
+    },
+    {
+      "id": "API-DH-001",
+      "domain": "typo3_apis",
+      "skill": "datahandler",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does this DataHandler data array do?",
+      "code": {
+        "lang": "php",
+        "src": "$data['pages']['NEW9823be87'] = [\n    'title' => 'The page title',\n    'pid' => '-45',\n];\n$dataHandler = GeneralUtility::makeInstance(DataHandler::class);\n$dataHandler->start($data, []);\n$dataHandler->process_datamap();"
+      },
+      "answers": [
+        "It creates a new page that is placed directly after page uid 45, on the same level (same pid as page 45)",
+        "It creates a new page as first subpage of page uid 45",
+        "It moves page 45 into the new page",
+        "It is invalid because pid values must be positive integers"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A negative pid means 'insert after the record with this uid' (inheriting its pid). New records use an id starting with 'NEW', which can also be referenced by other records in the same data array.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DataHandler/Database/Index.html",
+      "tags": [
+        "datahandler"
+      ]
+    },
+    {
+      "id": "API-DH-002",
+      "domain": "typo3_apis",
+      "skill": "datahandler",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which practices are correct when using the DataHandler in your own code?",
+      "answers": [
+        "Create a new instance with GeneralUtility::makeInstance(DataHandler::class) for every operation.",
+        "Call start($data, $cmd) before process_datamap() and/or process_cmdmap().",
+        "Inspect $dataHandler->errorLog after processing to detect failures.",
+        "Inject the DataHandler once via constructor injection and reuse it for all operations.",
+        "Rely on the DataHandler skipping all permission checks when it is called from PHP code."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The DataHandler is stateful and must not be injected or reused. It always works in backend scope with $GLOBALS['BE_USER'] and checks that user's permissions; errors are collected in errorLog.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DataHandler/UsingDataHandler/Index.html",
+      "tags": [
+        "datahandler"
+      ]
+    },
+    {
+      "id": "API-DH-003",
+      "domain": "typo3_apis",
+      "skill": "datahandler",
+      "type": "single",
+      "difficulty": 3,
+      "question": "TYPO3 v14 added a dedicated DataHandler command to throw away a workspace version. Which key replaces ??? and which uid must be used?",
+      "code": {
+        "lang": "php",
+        "src": "$cmd = [\n    'pages' => [\n        $uid => [\n            '???' => true,\n        ],\n    ],\n];\n$dataHandler = GeneralUtility::makeInstance(DataHandler::class);\n$dataHandler->start([], $cmd);\n$dataHandler->process_cmdmap();"
+      },
+      "answers": [
+        "'discard' - with the uid of the workspace version record",
+        "'discard' - with the uid of the live record",
+        "'clearWSID' - with the uid of the live record",
+        "'delete' - with the uid of the workspace version, which deletes the live record too"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107519 introduced the 'discard' command, which must receive the uid of the versioned record (t3ver_wsid > 0, t3ver_oid pointing to live). The old 'version' actions like clearWSID/flush still work but are deprecated.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107519-AddDiscardCommandToDataHandler.html",
+      "since": "14.0",
+      "tags": [
+        "datahandler",
+        "workspaces"
+      ]
+    },
+    {
+      "id": "API-EXP-001",
+      "domain": "typo3_apis",
+      "skill": "writing_and_using_own_symfony_expressions",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which file does an extension register a custom Symfony expression language provider for TypoScript conditions?",
+      "answers": [
+        "Configuration/ExpressionLanguage.php, returning ['typoscript' => [MyProvider::class]]",
+        "ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['SYS']['expressionLanguage']['typoscript']",
+        "Configuration/Services.yaml with the tag expression.provider",
+        "Configuration/TypoScript/conditions.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Providers are registered per context (e.g. 'typoscript') in Configuration/ExpressionLanguage.php. The Resolver loads all providers registered for the given context.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html",
+      "tags": [
+        "expression-language",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-EXP-002",
+      "domain": "typo3_apis",
+      "skill": "writing_and_using_own_symfony_expressions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about a custom expression language provider are correct?",
+      "code": {
+        "lang": "php",
+        "src": "class CustomTypoScriptConditionProvider extends AbstractProvider\n{\n    public function __construct()\n    {\n        $this->expressionLanguageProviders = [\n            CustomConditionFunctionsProvider::class,\n        ];\n    }\n}"
+      },
+      "answers": [
+        "The provider class extends TYPO3\\CMS\\Core\\ExpressionLanguage\\AbstractProvider.",
+        "Additional functions are added by listing classes implementing Symfony's ExpressionFunctionProviderInterface in $this->expressionLanguageProviders.",
+        "Additional variables are added via $this->expressionLanguageVariables.",
+        "Functions are added by declaring public methods prefixed with 'condition' in the provider class.",
+        "A provider is only needed for variables; functions are registered directly in Configuration/ExpressionLanguage.php."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The provider extends AbstractProvider and fills expressionLanguageProviders (function providers returning ExpressionFunction objects) and/or expressionLanguageVariables. A provider is always required, no matter whether variables or functions are added.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html",
+      "tags": [
+        "expression-language"
+      ]
+    },
+    {
+      "id": "API-EXP-003",
+      "domain": "typo3_apis",
+      "skill": "writing_and_using_own_symfony_expressions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "The TypoScript condition [webservice('pages', 10)] uses the function below. What is passed to the evaluator's first parameter $arguments?",
+      "code": {
+        "lang": "php",
+        "src": "return new ExpressionFunction(\n    'webservice',\n    static fn() => null, // compiler, not used\n    static function ($arguments, $endpoint, $uid) {\n        return GeneralUtility::getUrl(\n            'https://example.org/endpoint/' . $endpoint . '/' . $uid\n        );\n    },\n);"
+      },
+      "answers": [
+        "The array of variables available in the expression context",
+        "The string 'pages'",
+        "The integer 10",
+        "The ContentObjectRenderer of the current page"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Symfony calls the evaluator with the context variables as first argument, followed by the function arguments ($endpoint = 'pages', $uid = 10). The compiler callable is only used when expressions are compiled.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html",
+      "tags": [
+        "expression-language",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-JS-001",
+      "domain": "typo3_apis",
+      "skill": "javascript_handling_in_the_backend",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which extension file maps the import prefix '@vendor/my-extension/' to the extension's JavaScript folder for the backend import map?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    'dependencies' => ['backend'],\n    'imports' => [\n        '@vendor/my-extension/' => 'EXT:my_extension/Resources/Public/JavaScript/',\n    ],\n];"
+      },
+      "answers": [
+        "Configuration/JavaScriptModules.php",
+        "Configuration/RequireJS.php",
+        "Configuration/Backend/Modules.php",
+        "Resources/Public/JavaScript/importmap.json"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Configuration/JavaScriptModules.php returns 'dependencies' and 'imports' used to build the import map for native ES6 modules. RequireJS support was removed in TYPO3 v13.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/ES6/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-JS-002",
+      "domain": "typo3_apis",
+      "skill": "javascript_handling_in_the_backend",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which approaches load the ES6 module '@vendor/my-extension/example.js' in a TYPO3 v14 backend module?",
+      "answers": [
+        "$this->pageRenderer->loadJavaScriptModule('@vendor/my-extension/example.js');",
+        "$this->pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(JavaScriptModuleInstruction::create('@vendor/my-extension/example.js'));",
+        "<f:be.pageRenderer includeJavaScriptModules=\"{0: '@vendor/my-extension/example.js'}\" />",
+        "$this->pageRenderer->loadRequireJsModule('TYPO3/CMS/MyExtension/Example');",
+        "<script data-main=\"@vendor/my-extension/example.js\" src=\"require.js\"></script>"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Modules are added via PageRenderer->loadJavaScriptModule(), a JavaScriptModuleInstruction or the includeJavaScriptModules argument of f:be.pageRenderer. The import map is only emitted when a module is actually used; RequireJS APIs were removed in v13.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/ES6/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-JS-003",
+      "domain": "typo3_apis",
+      "skill": "javascript_handling_in_the_backend",
+      "type": "single",
+      "difficulty": 3,
+      "question": "With this JavaScriptModules.php, import '@vendor/my-extension/example.js' fails to resolve. What is wrong?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    'dependencies' => ['backend'],\n    'imports' => [\n        '@vendor/my-extension' => 'EXT:my_extension/Resources/Public/JavaScript',\n    ],\n];"
+      },
+      "answers": [
+        "For a recursive (folder) mapping, key and target must both end with a trailing slash, as required by the import map specification",
+        "'dependencies' must list 'core' instead of 'backend'",
+        "Paths must be given relative to the public folder, EXT: syntax is not supported",
+        "Module prefixes must start with '@typo3/'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A folder mapping like '@vendor/my-extension/' => 'EXT:my_extension/Resources/Public/JavaScript/' needs the trailing slash on both sides; then all *.js files below are import-mapped. EXT: paths and custom vendor prefixes are fine.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/ES6/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-JS-004",
+      "domain": "typo3_apis",
+      "skill": "javascript_handling_in_the_backend",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Since TYPO3 v14.2, how can a backend ES6 module use labels of the translation domain 'my_extension.messages' without a controller pushing them into TYPO3.lang first?",
+      "answers": [
+        "import labels from '~labels/my_extension.messages'; then labels.get('comment.saved')",
+        "import labels from '@typo3/core/lang.js'; then labels.load('my_extension.messages')",
+        "Read them from TYPO3.settings.ajaxUrls.labels",
+        "await new AjaxRequest('/typo3/labels/my_extension.messages').get()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #108941 provides language labels as virtual JavaScript modules with the prefix '~labels/' followed by the domain; get() resolves a label and supports ICU placeholders. The URLs are version- and locale-specific and cacheable.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/ES6/Index.html",
+      "since": "14.2",
+      "tags": [
+        "javascript",
+        "backend",
+        "localization"
+      ]
+    },
+    {
+      "id": "API-AJAX-001",
+      "domain": "typo3_apis",
+      "skill": "ajax_handling_in_the_typo3_backend",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which file is a backend AJAX endpoint of an extension registered?",
+      "answers": [
+        "Configuration/Backend/AjaxRoutes.php",
+        "Configuration/Backend/Routes.php with 'ajax' => true",
+        "Configuration/RequestMiddlewares.php in the 'backend' stack",
+        "ext_tables.php via ExtensionManagementUtility::registerAjaxHandler()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Every route defined in Configuration/Backend/AjaxRoutes.php ('path' and 'target' => Controller::class . '::method') is exposed to JavaScript automatically. Caches must be flushed after changing routes.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/Ajax.html",
+      "tags": [
+        "ajax",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-AJAX-002",
+      "domain": "typo3_apis",
+      "skill": "ajax_handling_in_the_typo3_backend",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The route key 'myextension_example_dosomething' is registered in AjaxRoutes.php. What must replace ??? in the JavaScript module?",
+      "code": {
+        "lang": "js",
+        "src": "import AjaxRequest from '@typo3/core/ajax/ajax-request.js';\n\nnew AjaxRequest(???)\n    .withQueryArguments({input: 5})\n    .get()\n    .then(async function (response) {\n        const resolved = await response.resolve();\n        console.log(resolved.result);\n    });"
+      },
+      "answers": [
+        "TYPO3.settings.ajaxUrls.myextension_example_dosomething",
+        "TYPO3.settings.ajaxUrls.ajax_myextension_example_dosomething",
+        "'/typo3/ajax/myextension_example_dosomething'",
+        "TYPO3.routes.get('myextension_example_dosomething')"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "All AJAX routes are stored in the global TYPO3.settings.ajaxUrls object under their registration key. The response body is obtained via await response.resolve().",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/Ajax.html",
+      "tags": [
+        "ajax",
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-AJAX-003",
+      "domain": "typo3_apis",
+      "skill": "ajax_handling_in_the_typo3_backend",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about backend AJAX routes are correct?",
+      "answers": [
+        "By default an AJAX route can be called by every authenticated backend user, so permission checks are your responsibility.",
+        "With 'inheritAccessFromModule' => 'my_module' the route inherits the access rights of that backend module.",
+        "The target method receives a PSR-7 ServerRequestInterface and returns a PSR-7 ResponseInterface (e.g. JSON).",
+        "AJAX routes are restricted to admin users unless 'access' => 'user' is configured.",
+        "Changes to AjaxRoutes.php are active immediately without flushing caches."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "AJAX endpoints are regular PSR-7 controller methods. They are open to all logged-in backend users unless they inherit module access or check permissions themselves; route changes require a cache flush.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/Ajax.html",
+      "tags": [
+        "ajax",
+        "backend",
+        "security"
+      ]
+    },
+    {
+      "id": "API-PT-001",
+      "domain": "typo3_apis",
+      "skill": "pagetitle_api_and_viewhelper",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which Fluid ViewHelper, introduced in TYPO3 v14, sets the page title from a template (e.g. in a detail view)?",
+      "answers": [
+        "<f:page.title>{item.title}</f:page.title>",
+        "<f:title value=\"{item.title}\" />",
+        "<f:page.header title=\"{item.title}\" />",
+        "<f:pageTitle>{item.title}</f:pageTitle>"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107358 added f:page.title, which takes the title as tag content and integrates with the page title provider system and its priorities.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107358-IntroduceFluidPageTitleViewHelper.html",
+      "since": "14.0",
+      "tags": [
+        "seo",
+        "fluid"
+      ]
+    },
+    {
+      "id": "API-PT-002",
+      "domain": "typo3_apis",
+      "skill": "pagetitle_api_and_viewhelper",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In an Extbase show action you want the record title as page title without writing your own provider class. Which Core class can be injected for this since TYPO3 v14?",
+      "answers": [
+        "\\TYPO3\\CMS\\Core\\PageTitle\\RecordTitleProvider, calling setTitle($item->getTitle())",
+        "\\TYPO3\\CMS\\Core\\PageTitle\\RecordPageTitleProvider, calling setTitle($item->getTitle())",
+        "\\TYPO3\\CMS\\Seo\\PageTitle\\SeoTitlePageTitleProvider, calling setTitle($item->getTitle())",
+        "\\TYPO3\\CMS\\Core\\Page\\PageRenderer, calling setTitle($item->getTitle())"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "RecordTitleProvider (identifier recordTitle, configured before 'record') is meant for third-party extensions to set a title. RecordPageTitleProvider ('record') returns the page record title; the SEO provider returns the SEO title from page properties.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/PageTitleApi.html",
+      "since": "14.0",
+      "tags": [
+        "seo"
+      ]
+    },
+    {
+      "id": "API-PT-003",
+      "domain": "typo3_apis",
+      "skill": "pagetitle_api_and_viewhelper",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Several page title providers are configured in config.pageTitleProviders. How does the PageTitleProviderManager determine the final title?",
+      "code": {
+        "lang": "typoscript",
+        "src": "config.pageTitleProviders {\n    sitepackage {\n        provider = MyVendor\\MySitepackage\\PageTitle\\MyOwnPageTitleProvider\n        before = record\n    }\n}"
+      },
+      "answers": [
+        "Providers are called in the order resulting from before/after; the first provider returning a non-empty title wins",
+        "All providers are called and their titles are concatenated with config.pageTitleSeparator",
+        "The provider registered last in TypoScript always wins",
+        "The provider with the highest numeric 'priority' value wins"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The order is defined by before/after in config.pageTitleProviders. Once a provider returns a non-empty value, providers with lower priority are not checked; 'record' always returns a value, so custom providers go before it.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/PageTitleApi.html",
+      "tags": [
+        "seo",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-PT-004",
+      "domain": "typo3_apis",
+      "skill": "pagetitle_api_and_viewhelper",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about a custom page title provider are correct?",
+      "answers": [
+        "It implements PageTitleProviderInterface, typically by extending AbstractPageTitleProvider, which returns $this->title in getTitle().",
+        "It is activated by adding it to config.pageTitleProviders in TypoScript setup.",
+        "It is activated by calling PageTitleProviderManager::registerProvider() in ext_localconf.php.",
+        "It must be tagged with 'page.title.provider' in Configuration/Services.yaml, otherwise it is ignored.",
+        "Its getTitle() is called once per provider registered, even if a higher-priority provider already returned a title."
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Providers are plain classes implementing PageTitleProviderInterface; integrators control their use and order via TypoScript (config.pageTitleProviders). There is no PHP or tag-based registration, and evaluation stops at the first non-empty title.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/PageTitleApi.html",
+      "tags": [
+        "seo",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-PR-001",
+      "domain": "typo3_apis",
+      "skill": "using_the_pagerenderer_in_extensions",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which PageRenderer methods add JavaScript that is rendered at the end of the <body> instead of in the <head>?",
+      "answers": [
+        "addJsFooterFile()",
+        "addJsFooterInlineCode()",
+        "addJsFooterLibrary()",
+        "addJsFile()",
+        "addHeaderData()"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The *Footer* variants place JavaScript before </body>. addJsFile() and addHeaderData() add content to the <head> section.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Assets/Index.html",
+      "tags": [
+        "pagerenderer",
+        "assets"
+      ]
+    },
+    {
+      "id": "API-PR-002",
+      "domain": "typo3_apis",
+      "skill": "using_the_pagerenderer_in_extensions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about CSS/JS handling of the PageRenderer are true in TYPO3 v14?",
+      "answers": [
+        "The Core no longer concatenates or pre-compresses frontend CSS and JavaScript files.",
+        "Methods like PageRenderer::enableCompressJavascript() and enableConcatenateCss() were removed.",
+        "Bundling/minification should be done by an external build tool (e.g. Vite) before deployment.",
+        "Setting config.concatenateJs = 1 still bundles all JS files into one file.",
+        "Passing 'compress' => true to addJsFile() minifies the file on the fly."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Breaking #108055 removed frontend asset concatenation and compression, the related PageRenderer methods, handlers and TypoScript options (config.concatenateJs, config.compressJs, ...). Compression arguments are ignored now.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108055-RemovedPageRendererRelatedHooksAndMethods.html",
+      "since": "14.0",
+      "tags": [
+        "pagerenderer",
+        "assets",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-PR-003",
+      "domain": "typo3_apis",
+      "skill": "using_the_pagerenderer_in_extensions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which kind of PageRenderer usage is deprecated since TYPO3 v14.2 and should be avoided in new extension code?",
+      "answers": [
+        "Reading data back from the PageRenderer, e.g. getTitle() or getMetaTag()",
+        "Adding stylesheets via addCssFile()",
+        "Adding raw markup to the head via addHeaderData()",
+        "Loading backend ES6 modules via loadJavaScriptModule()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Deprecation #109329 deprecated the getters (getTitle(), getMetaTag(), removeMetaTag(), getDocType(), ...): the PageRenderer should only receive data, not serve as data source. Title and meta tags have dedicated APIs.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Deprecation-109329-PageRendererGetMethods.html",
+      "since": "14.2",
+      "tags": [
+        "pagerenderer",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-PR-004",
+      "domain": "typo3_apis",
+      "skill": "using_the_pagerenderer_in_extensions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which Fluid ViewHelper, added in TYPO3 v14, injects arbitrary markup such as preload links into the <head> section via the PageRenderer?",
+      "answers": [
+        "<f:page.headerData>",
+        "<f:asset.head>",
+        "<f:be.pageRenderer>",
+        "<f:format.raw section=\"head\">"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107056 introduced f:page.headerData and f:page.footerData, which internally use the PageRenderer. f:be.pageRenderer is meant for backend modules.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107056-IntroduceHeaderDataAndFooterDataViewHelpers.html",
+      "since": "14.0",
+      "tags": [
+        "pagerenderer",
+        "fluid"
+      ]
+    },
+    {
+      "id": "API-MT-001",
+      "domain": "typo3_apis",
+      "skill": "metatag_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which method call replaces ??? to add an og:title meta tag from a controller?",
+      "code": {
+        "lang": "php",
+        "src": "public function __construct(\n    private readonly MetaTagManagerRegistry $metaTagManagerRegistry,\n) {}\n\npublic function showAction(Item $item): ResponseInterface\n{\n    $this->metaTagManagerRegistry\n        ->???\n        ->addProperty('og:title', $item->getTitle());\n    return $this->htmlResponse();\n}"
+      },
+      "answers": [
+        "getManagerForProperty('og:title')",
+        "getManager('opengraph')",
+        "createManager('og:title')",
+        "getMetaTagManager()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The MetaTagManagerRegistry returns the manager responsible for a property via getManagerForProperty(); addProperty() then sets the value and optional sub-properties (e.g. og:image width/height).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/MetaTagApi.html",
+      "tags": [
+        "seo"
+      ]
+    },
+    {
+      "id": "API-MT-002",
+      "domain": "typo3_apis",
+      "skill": "metatag_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which ViewHelper, introduced in TYPO3 v14, sets a meta tag such as og:title directly from a Fluid template?",
+      "answers": [
+        "<f:page.meta property=\"og:title\">{item.title}</f:page.meta>",
+        "<f:meta name=\"og:title\" content=\"{item.title}\" />",
+        "<f:page.header.meta property=\"og:title\" value=\"{item.title}\" />",
+        "<f:seo.metaTag key=\"og:title\">{item.title}</f:seo.metaTag>"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107359 added f:page.meta with the arguments property (required), type, subProperties and replace; it uses the MetaTag API internally.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107359-IntroduceFluidPageMetaViewHelper.html",
+      "since": "14.0",
+      "tags": [
+        "seo",
+        "fluid"
+      ]
+    },
+    {
+      "id": "API-MT-003",
+      "domain": "typo3_apis",
+      "skill": "metatag_api",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the MetaTag API and page.meta in TypoScript are correct?",
+      "answers": [
+        "Meta tags set by plugins are handled first, TypoScript page.meta afterwards.",
+        "page.meta.og:site_name.replace = 1 lets the TypoScript value override a value set by a plugin.",
+        "A custom MetaTagManager implements MetaTagManagerInterface and is registered via MetaTagManagerRegistry->registerManager() in ext_localconf.php.",
+        "Without 'replace', a TypoScript meta tag always overwrites a tag set by a plugin.",
+        "By default the same meta property can be added any number of times."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TypoScript meta tags are only created if not already set, unless replace = 1. Duplicate tags are prevented unless a custom manager allows them; managers are registered with before/after ordering in ext_localconf.php in v14.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/MetaTagApi.html",
+      "tags": [
+        "seo",
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-UW-001",
+      "domain": "typo3_apis",
+      "skill": "implementing_upgrade_wizards",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which combination registers an upgrade wizard in TYPO3 v14 without using deprecated classes?",
+      "answers": [
+        "#[\\TYPO3\\CMS\\Core\\Attribute\\UpgradeWizard('myExtension_migrateRecords')] on a class implementing \\TYPO3\\CMS\\Core\\Upgrades\\UpgradeWizardInterface",
+        "#[\\TYPO3\\CMS\\Install\\Attribute\\UpgradeWizard('myExtension_migrateRecords')] on a class implementing \\TYPO3\\CMS\\Install\\Updates\\UpgradeWizardInterface",
+        "$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['myExtension_migrateRecords'] = MyWizard::class;",
+        "A Services.yaml tag 'upgrade.wizard' on a class extending AbstractUpdate"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Deprecation #106947 moved the attribute and interfaces from EXT:install to EXT:core (TYPO3\\CMS\\Core\\Attribute\\UpgradeWizard, TYPO3\\CMS\\Core\\Upgrades\\*). The old locations still work in v14 for dual v13/v14 compatibility but are deprecated.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-106947-MoveUpgradeWizardRelatedInterfacesAndAttributeToEXTcore.html",
+      "since": "14.0",
+      "tags": [
+        "upgrade-wizard",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-UW-002",
+      "domain": "typo3_apis",
+      "skill": "implementing_upgrade_wizards",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which methods does UpgradeWizardInterface require an upgrade wizard to implement?",
+      "answers": [
+        "updateNecessary(): bool",
+        "executeUpdate(): bool",
+        "getPrerequisites(): array",
+        "getTitle(): string",
+        "rollback(): bool",
+        "getPriority(): int"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Besides getTitle() and getDescription(), a wizard implements updateNecessary(), executeUpdate() and getPrerequisites() (e.g. DatabaseUpdatedPrerequisite). There is no rollback or priority method.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html",
+      "tags": [
+        "upgrade-wizard"
+      ]
+    },
+    {
+      "id": "API-UW-003",
+      "domain": "typo3_apis",
+      "skill": "implementing_upgrade_wizards",
+      "type": "single",
+      "difficulty": 3,
+      "question": "After a successful run, your wizard is marked as done and never checked again. You need it to be evaluated again after every extension update. What do you do?",
+      "answers": [
+        "Implement the marker interface \\TYPO3\\CMS\\Core\\Upgrades\\RepeatableInterface",
+        "Implement ChattyInterface and return false from setOutput()",
+        "Return false from executeUpdate() on purpose",
+        "Delete the row of the wizard from the sys_log table after each run"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The 'done' state is stored in sys_registry using the wizard identifier. RepeatableInterface (a marker interface without methods) prevents marking the wizard as done; ChattyInterface is only for output.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html",
+      "tags": [
+        "upgrade-wizard"
+      ]
+    },
+    {
+      "id": "API-UW-004",
+      "domain": "typo3_apis",
+      "skill": "implementing_upgrade_wizards",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How do you execute the upgrade wizard with identifier 'myExtension_exampleUpgradeWizard' from the command line in a Composer installation?",
+      "answers": [
+        "vendor/bin/typo3 upgrade:run myExtension_exampleUpgradeWizard",
+        "vendor/bin/typo3 install:wizard myExtension_exampleUpgradeWizard",
+        "vendor/bin/typo3 extension:setup --wizard=myExtension_exampleUpgradeWizard",
+        "vendor/bin/typo3 database:updateschema myExtension_exampleUpgradeWizard"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "upgrade:run executes a single wizard by identifier (or all without argument). Since v14 the console command always works, while the System > Upgrade module requires typo3/cms-install.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html",
+      "tags": [
+        "upgrade-wizard",
+        "cli"
+      ]
+    },
+    {
+      "id": "API-ENV-001",
+      "domain": "typo3_apis",
+      "skill": "environment_class",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which Environment method returns the folder for logs, sessions, locks and file caches (var/ in Composer mode, typo3temp/var/ in Classic mode)?",
+      "answers": [
+        "Environment::getVarPath()",
+        "Environment::getPublicPath()",
+        "Environment::getConfigPath()",
+        "Environment::getLabelsPath()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "getVarPath() returns var/ (Composer) or typo3temp/var/ (Classic). getConfigPath() points to config/ or typo3conf/, getLabelsPath() to downloaded translations.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Environment/Index.html",
+      "tags": [
+        "environment"
+      ]
+    },
+    {
+      "id": "API-ENV-002",
+      "domain": "typo3_apis",
+      "skill": "environment_class",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about \\TYPO3\\CMS\\Core\\Core\\Environment are true in TYPO3 v14?",
+      "answers": [
+        "getProjectPath() returns the folder containing the root composer.json.",
+        "In Classic mode installations getProjectPath() and getPublicPath() return the same path.",
+        "getConfigPath() returns the folder that contains system/settings.php and the sites/ folder.",
+        "Environment::getComposerRootPath() should be used to build paths relative to the project.",
+        "getPublicPath() returns the path of the typo3/ backend entry folder."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "getComposerRootPath() was removed in v14 (Breaking #107482); use absolute paths such as getProjectPath(). getPublicPath() is the web root with the frontend index.php.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Environment/Index.html",
+      "tags": [
+        "environment",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-ENV-003",
+      "domain": "typo3_apis",
+      "skill": "environment_class",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The server sets TYPO3_CONTEXT=Production/Staging. Which call returns true?",
+      "answers": [
+        "Environment::getContext()->isProduction()",
+        "Environment::getContext()->isStaging()",
+        "Environment::getContext()->isDevelopment()",
+        "Environment::isProductionContext('Staging')"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "getContext() returns the ApplicationContext. Sub-contexts like Production/Staging still belong to the root context Production, so isProduction() is true; there is no isStaging() method.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Environment/Index.html",
+      "tags": [
+        "environment",
+        "configuration"
+      ]
+    },
+    {
+      "id": "API-REG-001",
+      "domain": "typo3_apis",
+      "skill": "the_system_registry_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which database table does the TYPO3 Registry API store its entries?",
+      "answers": [
+        "sys_registry",
+        "sys_log",
+        "cache_hash",
+        "sys_refindex"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Registry entries are stored in sys_registry with entry_namespace, entry_key and a serialized entry_value. Upgrade wizards also store their 'done' state there.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SystemRegistry/Index.html",
+      "tags": [
+        "registry",
+        "database"
+      ]
+    },
+    {
+      "id": "API-REG-002",
+      "domain": "typo3_apis",
+      "skill": "the_system_registry_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A console command stores its last run time in the registry. What does the third argument of get() do?",
+      "code": {
+        "lang": "php",
+        "src": "public function __construct(private readonly Registry $registry) {}\n\nprotected function execute(InputInterface $input, OutputInterface $output): int\n{\n    $lastRun = $this->registry->get('tx_myextension', 'lastRun', 0);\n    // ...\n    $this->registry->set('tx_myextension', 'lastRun', time());\n    return Command::SUCCESS;\n}"
+      },
+      "answers": [
+        "It is the default value returned if no entry exists for the namespace/key combination",
+        "It is the time to live in seconds after which the entry expires",
+        "It forces the value to be unserialized as integer",
+        "It is the workspace id the entry belongs to"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Registry::get($namespace, $key, $defaultValue) returns the default if the entry is not found, e.g. on the first run. Entries never expire; set() writes and remove()/removeAllByNamespace() delete them.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SystemRegistry/Index.html",
+      "tags": [
+        "registry"
+      ]
+    },
+    {
+      "id": "API-REG-003",
+      "domain": "typo3_apis",
+      "skill": "the_system_registry_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the system registry are correct?",
+      "answers": [
+        "Values are stored serialized, so arrays can be stored (although not recommended).",
+        "The namespace is usually the extension key with 'tx_' prefix; 'core' is used by the TYPO3 Core.",
+        "The Registry is a singleton that can be injected via dependency injection.",
+        "It is the right place to store uploaded binary files of an extension.",
+        "Entries are flushed automatically when the caches are cleared."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The registry stores persistent instance-specific key/value pairs. It is not meant for binary data (use the file system) and is not a cache, so cache flushing does not touch it.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SystemRegistry/Index.html",
+      "tags": [
+        "registry"
+      ]
+    },
+    {
+      "id": "API-MW-001",
+      "domain": "typo3_apis",
+      "skill": "request_processing_with_middlewares",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where does an extension register a PSR-15 middleware for the frontend stack?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    'frontend' => [\n        'my-vendor/my-extension/status-check' => [\n            'target' => StatusCheckMiddleware::class,\n            'after' => ['typo3/cms-frontend/site'],\n            'before' => ['typo3/cms-frontend/page-resolver'],\n        ],\n    ],\n];"
+      },
+      "answers": [
+        "In Configuration/RequestMiddlewares.php under the key 'frontend'",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['FE']['middlewares']",
+        "In Configuration/Services.yaml with the tag 'psr15.middleware'",
+        "In the site configuration config.yaml under 'middlewares'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Configuration/RequestMiddlewares.php returns an array with the stacks 'frontend' and/or 'backend', each middleware keyed by a unique identifier with 'target', 'before', 'after' and optionally 'disabled'.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "middleware",
+        "psr-15"
+      ]
+    },
+    {
+      "id": "API-MW-002",
+      "domain": "typo3_apis",
+      "skill": "request_processing_with_middlewares",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Middleware B is configured with 'after' => ['my-vendor/a'] relative to middleware A. Both modify the request before and the response after calling $handler->handle(). Which statement is correct?",
+      "answers": [
+        "B sees the request changes made by A, while A receives the response already modified by B",
+        "A sees the request changes made by B, while B receives the response already modified by A",
+        "B sees neither request nor response changes of A",
+        "The order of request and response processing is identical for both middlewares"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A middleware configured before another wraps it: A modifies the request first and gets B's response back. B therefore sees A's request changes but not A's response changes - response processing runs in reverse order.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "middleware",
+        "psr-15"
+      ]
+    },
+    {
+      "id": "API-MW-003",
+      "domain": "typo3_apis",
+      "skill": "request_processing_with_middlewares",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about middlewares in TYPO3 v14 are correct?",
+      "answers": [
+        "A middleware implements Psr\\Http\\Server\\MiddlewareInterface::process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface.",
+        "A middleware may return its own response without calling $handler->handle(), e.g. a JSON response created via the injected PSR-17 ResponseFactoryInterface.",
+        "A Core middleware can be disabled with 'disabled' => true for its identifier in RequestMiddlewares.php.",
+        "Middlewares can rely on $_GET/$_POST being synchronized with the PSR-7 request.",
+        "Bootstrapping Extbase in a middleware is the recommended way to render plugin output early."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Since v14 TYPO3 no longer resets the superglobals from request data, so always use the PSR-7 request. Using Extbase in middlewares is discouraged because frontend TypoScript is not available there; use USER_INT instead.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "middleware",
+        "psr-15",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-SITE-001",
+      "domain": "typo3_apis",
+      "skill": "extending_site_configurations",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A project adds a custom option to config/sites/main/config.yaml as shown. How is it read in PHP?",
+      "code": {
+        "lang": "yaml",
+        "src": "rootPageId: 1\nbase: https://example.org/\nmyProject:\n    recordStorage: 15"
+      },
+      "answers": [
+        "$request->getAttribute('site')->getConfiguration()['myProject']['recordStorage']",
+        "$request->getAttribute('site')->getSettings()->get('myProject.recordStorage') - only settings are accessible",
+        "$GLOBALS['TYPO3_CONF_VARS']['SITES']['main']['myProject']['recordStorage']",
+        "It cannot be read; unknown keys are removed when the YAML is loaded"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Site object exposes the complete YAML via getConfiguration(), so arbitrary top-level keys can be added and are kept when the backend module saves the configuration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/ExtendingSiteConfig.html",
+      "tags": [
+        "site-handling"
+      ]
+    },
+    {
+      "id": "API-SITE-002",
+      "domain": "typo3_apis",
+      "skill": "extending_site_configurations",
+      "type": "single",
+      "difficulty": 2,
+      "question": "You want an additional input field 'myNewField' to appear in the site configuration form of the backend. Where is it defined?",
+      "answers": [
+        "In EXT:my_extension/Configuration/SiteConfiguration/Overrides/sites.php by modifying $GLOBALS['SiteConfiguration']['site']",
+        "In EXT:my_extension/Configuration/TCA/Overrides/site.php by modifying $GLOBALS['TCA']['site']",
+        "In ext_tables.php using ExtensionManagementUtility::addToAllTCAtypes('site', 'myNewField')",
+        "In the site set's settings.definitions.yaml with type 'site-field'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The site form uses TCA-like configuration in $GLOBALS['SiteConfiguration'], which is not part of $GLOBALS['TCA']; ExtensionManagementUtility helpers cannot be used. The value is stored in config.yaml.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/ExtendingSiteConfig.html",
+      "tags": [
+        "site-handling",
+        "tca"
+      ]
+    },
+    {
+      "id": "API-SITE-003",
+      "domain": "typo3_apis",
+      "skill": "extending_site_configurations",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about extending the site configuration form are correct?",
+      "answers": [
+        "Only simple field types like 'input' are supported; inline relations, database-driven selects or FlexForms are not possible.",
+        "The new field must also be added to the 'showitem' string of $GLOBALS['SiteConfiguration']['site']['types']['0'].",
+        "Extending the site configuration form is marked as experimental and may change.",
+        "Field definitions are merged into $GLOBALS['TCA'] under the table name 'site'.",
+        "Field values are stored in the database table sys_site."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The site configuration GUI only supports a small TCA subset and is experimental. Values are written to the site's config.yaml, not to a database table, and the definitions live in $GLOBALS['SiteConfiguration'].",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/ExtendingSiteConfig.html",
+      "tags": [
+        "site-handling"
+      ]
+    },
+    {
+      "id": "API-USER-001",
+      "domain": "typo3_apis",
+      "skill": "the_user_user_int_typoscript_objects",
+      "type": "single",
+      "difficulty": 2,
+      "question": "After upgrading to TYPO3 v14 this USER_INT object throws an AllowedCallableException. What is the fix?",
+      "code": {
+        "lang": "php",
+        "src": "// TypoScript:\n// page.10 = USER_INT\n// page.10.userFunc = MyVendor\\MySitepackage\\UserFunctions\\ExampleTime->printTime\n\nfinal class ExampleTime\n{\n    public function printTime(string $content, array $conf): string\n    {\n        return '<p>' . date('H:i:s') . '</p>';\n    }\n}"
+      },
+      "answers": [
+        "Add the attribute #[\\TYPO3\\CMS\\Core\\Attribute\\AsAllowedCallable] to the method printTime()",
+        "Declare the class final and readonly",
+        "Change USER_INT to USER, because uncached user functions are no longer supported",
+        "Register the class as public: true in Configuration/Services.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #108054 requires an explicit opt-in for methods called from TypoScript/TSconfig (userFunc, USER/USER_INT, preUserFuncInt, postUserFunc, ...). Methods without #[AsAllowedCallable] are rejected.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108054-EnforceExplicitOpt-inForTypoScriptTSconfigCallables.html",
+      "since": "14.0",
+      "tags": [
+        "typoscript",
+        "security",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-USER-002",
+      "domain": "typo3_apis",
+      "skill": "the_user_user_int_typoscript_objects",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the main difference between a USER and a USER_INT content object?",
+      "answers": [
+        "USER output is cached together with the page; USER_INT is rendered on every request outside the cached page content",
+        "USER calls static methods, USER_INT calls instance methods",
+        "USER_INT can only be used in the backend",
+        "USER_INT output is cached per frontend user group, USER per page"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "USER_INT is a non-cached object: the cached page contains a placeholder that is replaced by the freshly rendered output on each hit. USER content is part of the page cache.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/ContentObjects/UserAndUserInt/Index.html",
+      "tags": [
+        "typoscript",
+        "caching"
+      ]
+    },
+    {
+      "id": "API-USER-003",
+      "domain": "typo3_apis",
+      "skill": "the_user_user_int_typoscript_objects",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "A method is called via 'page.30 = USER' with 'page.30.reverseOrder = 1'. Which statements about the call are correct?",
+      "answers": [
+        "The third parameter is the current PSR-7 ServerRequestInterface.",
+        "The custom property reverseOrder is available in the second parameter (the configuration array).",
+        "The ContentObjectRenderer can be received via a public setContentObjectRenderer() method of the class.",
+        "The first parameter $content contains the complete page output rendered so far.",
+        "userFunc only accepts static methods written as Class::method."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The method receives (string $content, array $conf, ServerRequestInterface $request); $content is empty for USER/USER_INT. 'Class->method' instantiates the class, and the parent cObj is provided via setContentObjectRenderer().",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/ContentObjects/UserAndUserInt/Index.html",
+      "tags": [
+        "typoscript"
+      ]
+    },
+    {
+      "id": "API-JSEV-001",
+      "domain": "typo3_apis",
+      "skill": "javascript_event_api_in_the_backend",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does this code do?",
+      "code": {
+        "lang": "js",
+        "src": "import RegularEvent from '@typo3/core/event/regular-event.js';\n\nnew RegularEvent('click', function (e) {\n    // Do something\n}).delegateTo(document, 'a[data-action=\"toggle\"]');"
+      },
+      "answers": [
+        "It registers one click listener on document that runs for every click on an element matching a[data-action=\"toggle\"], including elements added later",
+        "It attaches a separate listener to every matching link that exists at execution time only",
+        "It dispatches a synthetic click event to all matching links",
+        "It prevents the default action of all matching links automatically"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "delegateTo(element, selector) uses event delegation: the listener is bound to the given element and called when the event originates from a matching descendant. bindTo() binds directly to an element, document or window.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/EventApi/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-JSEV-002",
+      "domain": "typo3_apis",
+      "skill": "javascript_event_api_in_the_backend",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A live search in a backend module should query the server only once the user has stopped typing for 250 ms. Which event strategy fits best?",
+      "answers": [
+        "DebounceEvent",
+        "ThrottleEvent",
+        "RequestAnimationFrameEvent",
+        "RegularEvent"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "DebounceEvent calls the listener only after the given wait time without new events. ThrottleEvent calls it repeatedly at most once per limit during ongoing events; RequestAnimationFrameEvent ties execution to animation frames.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/EventApi/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-JSEV-003",
+      "domain": "typo3_apis",
+      "skill": "javascript_event_api_in_the_backend",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which statements about the TYPO3 backend JavaScript Event API are correct?",
+      "answers": [
+        "RegularEvent is imported from '@typo3/core/event/regular-event.js'.",
+        "Calling release() on the event object detaches the listener.",
+        "bindTo() accepts any element as well as document and window.",
+        "Import statements in ES6 modules must omit the .js suffix.",
+        "The Event API requires jQuery to be loaded."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Each event strategy is an object that can be bound via bindTo()/delegateTo() and released via release(). ES6 imports must include the .js suffix (only TypeScript sources omit it), and no jQuery is needed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/JavaScript/EventApi/Index.html",
+      "tags": [
+        "javascript",
+        "backend"
+      ]
+    },
+    {
+      "id": "API-EVP-001",
+      "domain": "typo3_apis",
+      "skill": "providing_own_events",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How does an extension service dispatch its own PSR-14 event?",
+      "answers": [
+        "Inject Psr\\EventDispatcher\\EventDispatcherInterface and call $event = $this->eventDispatcher->dispatch(new MyEvent(...))",
+        "Call GeneralUtility::makeInstance(Dispatcher::class)->dispatch(__CLASS__, 'myEvent', [$data])",
+        "Register the event class in ext_localconf.php and call EventRegistry::trigger(MyEvent::class)",
+        "Throw the event object as an exception that listeners catch"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Emitters receive the event dispatcher via DI and pass an event object to dispatch(), which returns the (possibly modified) event. The signal/slot Dispatcher was removed in TYPO3 v12.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVP-002",
+      "domain": "typo3_apis",
+      "skill": "providing_own_events",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements describe good practice for a custom event class?",
+      "answers": [
+        "It is a plain PHP object with getters for immutable and setters for mutable data, filled via the constructor.",
+        "It uses the suffix 'Event' and lives in Classes/Event/.",
+        "If listeners should be able to stop further processing, it implements Psr\\EventDispatcher\\StoppableEventInterface.",
+        "It must extend \\TYPO3\\CMS\\Core\\EventDispatcher\\AbstractEvent.",
+        "It must be registered in Services.yaml with the tag 'event.dispatchable' before it can be dispatched."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Any PHP object can be an event; no base class or registration is needed. Naming with the Event suffix in Classes/Event/ and StoppableEventInterface for stoppable events are recommended.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVP-003",
+      "domain": "typo3_apis",
+      "skill": "providing_own_events",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Three listeners are registered for ResolveTitleEvent. The first listener calls setTitle('Foo'). What happens?",
+      "code": {
+        "lang": "php",
+        "src": "final class ResolveTitleEvent implements StoppableEventInterface\n{\n    private ?string $title = null;\n\n    public function setTitle(string $title): void\n    {\n        $this->title = $title;\n    }\n\n    public function getTitle(): ?string\n    {\n        return $this->title;\n    }\n\n    public function isPropagationStopped(): bool\n    {\n        return $this->title !== null;\n    }\n}"
+      },
+      "answers": [
+        "The remaining listeners are skipped and dispatch() returns the event with title 'Foo'",
+        "All three listeners run; the last one to call setTitle() wins",
+        "dispatch() throws an exception because propagation was stopped",
+        "The event is re-dispatched until all listeners return true"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "For events implementing StoppableEventInterface the dispatcher checks isPropagationStopped() before each listener and stops as soon as it returns true. The event object is returned to the emitter.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVL-001",
+      "domain": "typo3_apis",
+      "skill": "using_existing_psr_14_events",
+      "type": "single",
+      "difficulty": 1,
+      "question": "The listener below has no 'event' property in its attribute. How does TYPO3 know which event it listens to?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Core\\Attribute\\AsEventListener;\nuse TYPO3\\CMS\\Core\\Mail\\Event\\BeforeMailerSentMessageEvent;\n\n#[AsEventListener(identifier: 'my-extension/mailer')]\nfinal readonly class MailerListener\n{\n    public function __invoke(BeforeMailerSentMessageEvent $event): void\n    {\n        // modify the message\n    }\n}"
+      },
+      "answers": [
+        "From the type declaration of the first parameter of __invoke()",
+        "From the class name, which must equal the event name plus 'Listener'",
+        "It does not; the 'event' property is mandatory",
+        "From the identifier string 'my-extension/mailer'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With #[AsEventListener] the event is derived from the parameter type of the called method (__invoke() by default). Specifying 'event' explicitly is possible but not recommended.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVL-002",
+      "domain": "typo3_apis",
+      "skill": "using_existing_psr_14_events",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which properties are supported by the #[AsEventListener] attribute?",
+      "answers": [
+        "identifier",
+        "before",
+        "after",
+        "method",
+        "priority",
+        "async"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "AsEventListener supports identifier, before, after, event and method (all optional). Ordering is done with before/after identifiers, not numeric priorities, and there is no async option.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVL-003",
+      "domain": "typo3_apis",
+      "skill": "using_existing_psr_14_events",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A third-party extension registers a listener with identifier 'ext-some-extension/modify-hreflang'. You want your own implementation to replace it. What is required?",
+      "answers": [
+        "Register your listener with exactly the same identifier and make your extension depend on the third-party extension (composer.json) so it is loaded later",
+        "Register your listener with before: 'ext-some-extension/modify-hreflang' and call $event->stopPropagation()",
+        "Set 'disabled' => true for the identifier in Configuration/RequestMiddlewares.php",
+        "Overriding is impossible; you can only add another listener"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Listeners are overridden by reusing the identifier (the service name if none was set). A dependency ensures your extension is processed after the original; your listener must then provide all functionality, because the original is no longer executed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14"
+      ]
+    },
+    {
+      "id": "API-EVL-004",
+      "domain": "typo3_apis",
+      "skill": "using_existing_psr_14_events",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Where can you check which listeners are registered for a PSR-14 event and in which order they run?",
+      "answers": [
+        "In the backend module System > Configuration, view 'Event Listeners (PSR-14)' (EXT:lowlevel)",
+        "In the Admin Panel tab 'Events'",
+        "In var/log/typo3_events.log, written on every request",
+        "Only by searching all Services.yaml files"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Configuration module of EXT:lowlevel lists all registered event listeners including identifiers and order. It is also the place to look up an identifier you want to override.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "psr-14",
+        "debugging"
+      ]
+    }
+  ]
+}
