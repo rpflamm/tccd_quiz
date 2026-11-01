@@ -58,7 +58,100 @@ godot --headless --path . --export-release "Windows Desktop" "export/windows/TCC
 godot --headless --path . --export-release "Web" export/web/index.html
 ```
 
-The Web build is single-threaded, so it runs without COOP/COEP headers. You can upload it as is, for example to itch.io or any static web host. Progress is stored in the browser's IndexedDB.
+## Hosting & installation
+
+### Web version on your own web server
+
+The Web build is a plain static site. It needs no PHP, no database and no server-side code. It is single-threaded, so it works **without** the `Cross-Origin-Opener-Policy`/`Cross-Origin-Embedder-Policy` headers and in any subdirectory.
+
+1. **Upload everything in `export/web/`** to the target directory, for example `https://example.com/tccd-quiz/`:
+
+   | File | Purpose |
+   |---|---|
+   | `index.html` | Entry page |
+   | `index.js` | Engine loader |
+   | `index.wasm` | Engine (~40 MB, compresses well) |
+   | `index.pck` | Game data incl. all questions |
+   | `index.audio.worklet.js`, `index.audio.position.worklet.js` | Audio |
+   | `index.png`, `index.icon.png`, `index.apple-touch-icon.png` | Splash/icons |
+
+2. **Check the MIME types.** This is the most common source of problems:
+   - `.wasm` must be served as `application/wasm`
+   - `.js` must be served as `text/javascript`
+   - `.pck` must be served as `application/octet-stream`
+
+   If they are wrong, the game does not start, or it starts without sound ("Failed to load worklet module … MIME type mismatch").
+3. **Recommended:** use HTTPS, compress `.wasm`/`.pck`/`.js` (gzip or brotli), and cache the large files.
+4. Open `index.html`. Progress (XP, Leitner boxes, highscores) is stored per browser in IndexedDB, so it stays on that device and browser.
+
+**Apache** (`.htaccess` in the game directory, needs `mod_mime`, and `mod_deflate`/`mod_headers` for the optional parts):
+
+```apache
+AddType application/wasm .wasm
+AddType text/javascript .js
+AddType application/octet-stream .pck
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/wasm text/javascript application/octet-stream text/html
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(wasm|pck)$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
+</IfModule>
+```
+
+**nginx** (inside the `server { … }` block):
+
+```nginx
+location /tccd-quiz/ {
+    alias /var/www/tccd-quiz/;
+    types {
+        text/html                html;
+        text/javascript          js;
+        application/wasm         wasm;
+        application/octet-stream pck;
+        image/png                png;
+    }
+    gzip on;
+    gzip_types application/wasm text/javascript application/octet-stream;
+    location ~* \.(wasm|pck)$ { add_header Cache-Control "public, max-age=86400"; }
+}
+```
+
+**Caddy** (`Caddyfile`; Caddy already sets the right MIME types):
+
+```caddy
+example.com {
+    root * /var/www/tccd-quiz
+    encode zstd gzip
+    file_server
+}
+```
+
+**Testing locally:** opening `index.html` straight from disk (`file://`) does not work. Run:
+
+```bash
+python3 tools/serve_web.py          # serves export/web at http://localhost:8060/
+```
+
+The script sets the correct MIME types. The plain `python -m http.server` often serves `.js` as `text/plain` on Windows, which breaks the audio.
+
+**Updates:** export again and replace all files. If the browser still shows the old version, reload with Ctrl+F5. The player's progress is kept.
+
+### Web version on itch.io
+
+1. Zip the **contents** of `export/web/`, so that `index.html` is at the top level of the ZIP.
+2. On itch.io, create a new project and set *Kind of project* to **HTML**.
+3. Upload the ZIP and tick **"This file will be played in the browser"**.
+4. Set the viewport to **1280 × 720** and tick **"Fullscreen button"**. Leave "SharedArrayBuffer support" off; the build does not need it.
+
+### Desktop version (Windows)
+
+- `export/windows/TCCD Quizz.exe` is a **single portable file**: the game data is embedded and there is no installer. Copy it anywhere, for example onto the desktop or a USB stick, and start it.
+- The exe is not code-signed, so Windows SmartScreen may warn on first launch. Click *More info → Run anyway*.
+- Progress and settings are stored in `%APPDATA%\Godot\app_userdata\TCCD Quizz\` (`profile.json`, `settings.cfg`). To reset, delete that folder or use *Statistics → Reset all progress*.
+- `F11` toggles fullscreen.
 
 ## Adding questions
 
