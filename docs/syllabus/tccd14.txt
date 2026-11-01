@@ -1,0 +1,903 @@
+                          CMS Certified Developer 14 LTS
+
+                                                      Created on: 08.10.2026
+
+TYPO3 Concepts
+
+Extension File and Folder Structure
+     This skill covers knowledge about the file structure of an extension and where to place files by
+     convention and due to technical requirements.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Coding Standards in TYPO3
+     This skill covers the knowhow to write code conforming to the coding standards used by the TYPO3
+     project.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Table Configuration Array (TCA)
+     This skill covers the configuration of database tables for usage in the backend and frontend.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+FlexForm Concepts
+     This skill covers basics about the concept of FlexForms and how they relate to the TCA.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Database Schema Definition
+     This skill covers the definition of own database tables and fields of an extension, which will be
+     automatically managed by the TYPO3 Core.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Implementing MVC in TYPO3
+     This skill introduces the concept of MVC in Extbase: base classes for models, controllers,
+     repositories.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+User Input in DB Queries
+     Knowledge about securely processing user input for database queries.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+User Input in Views
+     This skill covers knowledge about securely outputting values gained through user input.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+User Input in PHP Code
+     This skill covers knowledge about securely processing user input in PHP code.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+Tracing Errors in Logs
+     This skill covers knowledge about log sources and how to utilize them in order to resolve errors.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extending/Replacing/Manipulating Existing Functionality
+     This skill covers knowledge about extending core and extension functionality.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+The Caching Framework
+     This skill covers the Core's caching framework. It shows how to use existing and register custom
+     caches, and the types of cache frontends and backends. Additional topics are expiration and tagging
+     of cache entries and flushing of caches.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Flash Messages
+     This skill covers flash messages, a mechanism used to communicate e.g. results of an action to the
+     user.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TYPO3 Error handling/Exception handling
+     This skill is about TYPO3-specific ways of handling errors during program execution and finding
+     information about any errors that occurred.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Contexts & Aspects
+     This skill introduces usage of the request context and aspects that can be used to enrich this
+     context, e.g. with localization information.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Route Enhancers
+     This skill covers Route Enhancers which are used to amend the URL routing provided by the TYPO3
+     core.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Debugging PSR-14 Event Handling
+     This skill covers debugging the registration, dispatching and handling of events in TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Making Extensions localizable
+     This skill covers knowledge of how to make extensions translatable and localizable.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Database Record Translations
+     This skill covers the translation configuration of database records via TCA.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+Data structures in TYPO3 core
+     This skill covers classes for data structures, e.g. the BitSet and Map class, and their usage.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+The builder design pattern in TYPO3
+     This skill covers classes in TYPO3, which are following the Builder design pattern.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Performance analysis for custom code
+     This skill covers the process of analysing performance of a TYPO3 system.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Versioning & Workspaces
+     This skill covers the concept of Versioning & Workspaces in TYPO3 which allow to manage content
+     changes and staging through version control and isolated workspaces. It allows for tracking
+     revisions, previewing changes before publication, and coordinating collaborative work by separating
+     development from live content.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TYPO3 Scheduler Extension
+     This skill covers the TYPO3 Scheduler extension, which enables the scheduling and automation of
+     tasks within TYPO3, such as executing background jobs, sending emails, or running custom scripts
+     at specified intervals. This tool provides a flexible interface for managing and configuring scheduled
+     tasks to enhance site functionality and automation.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TYPO3 Ecosystem & Brand
+     This skill covers the TYPO3 Brand and the Ecosystem around the software. It encompasses the
+     community, tools, and resources that support the TYPO3 CMS, as well as the values and identity of
+     the TYPO3 brand. The ecosystem includes a wide range of extensions, documentation, events, and
+     a global community that contribute to the development and promotion of TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TYPO3 Contribution, Issue Tracker
+     This skill covers TYPO3 Contribution. This involves participating in the development and
+     enhancement of the TYPO3 CMS through various means such as code contributions,
+     documentation, bug reports, and community support. Engaging with TYPO3 contributions helps
+     improve the platform and supports the global TYPO3 community.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Site Configuration
+     This skill covers the configuration of sites in TYPO3, which are organised in a page tree of one or
+     multiple sites.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Single Table Inheritance in TYPO3
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     This skill covers the usage of the Single Table Inheritance technique in TYPO3. It is used in TYPO3
+     to manage multiple object types within a single database table. This approach allows different
+     classes to share the same table while maintaining distinct behaviors, simplifying database structure
+     and improving performance in TYPO3 extensions.
+     Maintainer: TYPO3 (Andreas Wolf)
+Frontend Plugins
+     This skill covers Frontend Plugins in TYPO3, which are a content type that adds custom
+     functionalities to the frontend of a TYPO3 website. These plugins allow for the integration of custom
+     features and interactive components, enhancing the user experience and extending the site's
+     capabilities.
+     Maintainer: TYPO3 (Andreas Wolf)
+Fluid Templating Engine
+     This skill covers the Templating Engine Fluid. It is used in TYPO3 for rendering dynamic content in a
+     clean and maintainable way. It allows developers to create custom templates using a combination of
+     HTML and Fluid-specific syntax, enabling the separation of content and presentation layers.
+     Maintainer: TYPO3 (Andreas Wolf)
+Feature Toggles
+     This skill covers Feature Toggles which allows developers and integrators to enable or disable
+     specific functionalities or features dynamically without altering the codebase. This technique is used
+     in TYPO3 mainly to hide breaking changes for existing installations migrating from older versions.
+     Maintainer: TYPO3 (Andreas Wolf)
+User Session Management
+     This skill covers session management in TYPO3. Session Management involves handling user
+     sessions to maintain state and manage user interactions across multiple page requests. This
+     includes creating, storing, and retrieving session data to provide a consistent user experience and
+     manage user-specific settings or actions.
+     Maintainer: TYPO3 (Andreas Wolf)
+Data Migration (Upgrade Wizards)
+     This skill covers the Upgrade Wizards in TYPO3, which assists the process of upgrading TYPO3
+     installations and extensions by automating data migrations needed to ensure compatibility with
+     newer versions.
+     Maintainer: TYPO3 (Andreas Wolf)
+TYPO3 Core Persistence
+     This skill covers TYPO3's persistence engine, which handles data management and storage within
+     the system. This includes understanding how TYPO3 structures and maintains data integrity, as well
+     as the mechanisms that support consistent data handling across the Backend and Frontend.
+     Maintainer: TYPO3 (Andreas Wolf)
+Object Creation in TYPO3
+     This skill covers the different ways how objects can be created in TYPO3, and the infrastructure
+     TYPO3 provides for this.
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     Maintainer: TYPO3 (Andreas Wolf)
+Backend Modules
+
+     This skill covers knowledge about TYPO3 Backend Modules and how to extend them, allowing users
+     to manage specific tasks or access additional tools within the CMS. These modules can be custom-
+     built or are offered as part of extensions, providing enhanced functionality tailored to the needs of the
+     website.
+     Maintainer: TYPO3 (Andreas Wolf)
+cHash
+     This skill covers the cHash (cache hash) in TYPO3 which is used to prevent cache flooding and to
+     ensure that cached content is correctly identified and served based on query parameters and URL
+     changes. This mechanism helps in generating unique cache entries for different content variations,
+     improving cache accuracy and preventing stale content from being served.
+     Maintainer: TYPO3 (Andreas Wolf)
+Frontend Routing
+     This skill covers Frontend Routing in TYPO3. It manages the mapping of URLs to specific pages,
+     plugins and content within a TYPO3 site. It defines how URLs are structured and resolved, ensuring
+     that users and search engines can access the correct content efficiently.
+     Maintainer: TYPO3 (Andreas Wolf)
+TYPO3 Request Life Cycle
+     This skill covers the TYPO3 Request Life Cycle, which is the process a request goes through from
+     the moment it is received by the server until a response is delivered to the client. This life cycle
+     includes stages such as routing, controller action execution, and rendering, ensuring that TYPO3
+     handles each request consistently and efficiently.
+     Maintainer: TYPO3 (Andreas Wolf)
+Validation in TYPO3
+     This skill covers validation in TYPO3 to ensure that user input applies to defined rules and
+     constraints, to maintain data integrity and quality. This process includes configuring validation rules
+     for forms and data models, checking for errors, and providing feedback to users to ensure correct
+     and secure data handling.
+     Maintainer: TYPO3 (Andreas Wolf)
+Logging in TYPO3
+     This skill covers logging in TYPO3, which refers to the system's ability to track and record various
+     activities and events within the CMS, such as user actions, errors, and system processes.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Software Development Standards
+
+PSR Standards
+     Knowing the most important PSR programming standards in the TYPO3 world.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+JSON
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     This skill covers basics of the JSON format.
+     Maintainer: TYPO3 (Andreas Wolf)
+SQL
+     This skill covers knowledge about the SQL standard for interacting with databases.
+     Maintainer: TYPO3 (Andreas Wolf)
+PHP
+     This skill covers the ability to develop and execute PHP scripts.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-7: Request/Response
+     This skill covers the PSR standard for HTTP request/response objects.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-3: Logger Interface standard
+     This skill covers knowledge about the PSR-3 logging standard for PHP.
+     Maintainer: TYPO3 (Andreas Wolf)
+Docblocks in PHP
+     This skill covers knowledge about the syntax and general purpose of documentation blocks, tags
+     and annotations.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-15: Middlewares
+     This skill covers the PHP standard on middlewares.
+     Maintainer: TYPO3 (Andreas Wolf)
+PHP autoloading standards
+     This skill covers the different PHP autoloading standards (PSR-4, class maps), how they map PHP
+     classes to files and folders, and how the PSR-4 autoloading is configured.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-18: HTTP Client
+     This skill covers the PSR HTTP client standard.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-17: HTTP Message Factories
+     This skill covers the PSR standard for HTTP message factories and the differences to the earlier
+     HTTP request/response standard.
+     Maintainer: TYPO3 (Andreas Wolf)
+PSR-14: Event Dispatching
+     This skill covers the basics of the PHP standard on Event dispatching.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+PSR-11: Dependency Injection
+     This skill covers different types of dependency injection in TYPO3 and the configuration of
+     dependency injection.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+XLIFF
+     This skill covers the standard XML format XLIFF (XML Localization Interchange File Format) which
+     is used for the exchange of localization data between different software tools. It facilitates the
+     translation and management of text within applications by providing a structured format for source
+     and target language content.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+reStructuredText
+     This skill covers the lightweight markup language reStructuredText (reST), which is used for
+     documentation in the TYPO3 world.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Markdown
+     This skill covers the lightweight markup language Markdown, which is designed for formatting text in
+     a simple and readable way
+     Maintainer: TYPO3 (Andreas Wolf)
+
+CVE
+     This skill covers the knowledge of CVE (Common Vulnerabilities and Exposures). CVE provides a
+     standardized identifier for publicly known cybersecurity vulnerabilities and exposures. This system
+     helps organizations and users track and manage security issues by offering a unique reference for
+     each vulnerability.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+SQL Data Management
+     This skill covers the principles of SQL Data Management, including the processes of querying,
+     updating, and organizing data within a relational database using SQL commands.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+SQL Structure Management
+     This skill covers designing and maintaining the schema of a relational database with SQL Structure
+     Management including the creation, modification, and optimization of tables, indexes, and
+     relationships. This helps to ensure that the database structure supports efficient data storage and
+     retrieval while adhering to integrity constraints and normalization principles.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+HTTP
+     This skill covers the methods for requesting and delivering resources by HTTP (Hypertext Transfer
+     Protocol), such as web pages and files, and includes status codes to indicate the result of these
+     requests.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+TYPO3 APIs
+
+FlexForm Configuration Data Structure
+     This skill covers knowledge of how to create and configure a data structure for my plugin's
+     configuration.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Accessing FlexForm Data
+     Using data provided in FlexForms in plugin CEs and custom records.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Implementing ViewHelpers
+     This skill provides the foundations for using custom PHP code in a Fluid-based view.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Using the QueryBuilder
+     This skill covers knowledge for writing database queries in TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Using Query Restrictions
+     This skill covers how to automatically restrict the data returned by database queries.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TYPO3 Debugging Utilities
+     This skill covers knowledge about debugging utilities provided by TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Logging API
+     This skill covers knowledge about the logging API provided by TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Creating Scheduler Tasks and Commands
+     This skill covers building Scheduler tasks and commands for automated recurring tasks.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Creating CLI Commands
+     This skill covers the creation of console commands for TYPO3, based on the Symfony Console
+     component.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Mail API
+     This skill covers the TYPO3 Mail API, which internally uses Symfony's Mailer and Mime component
+     for creating and sending emails.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+DataHandler
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     This skill handles knowledge about the DataHandler and how it can be used in custom developed
+     extensions.
+     Maintainer: TYPO3 (Andreas Wolf)
+Writing and using own Symfony Expressions
+     This skill covers extending the Symfony Expression syntax (used in e.g. TypoScript conditions) with
+     custom code.
+     Maintainer: TYPO3 (Andreas Wolf)
+JavaScript handling in the Backend
+     This skill covers the TYPO3-specific parts of ES6: how to load modules in TYPO3 and how
+     developers can leverage the TYPO3 Core API to use their own JavaScript code in the TYPO3
+     Backend.
+     Maintainer: TYPO3 (Andreas Wolf)
+AJAX handling in the TYPO3 Backend
+     This skill covers knowledge about how AJAX actions are handled in the TYPO3 Backend and how
+     custom code can be made available for AJAX calls.
+     Maintainer: TYPO3 (Andreas Wolf)
+PageTitle API and ViewHelper
+     This skill covers the PageTitle API, which can be used to modify the title of the generated page, e.g.
+     in the single view of a plugin. It also covers how to set the page title directly from Fluid templates.
+     Maintainer: TYPO3 (Andreas Wolf)
+Using the PageRenderer in Extensions
+     This skill covers the PageRenderer for extension usage, a TYPO3 Core component that is
+     responsible for collecting information from various parts of the page and handling the final rendering
+     of a page.
+     Maintainer: TYPO3 (Andreas Wolf)
+MetaTag API
+     This skill covers the MetaTag API, which can be used to manipulate the meta tags in the head
+     section of the generated HTML page.
+     Maintainer: TYPO3 (Andreas Wolf)
+Implementing upgrade wizards
+     This skill covers the implementation of upgrade wizards, which can be used by integrators to update
+     existing extension data and configuration after upgrading the extension.
+     Maintainer: TYPO3 (Andreas Wolf)
+Environment class
+     This skill covers knowledge about TYPO3's Environment class, which provides system-specific
+     details that are independent from the system environment.
+     Maintainer: TYPO3 (Andreas Wolf)
+The System Registry API
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     This skill covers the system registry API, provided by the TYPO3 Core to store instance-specific
+     data.
+     Maintainer: TYPO3 (Andreas Wolf)
+Request processing with middlewares
+     This skill covers the knowledge of PSR-15 middlewares in TYPO3 - both for frontend and backend
+     request processing.
+     Maintainer: TYPO3 (Andreas Wolf)
+Extending site configurations
+     This skill covers custom extensions of the TYPO3 Core Site configuration module.
+     Maintainer: TYPO3 (Andreas Wolf)
+The USER/USER_INT TypoScript objects
+     This skill covers the USER and USER_INT TypoScript objects, which are used to integrate custom
+     code in the TYPO3 frontend rendering process.
+     Maintainer: TYPO3 (Andreas Wolf)
+JavaScript Event API in the Backend
+     This skill covers the JavaScript API for Events in the TYPO3 Backend, relevant for programming
+     custom backend modules and extending existing modules.
+     Maintainer: TYPO3 (Andreas Wolf)
+Providing own events
+     This skill covers providing custom events within the TYPO3 PSR-14 implementation.
+     Maintainer: TYPO3 (Andreas Wolf)
+Using existing PSR-14 events
+     This skill covers the implementation and usage of events in the TYPO3 Core.
+     Maintainer: TYPO3 (Andreas Wolf)
+Backend Notifications
+     This skill focuses on how to utilize notifications for backend users.
+     Maintainer: TYPO3 (Andreas Wolf)
+Pagination API
+     This skill covers the abstraction for paginations provided by the TYPO3 Core.
+     Maintainer: TYPO3 (Andreas Wolf)
+Rich Text Editor API
+     This skill covers the knowledge of modifying CKeditor's configuration programmatically: modify
+     existing or add complete new configurations.
+     Maintainer: TYPO3 (Andreas Wolf)
+Building Custom Dashboard Widgets
+     This skill covers creating custom widgets for the TYPO3 Backend Dashboard and configuring
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     existing widget groups.
+     Maintainer: TYPO3 (Andreas Wolf)
+Custom Route Enhancers
+     This skill covers the creation of custom Route Enhancers for the TYPO3 frontend routing.
+     Maintainer: TYPO3 (Andreas Wolf)
+AssetCollector class and ViewHelpers
+     This skill covers the AssetCollector class and the corresponding ViewHelpers, which are used to
+     register and render CSS and JS assets.
+     Maintainer: TYPO3 (Andreas Wolf)
+TYPO3 Version API
+     This skill covers the TYPO3 Version information API.
+     Maintainer: TYPO3 (Andreas Wolf)
+Extension: Lowlevel
+     This skill covers the lowlevel extension, which allows examining the current TYPO3 configuration.
+     Maintainer: TYPO3 (Andreas Wolf)
+User-defined TCA type
+     This skill covers the TCA type "user".
+     Maintainer: TYPO3 (Andreas Wolf)
+TCA Types for record relations
+     This skill covers TCA configuration options to define relations to other records.
+     Maintainer: TYPO3 (Andreas Wolf)
+TCA types File and Folder
+     This skill covers the TCA types "file" and "folder", used for relations from records to files and folders.
+     Maintainer: TYPO3 (Andreas Wolf)
+TCA type Slug
+     This skill covers the TCA type slug to create URL parts for records.
+     Maintainer: TYPO3 (Andreas Wolf)
+TCA Types for Basic Input
+     This skill groups knowledge about TCA Types that define input possibilities.
+     Maintainer: TYPO3 (Andreas Wolf)
+Special Input TCA Types
+     This skill covers specialized text input types in TCA.
+     Maintainer: TYPO3 (Andreas Wolf)
+TYPO3 Message Bus
+     This skill covers the TYPO3 message bus solution based on the Symfony Messenger component.
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     Maintainer: TYPO3 (Andreas Wolf)
+Building data processors
+
+     This skill covers the creation of data processors for TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+Content Security Policy in Extensions
+     This skill covers the usage and configuration of a Content Security Policy (CSP) for TYPO3
+     Extensions.
+     Maintainer: TYPO3 (Andreas Wolf)
+Extending the Admin Panel
+     This skill covers implementing custom functionality for the Admin Panel.
+     Maintainer: TYPO3 (Andreas Wolf)
+Creating Backend modules
+     This skill covers the creation of custom backend modules for TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+Using Caches and the CacheManager
+     This skill covers managing and optimizing the storage of frequently accessed data to improve
+     performance. This includes creating custom caches, and using the CacheManager to clear or
+     manage cache entries effectively.
+     Maintainer: TYPO3 (Andreas Wolf)
+Customizing Error and Exception Handling
+     The Exception and Error Handlers in TYPO3 manage and respond to errors and exceptions within
+     an installation. This skill handles configuring custom error pages, logging errors, and implementing
+     strategies for handling various types of exceptions to ensure a smooth user experience and reliable
+     system operation.
+     Maintainer: TYPO3 (Andreas Wolf)
+Sites API
+     This skill covers the Sites PHP API, which allows accessing the configuration of a specific site and
+     resolving sites from within PHP. It allows for accessing site-specific settings such as languages,
+     error handling, and base URLs through a centralized interface.
+     Maintainer: TYPO3 (Andreas Wolf)
+Session Handling
+     This skill covers Session Handling in TYPO3, both for backend and frontend. This includes
+     knowledge about the session lifecycle and adding, reading, and removing session data.
+     Maintainer: TYPO3 (Andreas Wolf)
+Authentication Implementation
+     This skill covers understanding of how security mechanisms for authenticationAuthentication are
+     implemented in TYPO3.
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     Maintainer: TYPO3 (Andreas Wolf)
+Backend Module Registration
+
+     This skill covers creating and configuring custom modules for the TYPO3 backend. This process
+     includes defining module functionality, setting up module access permissions, and integrating the
+     module into the TYPO3 backend interface.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Software Development Concepts
+
+Domain-Driven Design (DDD)
+     This skill covers the knowledge about the concept of DDD.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Database Management Systems (DBMS)
+     This skill covers knowledge about DBMS.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Model
+     This skill covers the model in the MVC context.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+View Pattern
+     This skill covers the view in MVC context.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Controller
+     This skill covers controllers, the "C" in the MVC pattern.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Prepared Statements
+     This skill covers the concept of Prepared Statements in relational databases.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Dependency Injection
+     This skill covers knowledge about dependency injection in general.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Builder design pattern
+     This skill covers the "Builder" Design Pattern.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Software Design Patterns
+     This skill covers Software Design Patterns, established solutions for repeated problems in software
+     development.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+Static code analysis
+     This skill covers tools and the process of providing static code analysis.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+View Models
+     This skill covers View Models, which are a pattern in software development. They serve as
+     intermediaries between the controller and the view, encapsulating the data and logic required for
+     rendering templates. This approach promotes a cleaner separation of concerns, making it easier to
+     manage complex data structures and maintain reusable, organized code.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+SOLID Principles
+     This skill covers the definition of the SOLID Principles term, which refers to a set of design principles
+     aimed at creating maintainable, scalable, and robust software. By adhering to these
+     principles--Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and
+     Dependency Inversion--developers can write cleaner, more modular code, making their software
+     easier to manage and extend.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Software Tests
+     This skill covers the principle of software tests, which involves systematically checking and validating
+     the functionality, performance, and reliability of your code to ensure it behaves as expected.
+     Implementing tests, such as unit tests or functional tests, helps catch bugs early, improve code
+     quality, and maintain stable and reliable software.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Single Table Inheritance
+     This skill covers the database design pattern Single Table Inheritance (STI). It stores multiple related
+     entities in a single database table, identified by a field in the database.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Routing
+     This skill covers the process of mapping URLs to specific controllers and actions within the system,
+     enabling the creation of clean, user-friendly URLs.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Recurring Code Tasks
+     This skill covers Recurring Code Tasks, which refer to automated processes or scripts that run at
+     regular intervals to perform routine maintenance, updates, or other repetitive tasks.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Migration between versions
+     This skill covers the approach of migration between versions. It involves upgrading from one major
+     version to another, ensuring that all features, and configurations remain functional.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+PHP Extensions
+     This skill covers the knowledge of extending the functionality of PHP with PHP extensions by adding
+     new functions, classes, or libraries.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Asynchronous Task Execution (Message Queue)
+     This skill covers the method of asynchronous task execution. It runs tasks concurrently, rather than
+     one after the other, allowing applications to perform multiple operations without waiting for each to
+     finish before starting the next.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Localization
+     This skill covers localization, which refers to the process of adapting content, interfaces, and
+     functionality to different languages and regions. This ensures that software can cater to diverse
+     audiences by providing accurate translations and regional settings, enhancing user experience and
+     accessibility across various locales.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Internationalization
+     This skill covers the process of internationalization. It prepares a website and its content to support
+     multiple languages and regional formats. This involves designing for various languages, date
+     formats, currencies, and cultural differences, ensuring that your website or software can effectively
+     reach and engage a global audience.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Meta Programming
+     This skill covers the technique of Meta Programming. It involves creating code that can manipulate
+     or generate other code, providing powerful ways to automate tasks and create more adaptable
+     systems.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Inversion of Control
+     This skill covers the design principle of Inversion of Control (IoC). In this principle the flow of control
+     for components is received by an external source. So the external code or framework is in control
+     and calls the custom code.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Registry Pattern
+     This skill covers the design pattern of Registry Pattern. -It is used to store and manage global
+     objects or settings that need to be accessed throughout an application.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Key/Value Storage
+     This skill covers the data storage paradigm of key-value storages. In this kind of storage each unique
+     key is associated with a specific value. This method is particularly useful for handling configuration
+     settings, caching, or other scenarios where fast and flexible data access is needed.
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     Maintainer: TYPO3 (Andreas Wolf)
+Relationship Types (Cardinalities)
+
+     This skill covers different types of relationships, or cardinalities between database entities. They
+     define associations such as one-to-one, one-to-many, or many-to-many.
+     Maintainer: TYPO3 (Andreas Wolf)
+Repository Design Pattern
+     This skill covers the Repository Design Pattern. It provides a way to abstract and manage data
+     access, separating the data layer from the business logic.
+     Maintainer: TYPO3 (Andreas Wolf)
+Data Sanitization
+     This skill covers the concept of data sanitization.It involves cleaning and formatting input data to
+     remove or neutralize any potentially harmful content before it is processed or stored. This practice is
+     essential for preventing security vulnerabilities, such as injection attacks, and ensuring that the data
+     used within the system is safe and reliable.
+     Maintainer: TYPO3 (Andreas Wolf)
+Error / Exception Handling
+     This skill covers the handling of Errors and Exceptions. It involves managing and responding to
+     runtime errors or unexpected conditions that occur during the execution of code.
+     Maintainer: TYPO3 (Andreas Wolf)
+Debugging
+     This skill covers the process of debugging. It involves identifying and resolving errors or issues within
+     the system, whether in custom code, extensions, or configuration.
+     Maintainer: TYPO3 (Andreas Wolf)
+Caching
+     This skill covers the performance optimization technique called Caching. Caching stores generated
+     data temporarily, allowing for faster retrieval and reducing server load. By implementing effective
+     caching strategies, software can work more efficiently, enhancing the user experience and improving
+     overall responsiveness.
+     Maintainer: TYPO3 (Andreas Wolf)
+Data Validation
+     This skill covers knowledge about data validation. It ensures that the data coming from an input
+     conforms to the expected formats and rules before it is processed or stored.
+     Maintainer: TYPO3 (Andreas Wolf)
+Package/Dependency Management
+     This skill covers the process of managing packages and dependencies in projects. It involves
+     managing external libraries and extensions that your project depends on, ensuring that they are
+     correctly installed, updated, and compatible with your system.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+Convention over Configuration
+     This skill covers the development paradigm of Convention over Configuration. It reduces the need
+     for explicit configuration by relying on sensible defaults and established conventions.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Semantic Versioning
+     This skill covers the standardized versioning system called Semantic Versioning. It assigns version
+     numbers in a "major.minor.patch" format, clearly indicating the nature of changes in each release.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Code Autoloading
+     This skill covers the mechanism of code autoloading, which automatically loads additional classes
+     and files at runtime when they are needed.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Loose Coupling
+     This skill covers the design principle of Loose Coupling, in which different components of the system
+     are minimally dependent on each other.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Event Handling
+     This skill covers implementation and handling of Events, which promotes loose coupling and
+     scalability.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase
+
+Extbase Request/Response
+     This skill covers knowledge about how requests are handled by Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase View
+     This skill explains the view part of MVC in Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase Fluid View
+     This skill covers knowledge about the Fluid-based HTML view of Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase Persistence
+     This skill covers knowledge how Extbase interacts with the permanent storage.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase PersistenceManager
+     This skill covers knowledge about the built-in PersistenceManager.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+Standard Extbase Repository
+     This skill covers the default Repository class shipped with Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Customizing Extbase Repositories
+     This skill covers implementing custom persistence functionality in Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Validation in Extbase
+     This skill covers concepts to validate Extbase controller action input parameters.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Implementing Custom Validators
+     This skill covers knowledge of how to provide custom data validation in Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Error Actions
+     This skill covers the handling of validation errors.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase Annotations/Attributes
+     This skill is about PHPDoc annotations and PHP attributes particular to Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Registering Frontend Plugins
+     This skill covers the registration of frontend plugins to make them available for integrators.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+TypoScript Object EXTBASEPLUGIN
+     This skill covers the integration of Extbase plugins into rendering via TypoScript.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Single Table Inheritance in Extbase
+     This skill covers the usage of the Single Table Inheritance (STI) pattern in Extbase.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Error/Exception Handling in Extbase
+     This skill covers the handling of Errors and Exceptions in Extbase. It involves managing and
+     responding to errors and exceptions that occur within TYPO3 extensions. This includes configuring
+     custom error pages, logging exceptions, and implementing strategies to handle exceptions gracefully
+     within Extbase controllers and services.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extbase MVC Implementation
+     This skill covers knowledge about the MVC pattern used in Extbase.
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Third Party APIs
+
+Doctrine DBAL
+     This skill covers basic knowledge about the Doctrine Database Abstraction Layer (DBAL) component
+     for transparently accessing several DBMS in PHP.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Notification Actions
+     This skill covers knowledge about notifications as flash messages in the backend and the actions
+     which can be assigned to interact with the editor.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Routing
+     This skill covers Symfony Routing. It is a component used in TYPO3 to map HTTP requests to
+     specific controllers and actions. It allows for defining routes using various methods, including
+     annotations and YAML, and supports complex routing requirements such as parameter constraints
+     and localization.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Finder
+     This skill covers the Symfony Finder component, which provides a fluent interface for locating files
+     and directories based on various criteria, such as name, size, and modification date. It simplifies file
+     system operations in Symfony applications, making it easier to handle file searches and
+     manipulations.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Console
+     This skill covers the Symfony Console component, which is used in TYPO3 to implement Command
+     Line Interface (CLI) commands to control various aspects of the system from the command line.
+     Custom commands can also be implemented and registered in every TYPO3 extension.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Mailer
+     This skill covers the Symfony Mailer component, which is used for sending emails from applications.
+     It supports various transport methods, including SMTP, Sendmail, and third-party services, and
+     provides features such as email templating, attachments, and logging.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Dependency Injection
+     This skill covers Symfony Dependency, a core design pattern which is used in Symfony applications
+     to manage the creation and injection of service dependencies. This component promotes the
+     decoupling of application components, making the code more modular, testable, and maintainable.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Symfony Expression Language
+
+                                                                                                                   Created by the TYPO3 Education Committee
+     This skill covers the Symfony Expression Language component, which allows defining expressions
+     for use e.g. in conditional rendering of content.
+     Maintainer: TYPO3 (Andreas Wolf)
+About Symfony
+     Symfony is a set of PHP Packages, a Web Application framework, a Philosophy, and a Community.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Security Concepts
+
+Handling User Input
+     This skill covers knowledge about how to retrieve and process user input.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Web Vulnerability Types
+     This skill covers knowledge about possible security issues in web development.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Authentication & Authorization
+     This skill covers two key security processes: Authentication and Authorization. Authentication verifies
+     a user's identity, while authorization determines the permissions and access levels that the
+     authenticated user has within an environment.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Development Tooling
+
+Debugging in PHP
+     This skill covers basic knowledge about error tracing methods in PHP.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+System and TYPO3 Error Logs
+     This skill covers the ability to locate and use logs provided by system components and TYPO3.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Extension scanner
+     This skill covers the Extension Scanner, which extension authors and project maintainers can use to
+     detect possible problems in their extensions while upgrading them to a newer TYPO3 version.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Admin Panel usage as a developer
+     This skill handles the usage of the TYPO3 Admin Panel as an Extension Developer.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+PHP Code Style Tools
+     This skill covers tools for automatic code formatting in PHP.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+phpDocumentor
+     This skill covers the PHP Package used for generating and rendering documentation.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+Code migration
+     This skill covers concepts related to automated code migrations. They help with updating existing
+     program code for usage with newer TYPO3 versions and with applying best practices.
+     Maintainer: TYPO3 (Andreas Wolf)
+
+                                                                                                                   Created by the TYPO3 Education Committee
+

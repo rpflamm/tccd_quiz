@@ -1,0 +1,984 @@
+{
+  "exam": "TYPO3 CMS Certified Developer (TCCD) 14 LTS",
+  "source": "https://typo3.com/fileadmin/Services/Certified_Developer/CMS_Certified_Developer_14_LTS.pdf",
+  "exam_format": {
+    "questions": 75,
+    "minutes": 90,
+    "pass_correct": 51
+  },
+  "domains": [
+    {
+      "id": "typo3_concepts",
+      "name": "TYPO3 Concepts",
+      "skills": [
+        {
+          "id": "extension_file_and_folder_structure",
+          "name": "Extension File and Folder Structure",
+          "description": "This skill covers knowledge about the file structure of an extension and where to place files by convention and due to technical requirements."
+        },
+        {
+          "id": "coding_standards_in_typo3",
+          "name": "Coding Standards in TYPO3",
+          "description": "This skill covers the knowhow to write code conforming to the coding standards used by the TYPO3 project."
+        },
+        {
+          "id": "table_configuration_array_tca",
+          "name": "Table Configuration Array (TCA)",
+          "description": "This skill covers the configuration of database tables for usage in the backend and frontend."
+        },
+        {
+          "id": "flexform_concepts",
+          "name": "FlexForm Concepts",
+          "description": "This skill covers basics about the concept of FlexForms and how they relate to the TCA."
+        },
+        {
+          "id": "database_schema_definition",
+          "name": "Database Schema Definition",
+          "description": "This skill covers the definition of own database tables and fields of an extension, which will be automatically managed by the TYPO3 Core."
+        },
+        {
+          "id": "implementing_mvc_in_typo3",
+          "name": "Implementing MVC in TYPO3",
+          "description": "This skill introduces the concept of MVC in Extbase: base classes for models, controllers, repositories."
+        },
+        {
+          "id": "user_input_in_db_queries",
+          "name": "User Input in DB Queries",
+          "description": "Knowledge about securely processing user input for database queries."
+        },
+        {
+          "id": "user_input_in_views",
+          "name": "User Input in Views",
+          "description": "This skill covers knowledge about securely outputting values gained through user input."
+        },
+        {
+          "id": "user_input_in_php_code",
+          "name": "User Input in PHP Code",
+          "description": "This skill covers knowledge about securely processing user input in PHP code."
+        },
+        {
+          "id": "tracing_errors_in_logs",
+          "name": "Tracing Errors in Logs",
+          "description": "This skill covers knowledge about log sources and how to utilize them in order to resolve errors."
+        },
+        {
+          "id": "extending_replacing_manipulating_existing_functionality",
+          "name": "Extending/Replacing/Manipulating Existing Functionality",
+          "description": "This skill covers knowledge about extending core and extension functionality."
+        },
+        {
+          "id": "the_caching_framework",
+          "name": "The Caching Framework",
+          "description": "This skill covers the Core's caching framework. It shows how to use existing and register custom caches, and the types of cache frontends and backends. Additional topics are expiration and tagging of cache entries and flushing of caches."
+        },
+        {
+          "id": "flash_messages",
+          "name": "Flash Messages",
+          "description": "This skill covers flash messages, a mechanism used to communicate e.g. results of an action to the user."
+        },
+        {
+          "id": "typo3_error_handling_exception_handling",
+          "name": "TYPO3 Error handling/Exception handling",
+          "description": "This skill is about TYPO3-specific ways of handling errors during program execution and finding information about any errors that occurred."
+        },
+        {
+          "id": "contexts_aspects",
+          "name": "Contexts & Aspects",
+          "description": "This skill introduces usage of the request context and aspects that can be used to enrich this context, e.g. with localization information."
+        },
+        {
+          "id": "route_enhancers",
+          "name": "Route Enhancers",
+          "description": "This skill covers Route Enhancers which are used to amend the URL routing provided by the TYPO3 core."
+        },
+        {
+          "id": "debugging_psr_14_event_handling",
+          "name": "Debugging PSR-14 Event Handling",
+          "description": "This skill covers debugging the registration, dispatching and handling of events in TYPO3."
+        },
+        {
+          "id": "making_extensions_localizable",
+          "name": "Making Extensions localizable",
+          "description": "This skill covers knowledge of how to make extensions translatable and localizable."
+        },
+        {
+          "id": "database_record_translations",
+          "name": "Database Record Translations",
+          "description": "This skill covers the translation configuration of database records via TCA."
+        },
+        {
+          "id": "data_structures_in_typo3_core",
+          "name": "Data structures in TYPO3 core",
+          "description": "This skill covers classes for data structures, e.g. the BitSet and Map class, and their usage."
+        },
+        {
+          "id": "the_builder_design_pattern_in_typo3",
+          "name": "The builder design pattern in TYPO3",
+          "description": "This skill covers classes in TYPO3, which are following the Builder design pattern."
+        },
+        {
+          "id": "performance_analysis_for_custom_code",
+          "name": "Performance analysis for custom code",
+          "description": "This skill covers the process of analysing performance of a TYPO3 system."
+        },
+        {
+          "id": "versioning_workspaces",
+          "name": "Versioning & Workspaces",
+          "description": "This skill covers the concept of Versioning & Workspaces in TYPO3 which allow to manage content changes and staging through version control and isolated workspaces. It allows for tracking revisions, previewing changes before publication, and coordinating collaborative work by separating development from live content."
+        },
+        {
+          "id": "typo3_scheduler_extension",
+          "name": "TYPO3 Scheduler Extension",
+          "description": "This skill covers the TYPO3 Scheduler extension, which enables the scheduling and automation of tasks within TYPO3, such as executing background jobs, sending emails, or running custom scripts at specified intervals. This tool provides a flexible interface for managing and configuring scheduled tasks to enhance site functionality and automation."
+        },
+        {
+          "id": "typo3_ecosystem_brand",
+          "name": "TYPO3 Ecosystem & Brand",
+          "description": "This skill covers the TYPO3 Brand and the Ecosystem around the software. It encompasses the community, tools, and resources that support the TYPO3 CMS, as well as the values and identity of the TYPO3 brand. The ecosystem includes a wide range of extensions, documentation, events, and a global community that contribute to the development and promotion of TYPO3."
+        },
+        {
+          "id": "typo3_contribution_issue_tracker",
+          "name": "TYPO3 Contribution, Issue Tracker",
+          "description": "This skill covers TYPO3 Contribution. This involves participating in the development and enhancement of the TYPO3 CMS through various means such as code contributions, documentation, bug reports, and community support. Engaging with TYPO3 contributions helps improve the platform and supports the global TYPO3 community."
+        },
+        {
+          "id": "site_configuration",
+          "name": "Site Configuration",
+          "description": "This skill covers the configuration of sites in TYPO3, which are organised in a page tree of one or multiple sites."
+        },
+        {
+          "id": "single_table_inheritance_in_typo3",
+          "name": "Single Table Inheritance in TYPO3",
+          "description": "This skill covers the usage of the Single Table Inheritance technique in TYPO3. It is used in TYPO3 to manage multiple object types within a single database table. This approach allows different classes to share the same table while maintaining distinct behaviors, simplifying database structure and improving performance in TYPO3 extensions."
+        },
+        {
+          "id": "frontend_plugins",
+          "name": "Frontend Plugins",
+          "description": "This skill covers Frontend Plugins in TYPO3, which are a content type that adds custom functionalities to the frontend of a TYPO3 website. These plugins allow for the integration of custom features and interactive components, enhancing the user experience and extending the site's capabilities."
+        },
+        {
+          "id": "fluid_templating_engine",
+          "name": "Fluid Templating Engine",
+          "description": "This skill covers the Templating Engine Fluid. It is used in TYPO3 for rendering dynamic content in a clean and maintainable way. It allows developers to create custom templates using a combination of HTML and Fluid-specific syntax, enabling the separation of content and presentation layers."
+        },
+        {
+          "id": "feature_toggles",
+          "name": "Feature Toggles",
+          "description": "This skill covers Feature Toggles which allows developers and integrators to enable or disable specific functionalities or features dynamically without altering the codebase. This technique is used in TYPO3 mainly to hide breaking changes for existing installations migrating from older versions."
+        },
+        {
+          "id": "user_session_management",
+          "name": "User Session Management",
+          "description": "This skill covers session management in TYPO3. Session Management involves handling user sessions to maintain state and manage user interactions across multiple page requests. This includes creating, storing, and retrieving session data to provide a consistent user experience and manage user-specific settings or actions."
+        },
+        {
+          "id": "data_migration_upgrade_wizards",
+          "name": "Data Migration (Upgrade Wizards)",
+          "description": "This skill covers the Upgrade Wizards in TYPO3, which assists the process of upgrading TYPO3 installations and extensions by automating data migrations needed to ensure compatibility with newer versions."
+        },
+        {
+          "id": "typo3_core_persistence",
+          "name": "TYPO3 Core Persistence",
+          "description": "This skill covers TYPO3's persistence engine, which handles data management and storage within the system. This includes understanding how TYPO3 structures and maintains data integrity, as well as the mechanisms that support consistent data handling across the Backend and Frontend."
+        },
+        {
+          "id": "object_creation_in_typo3",
+          "name": "Object Creation in TYPO3",
+          "description": "This skill covers the different ways how objects can be created in TYPO3, and the infrastructure TYPO3 provides for this."
+        },
+        {
+          "id": "backend_modules",
+          "name": "Backend Modules",
+          "description": "This skill covers knowledge about TYPO3 Backend Modules and how to extend them, allowing users to manage specific tasks or access additional tools within the CMS. These modules can be custom-built or are offered as part of extensions, providing enhanced functionality tailored to the needs of the website."
+        },
+        {
+          "id": "chash",
+          "name": "cHash",
+          "description": "This skill covers the cHash (cache hash) in TYPO3 which is used to prevent cache flooding and to ensure that cached content is correctly identified and served based on query parameters and URL changes. This mechanism helps in generating unique cache entries for different content variations, improving cache accuracy and preventing stale content from being served."
+        },
+        {
+          "id": "frontend_routing",
+          "name": "Frontend Routing",
+          "description": "This skill covers Frontend Routing in TYPO3. It manages the mapping of URLs to specific pages, plugins and content within a TYPO3 site. It defines how URLs are structured and resolved, ensuring that users and search engines can access the correct content efficiently."
+        },
+        {
+          "id": "typo3_request_life_cycle",
+          "name": "TYPO3 Request Life Cycle",
+          "description": "This skill covers the TYPO3 Request Life Cycle, which is the process a request goes through from the moment it is received by the server until a response is delivered to the client. This life cycle includes stages such as routing, controller action execution, and rendering, ensuring that TYPO3 handles each request consistently and efficiently."
+        },
+        {
+          "id": "validation_in_typo3",
+          "name": "Validation in TYPO3",
+          "description": "This skill covers validation in TYPO3 to ensure that user input applies to defined rules and constraints, to maintain data integrity and quality. This process includes configuring validation rules for forms and data models, checking for errors, and providing feedback to users to ensure correct and secure data handling."
+        },
+        {
+          "id": "logging_in_typo3",
+          "name": "Logging in TYPO3",
+          "description": "This skill covers logging in TYPO3, which refers to the system's ability to track and record various activities and events within the CMS, such as user actions, errors, and system processes."
+        }
+      ]
+    },
+    {
+      "id": "dev_standards",
+      "name": "Software Development Standards",
+      "skills": [
+        {
+          "id": "psr_standards",
+          "name": "PSR Standards",
+          "description": "Knowing the most important PSR programming standards in the TYPO3 world."
+        },
+        {
+          "id": "json",
+          "name": "JSON",
+          "description": "This skill covers basics of the JSON format."
+        },
+        {
+          "id": "sql",
+          "name": "SQL",
+          "description": "This skill covers knowledge about the SQL standard for interacting with databases."
+        },
+        {
+          "id": "php",
+          "name": "PHP",
+          "description": "This skill covers the ability to develop and execute PHP scripts."
+        },
+        {
+          "id": "psr_7_request_response",
+          "name": "PSR-7: Request/Response",
+          "description": "This skill covers the PSR standard for HTTP request/response objects."
+        },
+        {
+          "id": "psr_3_logger_interface_standard",
+          "name": "PSR-3: Logger Interface standard",
+          "description": "This skill covers knowledge about the PSR-3 logging standard for PHP."
+        },
+        {
+          "id": "docblocks_in_php",
+          "name": "Docblocks in PHP",
+          "description": "This skill covers knowledge about the syntax and general purpose of documentation blocks, tags and annotations."
+        },
+        {
+          "id": "psr_15_middlewares",
+          "name": "PSR-15: Middlewares",
+          "description": "This skill covers the PHP standard on middlewares."
+        },
+        {
+          "id": "php_autoloading_standards",
+          "name": "PHP autoloading standards",
+          "description": "This skill covers the different PHP autoloading standards (PSR-4, class maps), how they map PHP classes to files and folders, and how the PSR-4 autoloading is configured."
+        },
+        {
+          "id": "psr_18_http_client",
+          "name": "PSR-18: HTTP Client",
+          "description": "This skill covers the PSR HTTP client standard."
+        },
+        {
+          "id": "psr_17_http_message_factories",
+          "name": "PSR-17: HTTP Message Factories",
+          "description": "This skill covers the PSR standard for HTTP message factories and the differences to the earlier HTTP request/response standard."
+        },
+        {
+          "id": "psr_14_event_dispatching",
+          "name": "PSR-14: Event Dispatching",
+          "description": "This skill covers the basics of the PHP standard on Event dispatching."
+        },
+        {
+          "id": "psr_11_dependency_injection",
+          "name": "PSR-11: Dependency Injection",
+          "description": "This skill covers different types of dependency injection in TYPO3 and the configuration of dependency injection."
+        },
+        {
+          "id": "xliff",
+          "name": "XLIFF",
+          "description": "This skill covers the standard XML format XLIFF (XML Localization Interchange File Format) which is used for the exchange of localization data between different software tools. It facilitates the translation and management of text within applications by providing a structured format for source and target language content."
+        },
+        {
+          "id": "restructuredtext",
+          "name": "reStructuredText",
+          "description": "This skill covers the lightweight markup language reStructuredText (reST), which is used for documentation in the TYPO3 world."
+        },
+        {
+          "id": "markdown",
+          "name": "Markdown",
+          "description": "This skill covers the lightweight markup language Markdown, which is designed for formatting text in a simple and readable way"
+        },
+        {
+          "id": "cve",
+          "name": "CVE",
+          "description": "This skill covers the knowledge of CVE (Common Vulnerabilities and Exposures). CVE provides a standardized identifier for publicly known cybersecurity vulnerabilities and exposures. This system helps organizations and users track and manage security issues by offering a unique reference for each vulnerability."
+        },
+        {
+          "id": "sql_data_management",
+          "name": "SQL Data Management",
+          "description": "This skill covers the principles of SQL Data Management, including the processes of querying, updating, and organizing data within a relational database using SQL commands."
+        },
+        {
+          "id": "sql_structure_management",
+          "name": "SQL Structure Management",
+          "description": "This skill covers designing and maintaining the schema of a relational database with SQL Structure Management including the creation, modification, and optimization of tables, indexes, and relationships. This helps to ensure that the database structure supports efficient data storage and retrieval while adhering to integrity constraints and normalization principles."
+        },
+        {
+          "id": "http",
+          "name": "HTTP",
+          "description": "This skill covers the methods for requesting and delivering resources by HTTP (Hypertext Transfer Protocol), such as web pages and files, and includes status codes to indicate the result of these requests."
+        }
+      ]
+    },
+    {
+      "id": "typo3_apis",
+      "name": "TYPO3 APIs",
+      "skills": [
+        {
+          "id": "flexform_configuration_data_structure",
+          "name": "FlexForm Configuration Data Structure",
+          "description": "This skill covers knowledge of how to create and configure a data structure for my plugin's configuration."
+        },
+        {
+          "id": "accessing_flexform_data",
+          "name": "Accessing FlexForm Data",
+          "description": "Using data provided in FlexForms in plugin CEs and custom records."
+        },
+        {
+          "id": "implementing_viewhelpers",
+          "name": "Implementing ViewHelpers",
+          "description": "This skill provides the foundations for using custom PHP code in a Fluid-based view."
+        },
+        {
+          "id": "using_the_querybuilder",
+          "name": "Using the QueryBuilder",
+          "description": "This skill covers knowledge for writing database queries in TYPO3."
+        },
+        {
+          "id": "using_query_restrictions",
+          "name": "Using Query Restrictions",
+          "description": "This skill covers how to automatically restrict the data returned by database queries."
+        },
+        {
+          "id": "typo3_debugging_utilities",
+          "name": "TYPO3 Debugging Utilities",
+          "description": "This skill covers knowledge about debugging utilities provided by TYPO3."
+        },
+        {
+          "id": "logging_api",
+          "name": "Logging API",
+          "description": "This skill covers knowledge about the logging API provided by TYPO3."
+        },
+        {
+          "id": "creating_scheduler_tasks_and_commands",
+          "name": "Creating Scheduler Tasks and Commands",
+          "description": "This skill covers building Scheduler tasks and commands for automated recurring tasks."
+        },
+        {
+          "id": "creating_cli_commands",
+          "name": "Creating CLI Commands",
+          "description": "This skill covers the creation of console commands for TYPO3, based on the Symfony Console component."
+        },
+        {
+          "id": "mail_api",
+          "name": "Mail API",
+          "description": "This skill covers the TYPO3 Mail API, which internally uses Symfony's Mailer and Mime component for creating and sending emails."
+        },
+        {
+          "id": "datahandler",
+          "name": "DataHandler",
+          "description": "This skill handles knowledge about the DataHandler and how it can be used in custom developed extensions."
+        },
+        {
+          "id": "writing_and_using_own_symfony_expressions",
+          "name": "Writing and using own Symfony Expressions",
+          "description": "This skill covers extending the Symfony Expression syntax (used in e.g. TypoScript conditions) with custom code."
+        },
+        {
+          "id": "javascript_handling_in_the_backend",
+          "name": "JavaScript handling in the Backend",
+          "description": "This skill covers the TYPO3-specific parts of ES6: how to load modules in TYPO3 and how developers can leverage the TYPO3 Core API to use their own JavaScript code in the TYPO3 Backend."
+        },
+        {
+          "id": "ajax_handling_in_the_typo3_backend",
+          "name": "AJAX handling in the TYPO3 Backend",
+          "description": "This skill covers knowledge about how AJAX actions are handled in the TYPO3 Backend and how custom code can be made available for AJAX calls."
+        },
+        {
+          "id": "pagetitle_api_and_viewhelper",
+          "name": "PageTitle API and ViewHelper",
+          "description": "This skill covers the PageTitle API, which can be used to modify the title of the generated page, e.g. in the single view of a plugin. It also covers how to set the page title directly from Fluid templates."
+        },
+        {
+          "id": "using_the_pagerenderer_in_extensions",
+          "name": "Using the PageRenderer in Extensions",
+          "description": "This skill covers the PageRenderer for extension usage, a TYPO3 Core component that is responsible for collecting information from various parts of the page and handling the final rendering of a page."
+        },
+        {
+          "id": "metatag_api",
+          "name": "MetaTag API",
+          "description": "This skill covers the MetaTag API, which can be used to manipulate the meta tags in the head section of the generated HTML page."
+        },
+        {
+          "id": "implementing_upgrade_wizards",
+          "name": "Implementing upgrade wizards",
+          "description": "This skill covers the implementation of upgrade wizards, which can be used by integrators to update existing extension data and configuration after upgrading the extension."
+        },
+        {
+          "id": "environment_class",
+          "name": "Environment class",
+          "description": "This skill covers knowledge about TYPO3's Environment class, which provides system-specific details that are independent from the system environment."
+        },
+        {
+          "id": "the_system_registry_api",
+          "name": "The System Registry API",
+          "description": "This skill covers the system registry API, provided by the TYPO3 Core to store instance-specific data."
+        },
+        {
+          "id": "request_processing_with_middlewares",
+          "name": "Request processing with middlewares",
+          "description": "This skill covers the knowledge of PSR-15 middlewares in TYPO3 - both for frontend and backend request processing."
+        },
+        {
+          "id": "extending_site_configurations",
+          "name": "Extending site configurations",
+          "description": "This skill covers custom extensions of the TYPO3 Core Site configuration module."
+        },
+        {
+          "id": "the_user_user_int_typoscript_objects",
+          "name": "The USER/USER_INT TypoScript objects",
+          "description": "This skill covers the USER and USER_INT TypoScript objects, which are used to integrate custom code in the TYPO3 frontend rendering process."
+        },
+        {
+          "id": "javascript_event_api_in_the_backend",
+          "name": "JavaScript Event API in the Backend",
+          "description": "This skill covers the JavaScript API for Events in the TYPO3 Backend, relevant for programming custom backend modules and extending existing modules."
+        },
+        {
+          "id": "providing_own_events",
+          "name": "Providing own events",
+          "description": "This skill covers providing custom events within the TYPO3 PSR-14 implementation."
+        },
+        {
+          "id": "using_existing_psr_14_events",
+          "name": "Using existing PSR-14 events",
+          "description": "This skill covers the implementation and usage of events in the TYPO3 Core."
+        },
+        {
+          "id": "backend_notifications",
+          "name": "Backend Notifications",
+          "description": "This skill focuses on how to utilize notifications for backend users."
+        },
+        {
+          "id": "pagination_api",
+          "name": "Pagination API",
+          "description": "This skill covers the abstraction for paginations provided by the TYPO3 Core."
+        },
+        {
+          "id": "rich_text_editor_api",
+          "name": "Rich Text Editor API",
+          "description": "This skill covers the knowledge of modifying CKeditor's configuration programmatically: modify existing or add complete new configurations."
+        },
+        {
+          "id": "building_custom_dashboard_widgets",
+          "name": "Building Custom Dashboard Widgets",
+          "description": "This skill covers creating custom widgets for the TYPO3 Backend Dashboard and configuring existing widget groups."
+        },
+        {
+          "id": "custom_route_enhancers",
+          "name": "Custom Route Enhancers",
+          "description": "This skill covers the creation of custom Route Enhancers for the TYPO3 frontend routing."
+        },
+        {
+          "id": "assetcollector_class_and_viewhelpers",
+          "name": "AssetCollector class and ViewHelpers",
+          "description": "This skill covers the AssetCollector class and the corresponding ViewHelpers, which are used to register and render CSS and JS assets."
+        },
+        {
+          "id": "typo3_version_api",
+          "name": "TYPO3 Version API",
+          "description": "This skill covers the TYPO3 Version information API."
+        },
+        {
+          "id": "extension_lowlevel",
+          "name": "Extension: Lowlevel",
+          "description": "This skill covers the lowlevel extension, which allows examining the current TYPO3 configuration."
+        },
+        {
+          "id": "user_defined_tca_type",
+          "name": "User-defined TCA type",
+          "description": "This skill covers the TCA type \"user\"."
+        },
+        {
+          "id": "tca_types_for_record_relations",
+          "name": "TCA Types for record relations",
+          "description": "This skill covers TCA configuration options to define relations to other records."
+        },
+        {
+          "id": "tca_types_file_and_folder",
+          "name": "TCA types File and Folder",
+          "description": "This skill covers the TCA types \"file\" and \"folder\", used for relations from records to files and folders."
+        },
+        {
+          "id": "tca_type_slug",
+          "name": "TCA type Slug",
+          "description": "This skill covers the TCA type slug to create URL parts for records."
+        },
+        {
+          "id": "tca_types_for_basic_input",
+          "name": "TCA Types for Basic Input",
+          "description": "This skill groups knowledge about TCA Types that define input possibilities."
+        },
+        {
+          "id": "special_input_tca_types",
+          "name": "Special Input TCA Types",
+          "description": "This skill covers specialized text input types in TCA."
+        },
+        {
+          "id": "typo3_message_bus",
+          "name": "TYPO3 Message Bus",
+          "description": "This skill covers the TYPO3 message bus solution based on the Symfony Messenger component."
+        },
+        {
+          "id": "building_data_processors",
+          "name": "Building data processors",
+          "description": "This skill covers the creation of data processors for TYPO3."
+        },
+        {
+          "id": "content_security_policy_in_extensions",
+          "name": "Content Security Policy in Extensions",
+          "description": "This skill covers the usage and configuration of a Content Security Policy (CSP) for TYPO3 Extensions."
+        },
+        {
+          "id": "extending_the_admin_panel",
+          "name": "Extending the Admin Panel",
+          "description": "This skill covers implementing custom functionality for the Admin Panel."
+        },
+        {
+          "id": "creating_backend_modules",
+          "name": "Creating Backend modules",
+          "description": "This skill covers the creation of custom backend modules for TYPO3."
+        },
+        {
+          "id": "using_caches_and_the_cachemanager",
+          "name": "Using Caches and the CacheManager",
+          "description": "This skill covers managing and optimizing the storage of frequently accessed data to improve performance. This includes creating custom caches, and using the CacheManager to clear or manage cache entries effectively."
+        },
+        {
+          "id": "customizing_error_and_exception_handling",
+          "name": "Customizing Error and Exception Handling",
+          "description": "The Exception and Error Handlers in TYPO3 manage and respond to errors and exceptions within an installation. This skill handles configuring custom error pages, logging errors, and implementing strategies for handling various types of exceptions to ensure a smooth user experience and reliable system operation."
+        },
+        {
+          "id": "sites_api",
+          "name": "Sites API",
+          "description": "This skill covers the Sites PHP API, which allows accessing the configuration of a specific site and resolving sites from within PHP. It allows for accessing site-specific settings such as languages, error handling, and base URLs through a centralized interface."
+        },
+        {
+          "id": "session_handling",
+          "name": "Session Handling",
+          "description": "This skill covers Session Handling in TYPO3, both for backend and frontend. This includes knowledge about the session lifecycle and adding, reading, and removing session data."
+        },
+        {
+          "id": "authentication_implementation",
+          "name": "Authentication Implementation",
+          "description": "This skill covers understanding of how security mechanisms for authenticationAuthentication are implemented in TYPO3."
+        },
+        {
+          "id": "backend_module_registration",
+          "name": "Backend Module Registration",
+          "description": "This skill covers creating and configuring custom modules for the TYPO3 backend. This process includes defining module functionality, setting up module access permissions, and integrating the module into the TYPO3 backend interface."
+        }
+      ]
+    },
+    {
+      "id": "dev_concepts",
+      "name": "Software Development Concepts",
+      "skills": [
+        {
+          "id": "domain_driven_design_ddd",
+          "name": "Domain-Driven Design (DDD)",
+          "description": "This skill covers the knowledge about the concept of DDD."
+        },
+        {
+          "id": "database_management_systems_dbms",
+          "name": "Database Management Systems (DBMS)",
+          "description": "This skill covers knowledge about DBMS."
+        },
+        {
+          "id": "model",
+          "name": "Model",
+          "description": "This skill covers the model in the MVC context."
+        },
+        {
+          "id": "view_pattern",
+          "name": "View Pattern",
+          "description": "This skill covers the view in MVC context."
+        },
+        {
+          "id": "controller",
+          "name": "Controller",
+          "description": "This skill covers controllers, the \"C\" in the MVC pattern."
+        },
+        {
+          "id": "prepared_statements",
+          "name": "Prepared Statements",
+          "description": "This skill covers the concept of Prepared Statements in relational databases."
+        },
+        {
+          "id": "dependency_injection",
+          "name": "Dependency Injection",
+          "description": "This skill covers knowledge about dependency injection in general."
+        },
+        {
+          "id": "builder_design_pattern",
+          "name": "Builder design pattern",
+          "description": "This skill covers the \"Builder\" Design Pattern."
+        },
+        {
+          "id": "software_design_patterns",
+          "name": "Software Design Patterns",
+          "description": "This skill covers Software Design Patterns, established solutions for repeated problems in software development."
+        },
+        {
+          "id": "static_code_analysis",
+          "name": "Static code analysis",
+          "description": "This skill covers tools and the process of providing static code analysis."
+        },
+        {
+          "id": "view_models",
+          "name": "View Models",
+          "description": "This skill covers View Models, which are a pattern in software development. They serve as intermediaries between the controller and the view, encapsulating the data and logic required for rendering templates. This approach promotes a cleaner separation of concerns, making it easier to manage complex data structures and maintain reusable, organized code."
+        },
+        {
+          "id": "solid_principles",
+          "name": "SOLID Principles",
+          "description": "This skill covers the definition of the SOLID Principles term, which refers to a set of design principles aimed at creating maintainable, scalable, and robust software. By adhering to these principles--Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion--developers can write cleaner, more modular code, making their software easier to manage and extend."
+        },
+        {
+          "id": "software_tests",
+          "name": "Software Tests",
+          "description": "This skill covers the principle of software tests, which involves systematically checking and validating the functionality, performance, and reliability of your code to ensure it behaves as expected. Implementing tests, such as unit tests or functional tests, helps catch bugs early, improve code quality, and maintain stable and reliable software."
+        },
+        {
+          "id": "single_table_inheritance",
+          "name": "Single Table Inheritance",
+          "description": "This skill covers the database design pattern Single Table Inheritance (STI). It stores multiple related entities in a single database table, identified by a field in the database."
+        },
+        {
+          "id": "routing",
+          "name": "Routing",
+          "description": "This skill covers the process of mapping URLs to specific controllers and actions within the system, enabling the creation of clean, user-friendly URLs."
+        },
+        {
+          "id": "recurring_code_tasks",
+          "name": "Recurring Code Tasks",
+          "description": "This skill covers Recurring Code Tasks, which refer to automated processes or scripts that run at regular intervals to perform routine maintenance, updates, or other repetitive tasks."
+        },
+        {
+          "id": "migration_between_versions",
+          "name": "Migration between versions",
+          "description": "This skill covers the approach of migration between versions. It involves upgrading from one major version to another, ensuring that all features, and configurations remain functional."
+        },
+        {
+          "id": "php_extensions",
+          "name": "PHP Extensions",
+          "description": "This skill covers the knowledge of extending the functionality of PHP with PHP extensions by adding new functions, classes, or libraries."
+        },
+        {
+          "id": "asynchronous_task_execution_message_queue",
+          "name": "Asynchronous Task Execution (Message Queue)",
+          "description": "This skill covers the method of asynchronous task execution. It runs tasks concurrently, rather than one after the other, allowing applications to perform multiple operations without waiting for each to finish before starting the next."
+        },
+        {
+          "id": "localization",
+          "name": "Localization",
+          "description": "This skill covers localization, which refers to the process of adapting content, interfaces, and functionality to different languages and regions. This ensures that software can cater to diverse audiences by providing accurate translations and regional settings, enhancing user experience and accessibility across various locales."
+        },
+        {
+          "id": "internationalization",
+          "name": "Internationalization",
+          "description": "This skill covers the process of internationalization. It prepares a website and its content to support multiple languages and regional formats. This involves designing for various languages, date formats, currencies, and cultural differences, ensuring that your website or software can effectively reach and engage a global audience."
+        },
+        {
+          "id": "meta_programming",
+          "name": "Meta Programming",
+          "description": "This skill covers the technique of Meta Programming. It involves creating code that can manipulate or generate other code, providing powerful ways to automate tasks and create more adaptable systems."
+        },
+        {
+          "id": "inversion_of_control",
+          "name": "Inversion of Control",
+          "description": "This skill covers the design principle of Inversion of Control (IoC). In this principle the flow of control for components is received by an external source. So the external code or framework is in control and calls the custom code."
+        },
+        {
+          "id": "registry_pattern",
+          "name": "Registry Pattern",
+          "description": "This skill covers the design pattern of Registry Pattern. -It is used to store and manage global objects or settings that need to be accessed throughout an application."
+        },
+        {
+          "id": "key_value_storage",
+          "name": "Key/Value Storage",
+          "description": "This skill covers the data storage paradigm of key-value storages. In this kind of storage each unique key is associated with a specific value. This method is particularly useful for handling configuration settings, caching, or other scenarios where fast and flexible data access is needed."
+        },
+        {
+          "id": "relationship_types_cardinalities",
+          "name": "Relationship Types (Cardinalities)",
+          "description": "This skill covers different types of relationships, or cardinalities between database entities. They define associations such as one-to-one, one-to-many, or many-to-many."
+        },
+        {
+          "id": "repository_design_pattern",
+          "name": "Repository Design Pattern",
+          "description": "This skill covers the Repository Design Pattern. It provides a way to abstract and manage data access, separating the data layer from the business logic."
+        },
+        {
+          "id": "data_sanitization",
+          "name": "Data Sanitization",
+          "description": "This skill covers the concept of data sanitization.It involves cleaning and formatting input data to remove or neutralize any potentially harmful content before it is processed or stored. This practice is essential for preventing security vulnerabilities, such as injection attacks, and ensuring that the data used within the system is safe and reliable."
+        },
+        {
+          "id": "error_exception_handling",
+          "name": "Error / Exception Handling",
+          "description": "This skill covers the handling of Errors and Exceptions. It involves managing and responding to runtime errors or unexpected conditions that occur during the execution of code."
+        },
+        {
+          "id": "debugging",
+          "name": "Debugging",
+          "description": "This skill covers the process of debugging. It involves identifying and resolving errors or issues within the system, whether in custom code, extensions, or configuration."
+        },
+        {
+          "id": "caching",
+          "name": "Caching",
+          "description": "This skill covers the performance optimization technique called Caching. Caching stores generated data temporarily, allowing for faster retrieval and reducing server load. By implementing effective caching strategies, software can work more efficiently, enhancing the user experience and improving overall responsiveness."
+        },
+        {
+          "id": "data_validation",
+          "name": "Data Validation",
+          "description": "This skill covers knowledge about data validation. It ensures that the data coming from an input conforms to the expected formats and rules before it is processed or stored."
+        },
+        {
+          "id": "package_dependency_management",
+          "name": "Package/Dependency Management",
+          "description": "This skill covers the process of managing packages and dependencies in projects. It involves managing external libraries and extensions that your project depends on, ensuring that they are correctly installed, updated, and compatible with your system."
+        },
+        {
+          "id": "convention_over_configuration",
+          "name": "Convention over Configuration",
+          "description": "This skill covers the development paradigm of Convention over Configuration. It reduces the need for explicit configuration by relying on sensible defaults and established conventions."
+        },
+        {
+          "id": "semantic_versioning",
+          "name": "Semantic Versioning",
+          "description": "This skill covers the standardized versioning system called Semantic Versioning. It assigns version numbers in a \"major.minor.patch\" format, clearly indicating the nature of changes in each release."
+        },
+        {
+          "id": "code_autoloading",
+          "name": "Code Autoloading",
+          "description": "This skill covers the mechanism of code autoloading, which automatically loads additional classes and files at runtime when they are needed."
+        },
+        {
+          "id": "loose_coupling",
+          "name": "Loose Coupling",
+          "description": "This skill covers the design principle of Loose Coupling, in which different components of the system are minimally dependent on each other."
+        },
+        {
+          "id": "event_handling",
+          "name": "Event Handling",
+          "description": "This skill covers implementation and handling of Events, which promotes loose coupling and scalability."
+        }
+      ]
+    },
+    {
+      "id": "extbase",
+      "name": "Extbase",
+      "skills": [
+        {
+          "id": "extbase_request_response",
+          "name": "Extbase Request/Response",
+          "description": "This skill covers knowledge about how requests are handled by Extbase."
+        },
+        {
+          "id": "extbase_view",
+          "name": "Extbase View",
+          "description": "This skill explains the view part of MVC in Extbase."
+        },
+        {
+          "id": "extbase_fluid_view",
+          "name": "Extbase Fluid View",
+          "description": "This skill covers knowledge about the Fluid-based HTML view of Extbase."
+        },
+        {
+          "id": "extbase_persistence",
+          "name": "Extbase Persistence",
+          "description": "This skill covers knowledge how Extbase interacts with the permanent storage."
+        },
+        {
+          "id": "extbase_persistencemanager",
+          "name": "Extbase PersistenceManager",
+          "description": "This skill covers knowledge about the built-in PersistenceManager."
+        },
+        {
+          "id": "standard_extbase_repository",
+          "name": "Standard Extbase Repository",
+          "description": "This skill covers the default Repository class shipped with Extbase."
+        },
+        {
+          "id": "customizing_extbase_repositories",
+          "name": "Customizing Extbase Repositories",
+          "description": "This skill covers implementing custom persistence functionality in Extbase."
+        },
+        {
+          "id": "validation_in_extbase",
+          "name": "Validation in Extbase",
+          "description": "This skill covers concepts to validate Extbase controller action input parameters."
+        },
+        {
+          "id": "implementing_custom_validators",
+          "name": "Implementing Custom Validators",
+          "description": "This skill covers knowledge of how to provide custom data validation in Extbase."
+        },
+        {
+          "id": "error_actions",
+          "name": "Error Actions",
+          "description": "This skill covers the handling of validation errors."
+        },
+        {
+          "id": "extbase_annotations_attributes",
+          "name": "Extbase Annotations/Attributes",
+          "description": "This skill is about PHPDoc annotations and PHP attributes particular to Extbase."
+        },
+        {
+          "id": "registering_frontend_plugins",
+          "name": "Registering Frontend Plugins",
+          "description": "This skill covers the registration of frontend plugins to make them available for integrators."
+        },
+        {
+          "id": "typoscript_object_extbaseplugin",
+          "name": "TypoScript Object EXTBASEPLUGIN",
+          "description": "This skill covers the integration of Extbase plugins into rendering via TypoScript."
+        },
+        {
+          "id": "single_table_inheritance_in_extbase",
+          "name": "Single Table Inheritance in Extbase",
+          "description": "This skill covers the usage of the Single Table Inheritance (STI) pattern in Extbase."
+        },
+        {
+          "id": "error_exception_handling_in_extbase",
+          "name": "Error/Exception Handling in Extbase",
+          "description": "This skill covers the handling of Errors and Exceptions in Extbase. It involves managing and responding to errors and exceptions that occur within TYPO3 extensions. This includes configuring custom error pages, logging exceptions, and implementing strategies to handle exceptions gracefully within Extbase controllers and services."
+        },
+        {
+          "id": "extbase_mvc_implementation",
+          "name": "Extbase MVC Implementation",
+          "description": "This skill covers knowledge about the MVC pattern used in Extbase."
+        }
+      ]
+    },
+    {
+      "id": "third_party",
+      "name": "Third Party APIs",
+      "skills": [
+        {
+          "id": "doctrine_dbal",
+          "name": "Doctrine DBAL",
+          "description": "This skill covers basic knowledge about the Doctrine Database Abstraction Layer (DBAL) component for transparently accessing several DBMS in PHP."
+        },
+        {
+          "id": "notification_actions",
+          "name": "Notification Actions",
+          "description": "This skill covers knowledge about notifications as flash messages in the backend and the actions which can be assigned to interact with the editor."
+        },
+        {
+          "id": "symfony_routing",
+          "name": "Symfony Routing",
+          "description": "This skill covers Symfony Routing. It is a component used in TYPO3 to map HTTP requests to specific controllers and actions. It allows for defining routes using various methods, including annotations and YAML, and supports complex routing requirements such as parameter constraints and localization."
+        },
+        {
+          "id": "symfony_finder",
+          "name": "Symfony Finder",
+          "description": "This skill covers the Symfony Finder component, which provides a fluent interface for locating files and directories based on various criteria, such as name, size, and modification date. It simplifies file system operations in Symfony applications, making it easier to handle file searches and manipulations."
+        },
+        {
+          "id": "symfony_console",
+          "name": "Symfony Console",
+          "description": "This skill covers the Symfony Console component, which is used in TYPO3 to implement Command Line Interface (CLI) commands to control various aspects of the system from the command line. Custom commands can also be implemented and registered in every TYPO3 extension."
+        },
+        {
+          "id": "symfony_mailer",
+          "name": "Symfony Mailer",
+          "description": "This skill covers the Symfony Mailer component, which is used for sending emails from applications. It supports various transport methods, including SMTP, Sendmail, and third-party services, and provides features such as email templating, attachments, and logging."
+        },
+        {
+          "id": "symfony_dependency_injection",
+          "name": "Symfony Dependency Injection",
+          "description": "This skill covers Symfony Dependency, a core design pattern which is used in Symfony applications to manage the creation and injection of service dependencies. This component promotes the decoupling of application components, making the code more modular, testable, and maintainable."
+        },
+        {
+          "id": "symfony_expression_language",
+          "name": "Symfony Expression Language",
+          "description": "This skill covers the Symfony Expression Language component, which allows defining expressions for use e.g. in conditional rendering of content."
+        },
+        {
+          "id": "about_symfony",
+          "name": "About Symfony",
+          "description": "Symfony is a set of PHP Packages, a Web Application framework, a Philosophy, and a Community."
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security Concepts",
+      "skills": [
+        {
+          "id": "handling_user_input",
+          "name": "Handling User Input",
+          "description": "This skill covers knowledge about how to retrieve and process user input."
+        },
+        {
+          "id": "web_vulnerability_types",
+          "name": "Web Vulnerability Types",
+          "description": "This skill covers knowledge about possible security issues in web development."
+        },
+        {
+          "id": "authentication_authorization",
+          "name": "Authentication & Authorization",
+          "description": "This skill covers two key security processes: Authentication and Authorization. Authentication verifies a user's identity, while authorization determines the permissions and access levels that the authenticated user has within an environment."
+        }
+      ]
+    },
+    {
+      "id": "tooling",
+      "name": "Development Tooling",
+      "skills": [
+        {
+          "id": "debugging_in_php",
+          "name": "Debugging in PHP",
+          "description": "This skill covers basic knowledge about error tracing methods in PHP."
+        },
+        {
+          "id": "system_and_typo3_error_logs",
+          "name": "System and TYPO3 Error Logs",
+          "description": "This skill covers the ability to locate and use logs provided by system components and TYPO3."
+        },
+        {
+          "id": "extension_scanner",
+          "name": "Extension scanner",
+          "description": "This skill covers the Extension Scanner, which extension authors and project maintainers can use to detect possible problems in their extensions while upgrading them to a newer TYPO3 version."
+        },
+        {
+          "id": "admin_panel_usage_as_a_developer",
+          "name": "Admin Panel usage as a developer",
+          "description": "This skill handles the usage of the TYPO3 Admin Panel as an Extension Developer."
+        },
+        {
+          "id": "php_code_style_tools",
+          "name": "PHP Code Style Tools",
+          "description": "This skill covers tools for automatic code formatting in PHP."
+        },
+        {
+          "id": "phpdocumentor",
+          "name": "phpDocumentor",
+          "description": "This skill covers the PHP Package used for generating and rendering documentation."
+        },
+        {
+          "id": "code_migration",
+          "name": "Code migration",
+          "description": "This skill covers concepts related to automated code migrations. They help with updating existing program code for usage with newer TYPO3 versions and with applying best practices."
+        }
+      ]
+    }
+  ]
+}
