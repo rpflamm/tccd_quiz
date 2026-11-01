@@ -18,6 +18,8 @@ var explanation: String
 var doc_url: String
 var since: String = ""
 var tags: PackedStringArray = []
+var review := false                 # fact-check could not fully verify this question
+var review_note := ""
 
 
 static func from_dict(d: Dictionary) -> Question:
@@ -41,6 +43,8 @@ static func from_dict(d: Dictionary) -> Question:
 	q.since = str(d.get("since", ""))
 	for t in d.get("tags", []):
 		q.tags.append(str(t))
+	q.review = bool(d.get("review", false))
+	q.review_note = str(d.get("review_note", ""))
 	return q
 
 

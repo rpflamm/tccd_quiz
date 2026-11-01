@@ -94,6 +94,7 @@ def main(argv):
     errors, ids, texts = [], Counter(), {}
     per_skill = defaultdict(int)
     total = 0
+    review = []
     for path in files:
         name = os.path.basename(path)
         try:
@@ -115,6 +116,8 @@ def main(argv):
                 errors.append(f"{qid}: duplicate question text (same as {texts[key]})")
             texts[key] = qid
             per_skill[(q.get("domain"), q.get("skill"))] += 1
+            if q.get("review"):
+                review.append(qid)
             total += 1
     for qid, n in ids.items():
         if n > 1:
@@ -129,7 +132,9 @@ def main(argv):
                 n = per_skill[(dom["id"], skill["id"])]
                 flag = "" if n >= MIN_PER_SKILL else "   <-- below minimum"
                 print(f"  {n:3}  {skill['name']}{flag}")
-    print(f"\nFiles: {len(files)}  Questions: {total}  Errors: {len(errors)}")
+    print(f"\nFiles: {len(files)}  Questions: {total}  Errors: {len(errors)}  Flagged for review: {len(review)}")
+    if coverage and review:
+        print("Review flagged: " + ", ".join(review))
     for err in errors:
         print("ERROR", err)
     return 1 if errors else 0
