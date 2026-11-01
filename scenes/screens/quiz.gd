@@ -590,7 +590,7 @@ func _close_overlay() -> void:
 
 func _countdown() -> void:
 	phase = Phase.COUNTDOWN
-	_card.modulate.a = 0.0
+	_scroll.visible = false
 	var l := UI.label("", "TitleLabel", HORIZONTAL_ALIGNMENT_CENTER)
 	l.add_theme_font_size_override("font_size", 120)
 	l.add_theme_color_override("font_color", Palette.ACCENT)
@@ -613,7 +613,7 @@ func _countdown() -> void:
 		if not is_inside_tree():
 			return
 	l.queue_free()
-	_card.modulate.a = 1.0
+	_scroll.visible = true
 	FX.enter(_card, 0.0, 18.0, 0.25)
 	if phase == Phase.COUNTDOWN:
 		phase = Phase.ANSWERING
