@@ -1,0 +1,390 @@
+{
+  "questions": [
+    {
+      "id": "SEC-INPUT-001",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Inside a PSR-15 middleware or controller in TYPO3 v14, what is the recommended way to read the GET argument tx_myext?",
+      "answers": [
+        "$request->getQueryParams()['tx_myext'] ?? null",
+        "$_REQUEST['tx_myext']",
+        "$request->getParsedBody()['tx_myext']",
+        "$request->getAttribute('queryParams')['tx_myext']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 passes a PSR-7 ServerRequestInterface; GET arguments come from getQueryParams(), POST data from getParsedBody(). Superglobals bypass the request object and should not be used.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Typo3Request.html"
+    },
+    {
+      "id": "SEC-INPUT-002",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which principles apply when processing user input securely?",
+      "answers": [
+        "Validate input against what is expected (type, allowed values, length) and reject or cast everything else.",
+        "Escape data when it is output, according to the output context (HTML, attribute, JavaScript, SQL).",
+        "Treat hidden form fields, cookies and HTTP headers as user input, too.",
+        "Client-side JavaScript validation is sufficient because the form cannot be submitted otherwise.",
+        "Applying htmlspecialchars() once before saving to the database makes the value safe for every later use."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Everything sent by the client can be manipulated, including hidden fields, cookies and headers. Validate on input and escape on output for the specific context; escaping once on input neither protects SQL/JS contexts nor keeps the stored data clean.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Security/GuidelinesExtensionDevelopment/Index.html"
+    },
+    {
+      "id": "SEC-INPUT-003",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "single",
+      "difficulty": 3,
+      "question": "The sort column is taken from the request. What is the correct way to make this query safe?",
+      "code": {
+        "lang": "php",
+        "src": "$sortBy = $request->getQueryParams()['sort'] ?? 'title';\n\n$rows = $queryBuilder\n    ->select('*')\n    ->from('tx_myext_item')\n    ->orderBy($sortBy)\n    ->executeQuery()\n    ->fetchAllAssociative();"
+      },
+      "answers": [
+        "Check $sortBy against an allow-list of column names (e.g. in_array($sortBy, ['title', 'crdate'], true)) and fall back to a default",
+        "Pass $sortBy through $queryBuilder->createNamedParameter() before calling orderBy()",
+        "Apply htmlspecialchars() to $sortBy",
+        "Apply addslashes() to $sortBy"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Identifiers such as column names cannot be bound as parameters; a named parameter would be treated as a value literal. An allow-list is the robust solution. HTML escaping or addslashes() do not prevent SQL injection in an identifier.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SEC-INPUT-004",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Extbase forms rendered with <f:form> contain a hidden __trustedProperties field signed with an HMAC. What does it protect against?",
+      "answers": [
+        "Mass assignment: the client cannot add or change which properties of an object are mapped from the request.",
+        "Cross-site scripting in the submitted property values",
+        "SQL injection in the persisted property values",
+        "Brute-force attacks on the login form"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The trusted properties list which fields the form actually rendered; the HMAC prevents tampering. Property mapping then rejects unexpected properties. It does not validate or escape the values themselves.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Security/GuidelinesExtensionDevelopment/Index.html"
+    },
+    {
+      "id": "SEC-INPUT-005",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which measures are appropriate when an extension accepts file uploads from frontend users?",
+      "answers": [
+        "Check the file extension against an allow-list and respect $GLOBALS['TYPO3_CONF_VARS']['BE']['fileDenyPattern']",
+        "Do not trust the MIME type sent by the browser; verify the file content on the server",
+        "Store the file via FAL with a sanitized, unique file name",
+        "Keep the original file name so users can find their file again",
+        "Use the Content-Type header from the upload as proof of the file type"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Upload names and MIME types are client-controlled. Use an allow-list of extensions (fileDenyPattern blocks executable types such as .php), check the content and sanitize names, e.g. via FAL. Original names can contain path segments or dangerous extensions.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fal/Index.html"
+    },
+    {
+      "id": "SEC-INPUT-006",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What do the two lines output for the user-supplied value '12abc'?",
+      "code": {
+        "lang": "php",
+        "src": "$input = '12abc';\n\nvar_dump((int)$input);\nvar_dump(filter_var($input, FILTER_VALIDATE_INT));"
+      },
+      "answers": [
+        "(int) gives 12, filter_var() gives false",
+        "Both give 12",
+        "(int) gives 0, filter_var() gives false",
+        "Both give false"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A (int) cast takes leading digits and silently drops the rest. filter_var() with FILTER_VALIDATE_INT returns false for anything that is not a complete integer, which makes it suitable for validation, while casting is suitable for sanitizing.",
+      "doc_url": "https://www.php.net/manual/en/function.filter-var.php"
+    },
+    {
+      "id": "SEC-VULN-001",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "single",
+      "difficulty": 1,
+      "question": "$title comes from user input. Which QueryBuilder snippet is vulnerable to SQL injection?",
+      "answers": [
+        "->where('title = \"' . $title . '\"')",
+        "->where($qb->expr()->eq('title', $qb->createNamedParameter($title)))",
+        "->where($qb->expr()->eq('uid', $qb->createNamedParameter($uid, ParameterType::INTEGER)))",
+        "->where($qb->expr()->like('title', $qb->createNamedParameter('%' . $qb->escapeLikeWildcards($title) . '%')))"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Concatenating user input into SQL allows attackers to break out of the string literal. createNamedParameter() binds the value as a prepared statement parameter; escapeLikeWildcards() additionally escapes % and _ for LIKE.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SEC-VULN-002",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "{comment} contains text entered by a website visitor. Which Fluid outputs are vulnerable to cross-site scripting (XSS)?",
+      "answers": [
+        "<f:format.raw>{comment}</f:format.raw>",
+        "{comment -> f:format.raw()}",
+        "<p>{comment}</p>",
+        "<span title=\"{comment}\">Info</span>",
+        "{comment -> f:format.htmlspecialchars()}"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Fluid escapes variable output with htmlspecialchars() by default (including quotes, so attributes are safe). f:format.raw disables escaping and must never be used for untrusted data.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/Index.html",
+      "tags": [
+        "fluid"
+      ]
+    },
+    {
+      "id": "SEC-VULN-003",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which of the following are categories of the OWASP Top 10 (2021 edition)?",
+      "answers": [
+        "Broken Access Control",
+        "Injection",
+        "Cryptographic Failures",
+        "Server-Side Request Forgery (SSRF)",
+        "Buffer Overflow",
+        "Denial of Service"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The OWASP Top 10:2021 starts with A01 Broken Access Control, A02 Cryptographic Failures and A03 Injection (which includes XSS) and ends with A10 SSRF. Buffer overflows and DoS are not categories of this list.",
+      "doc_url": "https://owasp.org/Top10/2021/"
+    },
+    {
+      "id": "SEC-VULN-004",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which measures help against Cross-Site Request Forgery (CSRF)?",
+      "answers": [
+        "A secret, per-session/per-form token that is validated on submission (e.g. TYPO3 FormProtection)",
+        "Session cookies with the SameSite attribute",
+        "Performing state-changing actions only via POST requests, never via GET",
+        "Escaping all output with htmlspecialchars()",
+        "Serving the site via HTTPS only"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "CSRF abuses the victim's authenticated browser session to send unwanted requests. Unpredictable tokens (FormProtectionFactory in TYPO3), SameSite cookies and not changing state on GET mitigate it. Output escaping targets XSS; HTTPS does not stop forged cross-site requests.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FormProtection/Index.html"
+    },
+    {
+      "id": "SEC-VULN-005",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which TYPO3 setting protects against HTTP Host header injection, e.g. poisoned links in password-reset mails?",
+      "answers": [
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['trustedHostsPattern']",
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['reverseProxyIP']",
+        "$GLOBALS['TYPO3_CONF_VARS']['FE']['cookieDomain']",
+        "$GLOBALS['TYPO3_CONF_VARS']['BE']['lockIP']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "trustedHostsPattern defines which host names TYPO3 accepts (default SERVER_NAME); requests with other Host headers are rejected. The other options configure proxies, cookie scope and session IP locking.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Configuration/Typo3ConfVars/SYS.html"
+    },
+    {
+      "id": "SEC-VULN-006",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which vulnerability does this code introduce, and what is the appropriate fix?",
+      "code": {
+        "lang": "php",
+        "src": "$cookies = $request->getCookieParams();\n$preferences = unserialize($cookies['preferences'] ?? '');"
+      },
+      "answers": [
+        "PHP object injection; use json_decode() (or at least unserialize() with 'allowed_classes' => false) for client data",
+        "SQL injection; wrap the cookie value in createNamedParameter()",
+        "Cross-site scripting; apply htmlspecialchars() to the cookie value",
+        "Session fixation; regenerate the session ID before reading the cookie"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "unserialize() on client-controlled data can instantiate arbitrary classes and trigger magic methods (gadget chains) leading to code execution. Use a data-only format such as JSON for untrusted input.",
+      "doc_url": "https://www.php.net/manual/en/function.unserialize.php"
+    },
+    {
+      "id": "SEC-AUTH-001",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the difference between authentication and authorization?",
+      "answers": [
+        "Authentication verifies who a user is; authorization decides what the authenticated user is allowed to do.",
+        "Authentication decides what a user may do; authorization verifies the user's identity.",
+        "Authentication applies to backend users, authorization to frontend users.",
+        "Both terms describe the login form; they are synonyms."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Authentication (login, MFA) establishes identity. Authorization (group permissions, page permissions, access checks) determines access rights afterwards.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/Index.html"
+    },
+    {
+      "id": "SEC-AUTH-002",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "single",
+      "difficulty": 2,
+      "question": "An extension creates frontend users programmatically. How should the password be hashed?",
+      "answers": [
+        "GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('FE')->getHashedPassword($password)",
+        "md5($password)",
+        "hash('sha256', $password . $salt)",
+        "base64_encode($password)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PasswordHashFactory returns the configured default hash mechanism for the FE or BE context (e.g. Argon2i/Argon2id or bcrypt) and handles salts. Plain fast hashes like MD5/SHA-256 are unsuitable for passwords, base64 is only an encoding.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/PasswordHashing/Index.html"
+    },
+    {
+      "id": "SEC-AUTH-003",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about multi-factor authentication (MFA) for backend users in the TYPO3 Core are correct?",
+      "answers": [
+        "The Core ships a time-based one-time password (TOTP) provider.",
+        "The Core ships a recovery codes provider.",
+        "$GLOBALS['TYPO3_CONF_VARS']['BE']['requireMfa'] can enforce MFA for backend users.",
+        "The Core ships an SMS-based provider.",
+        "MFA can only be used with a third-party extension."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 provides MFA in the Core with TOTP and recovery codes; requireMfa enforces it for users or admins. Additional providers (e.g. WebAuthn, SMS) can be added by extensions implementing MfaProviderInterface.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/MultiFactorAuthentication/Index.html"
+    },
+    {
+      "id": "SEC-AUTH-004",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A backend module wants to verify that the current backend user may edit content elements on the page $pageRow. Which check is appropriate?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Core\\Type\\Bitmask\\Permission;\n\n$backendUser = $GLOBALS['BE_USER'];\n$pageRow = BackendUtility::getRecord('pages', $pageId);\n\nif (!/* ??? */) {\n    throw new AccessDeniedException('No access', 1730000000);\n}"
+      },
+      "answers": [
+        "$backendUser->doesUserHaveAccess($pageRow, Permission::CONTENT_EDIT)",
+        "$backendUser->isAdmin()",
+        "$backendUser->isInWebMount($pageRow['uid']) !== null",
+        "$backendUser->check('modules', 'web_layout')"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "doesUserHaveAccess() evaluates page permissions (show, edit, delete, new, content edit) for the user and its groups. isAdmin() would lock out normal editors, a web mount alone does not grant edit rights, and module access says nothing about the page.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendUserObject.html"
+    },
+    {
+      "id": "SEC-AUTH-005",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How can PHP code in TYPO3 v14 check whether a frontend user is logged in?",
+      "answers": [
+        "$context->getPropertyFromAspect('frontend.user', 'isLoggedIn')",
+        "$GLOBALS['TSFE']->loginUser",
+        "$request->getAttribute('isLoggedIn')",
+        "$GLOBALS['FE_USER_LOGGED_IN']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Context API (injected TYPO3\\CMS\\Core\\Context\\Context) exposes the UserAspect 'frontend.user' with properties like isLoggedIn and groupIds. $GLOBALS['TSFE'] is gone in v14, and the other variables do not exist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Context/Index.html"
+    },
+    {
+      "id": "SEC-AUTH-006",
+      "domain": "security",
+      "skill": "authentication_authorization",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A custom authentication service's authUser() method returns 100. What does this mean?",
+      "answers": [
+        "The service is not responsible; the user is not authenticated by it and the next service in the chain is asked.",
+        "Authentication failed definitively; no further services are called.",
+        "Authentication succeeded and no other service should check the user.",
+        "Authentication succeeded, but further services should also authenticate."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "authUser() return ranges: <= 0 definitely failed, 1-99 success but continue, 100-199 not responsible (continue), >= 200 success and stop the chain.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/AuthenticationService/Index.html"
+    }
+  ]
+}

@@ -1,0 +1,1346 @@
+{
+  "questions": [
+    {
+      "id": "STD-PSR-001",
+      "domain": "dev_standards",
+      "skill": "psr_standards",
+      "type": "single",
+      "difficulty": 2,
+      "question": "On which coding style standard is the PHP-CS-Fixer configuration of the TYPO3 Core based?",
+      "answers": [
+        "PER Coding Style (the successor of PSR-12)",
+        "PSR-2 without any later additions",
+        "The PEAR Coding Standard",
+        "The Zend Framework coding standard",
+        "PSR-1 only, which also defines indentation and brace placement"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The TYPO3 coding guidelines state that the CS Fixer configuration is based on PER-CS 1.0 (PSR-12) and is transitioning towards PER-CS 2.0. PSR-2 is deprecated, and PSR-1 only covers basic rules, not detailed formatting.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/CodingGuidelines/CglPhp/GeneralRequirementsForPhpFiles.html",
+      "tags": [
+        "coding-guidelines"
+      ]
+    },
+    {
+      "id": "STD-PSR-002",
+      "domain": "dev_standards",
+      "skill": "psr_standards",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which pairs of PSR number and topic are correct? (choose 3)",
+      "answers": [
+        "PSR-3: Logger interface",
+        "PSR-11: Container interface",
+        "PSR-14: Event dispatcher",
+        "PSR-4: HTTP server middleware",
+        "PSR-17: Caching interface",
+        "PSR-18: Autoloading standard"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "PSR-3 is the logger interface, PSR-11 the container interface and PSR-14 event dispatching. PSR-4 is autoloading, PSR-15 covers middlewares, caching is PSR-6/PSR-16 and PSR-18 is the HTTP client.",
+      "doc_url": "https://www.php-fig.org/psr/"
+    },
+    {
+      "id": "STD-JSON-001",
+      "domain": "dev_standards",
+      "skill": "json",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which of the following is a valid JSON document according to RFC 8259?",
+      "answers": [
+        "{\"extension\": \"news\", \"version\": 14, \"active\": true}",
+        "{'package': 'blog'}",
+        "{vendor: \"acme\"}",
+        "{\"title\": \"Home\",}",
+        "{\"uid\": 1 /* page id */}"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "JSON object keys and strings must be enclosed in double quotes; single quotes, unquoted keys, trailing commas and comments are not allowed.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc8259"
+    },
+    {
+      "id": "STD-JSON-002",
+      "domain": "dev_standards",
+      "skill": "json",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which of these values may appear in a JSON document? (choose 4)",
+      "answers": [
+        "null",
+        "The literals true and false",
+        "Nested arrays and objects",
+        "Numbers such as -1.5e3",
+        "undefined",
+        "Date literals such as new Date()"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "JSON knows exactly the value types object, array, string, number, true, false and null. undefined and Date objects are JavaScript concepts and are not part of JSON; dates are usually encoded as strings.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc8259"
+    },
+    {
+      "id": "STD-JSON-003",
+      "domain": "dev_standards",
+      "skill": "json",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What happens when this PHP code is executed?",
+      "code": {
+        "lang": "php",
+        "src": "$data = json_decode(\n    '{\"uid\": 42, \"title\": \"Home\",}',\n    true,\n    512,\n    JSON_THROW_ON_ERROR\n);"
+      },
+      "answers": [
+        "A JsonException is thrown because of the trailing comma",
+        "An associative array with the keys uid and title is returned",
+        "null is returned and json_last_error() reports a syntax error",
+        "An object of class stdClass is returned",
+        "false is returned"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The trailing comma makes the input invalid JSON. Because JSON_THROW_ON_ERROR is set, json_decode() throws a JsonException instead of returning null; without the flag it would return null and set json_last_error().",
+      "doc_url": "https://www.php.net/manual/en/function.json-decode.php"
+    },
+    {
+      "id": "STD-SQL-001",
+      "domain": "dev_standards",
+      "skill": "sql",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The table contains records whose `endtime` column is NULL, but this query never returns them. Why?",
+      "code": {
+        "lang": "sql",
+        "src": "SELECT uid, title\nFROM tx_news_domain_model_news\nWHERE endtime = NULL;"
+      },
+      "answers": [
+        "Comparing with NULL using = evaluates to UNKNOWN, so IS NULL must be used",
+        "NULL values are only returned when SELECT DISTINCT is used",
+        "NULL must be written as the string 'NULL'",
+        "Columns containing NULL are excluded unless an index exists",
+        "The query needs ORDER BY endtime to include NULL values"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In SQL, any comparison with NULL using = or <> yields UNKNOWN, which is treated as not true in WHERE. The correct condition is `endtime IS NULL`.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html"
+    },
+    {
+      "id": "STD-SQL-002",
+      "domain": "dev_standards",
+      "skill": "sql",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Only categories with more than 5 news records should be returned. Which clause must replace ??? ?",
+      "code": {
+        "lang": "sql",
+        "src": "SELECT category, COUNT(*) AS cnt\nFROM tx_news_domain_model_news\nGROUP BY category\n???;"
+      },
+      "answers": [
+        "HAVING COUNT(*) > 5",
+        "WHERE COUNT(*) > 5",
+        "FILTER COUNT(*) > 5",
+        "LIMIT 5",
+        "GROUP BY COUNT(*) > 5"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "WHERE filters rows before grouping and cannot contain aggregate functions; conditions on aggregates such as COUNT(*) belong in HAVING, which filters the groups after GROUP BY.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/select.html"
+    },
+    {
+      "id": "STD-SQL-003",
+      "domain": "dev_standards",
+      "skill": "sql",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which statements about SQL joins are correct? (choose 2)",
+      "answers": [
+        "An INNER JOIN returns only rows that have a matching row in both tables",
+        "A LEFT JOIN returns all rows of the left table and fills the right table's columns with NULL when there is no match",
+        "A LEFT JOIN returns only the rows of the left table that have no match",
+        "A CROSS JOIN requires an ON condition",
+        "A RIGHT JOIN always returns the same result as an INNER JOIN"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "INNER JOIN keeps only matching pairs, while LEFT (OUTER) JOIN keeps every left row and uses NULL for missing right-side values. A CROSS JOIN builds the Cartesian product without an ON condition.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/join.html"
+    },
+    {
+      "id": "STD-PHP-001",
+      "domain": "dev_standards",
+      "skill": "php",
+      "type": "single",
+      "difficulty": 2,
+      "question": "TYPO3 v14 requires at least PHP 8.2. Which language feature was introduced in PHP 8.2?",
+      "answers": [
+        "readonly classes",
+        "Property hooks",
+        "Asymmetric property visibility",
+        "Typed class constants",
+        "The match expression"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PHP 8.2 added readonly classes (plus DNF types and the true type). Typed class constants arrived in 8.3, property hooks and asymmetric visibility in 8.4, and match in 8.0.",
+      "doc_url": "https://www.php.net/releases/8.2/en.php",
+      "since": "14.0"
+    },
+    {
+      "id": "STD-PHP-002",
+      "domain": "dev_standards",
+      "skill": "php",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the output of this PHP 8 code?",
+      "code": {
+        "lang": "php",
+        "src": "$value = '1';\n\necho match ($value) {\n    1 => 'int',\n    '1' => 'string',\n    default => 'other',\n};"
+      },
+      "answers": [
+        "string",
+        "int",
+        "other",
+        "An UnhandledMatchError is thrown",
+        "intstring"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "match compares with strict identity (===). The string '1' is not identical to the integer 1, so the second arm '1' => 'string' matches; unlike switch, there is no type juggling and no fall-through.",
+      "doc_url": "https://www.php.net/manual/en/control-structures.match.php"
+    },
+    {
+      "id": "STD-PHP-003",
+      "domain": "dev_standards",
+      "skill": "php",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "TYPO3 coding guidelines require `declare(strict_types=1);` in new PHP files. Which statements about it are correct? (choose 2)",
+      "answers": [
+        "It must be the very first statement in the file",
+        "It disables implicit scalar type coercion for function calls made from within that file",
+        "It applies to all files that are included afterwards",
+        "It makes return type declarations optional",
+        "It is needed so that PHP 8 can parse attributes"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "The strict_types declare must be the first statement and affects calls made from the file that declares it: passing e.g. '5' to an int parameter throws a TypeError instead of being coerced. It is not inherited by included files.",
+      "doc_url": "https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict"
+    },
+    {
+      "id": "STD-PSR7-001",
+      "domain": "dev_standards",
+      "skill": "psr_7_request_response",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Why does the response returned by this middleware NOT contain the header X-Powered-By?",
+      "code": {
+        "lang": "php",
+        "src": "public function process(\n    ServerRequestInterface $request,\n    RequestHandlerInterface $handler\n): ResponseInterface {\n    $response = $handler->handle($request);\n    $response->withHeader('X-Powered-By', 'TYPO3');\n    return $response;\n}"
+      },
+      "answers": [
+        "withHeader() returns a new instance because PSR-7 messages are immutable, and the result is discarded",
+        "Custom headers must be added with setHeader() instead",
+        "Headers can only be added to the request, not to the response",
+        "Header names starting with X- are stripped by PSR-7 implementations",
+        "The header is only sent if getHeaderLine() is called afterwards"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-7 objects are immutable value objects: all with*() methods return a modified clone. The code must reassign it: `$response = $response->withHeader(...)`. There is no setHeader() in PSR-7.",
+      "doc_url": "https://www.php-fig.org/psr/psr-7/"
+    },
+    {
+      "id": "STD-PSR7-002",
+      "domain": "dev_standards",
+      "skill": "psr_7_request_response",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which methods are defined by PSR-7's ServerRequestInterface? (choose 3)",
+      "answers": [
+        "getQueryParams()",
+        "getParsedBody()",
+        "getAttribute()",
+        "getPost()",
+        "setAttribute()",
+        "getSession()"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "ServerRequestInterface offers getQueryParams(), getParsedBody(), getCookieParams(), getUploadedFiles() and attribute access via getAttribute()/withAttribute(). There are no setters (immutability) and no getPost() or session handling. TYPO3 stores e.g. the site and language as request attributes.",
+      "doc_url": "https://www.php-fig.org/psr/psr-7/"
+    },
+    {
+      "id": "STD-PSR7-003",
+      "domain": "dev_standards",
+      "skill": "psr_7_request_response",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does `$request->getHeader('accept')` return for a PSR-7 request?",
+      "answers": [
+        "An array of the header's values (empty if the header is missing); the name is matched case-insensitively",
+        "A single comma-separated string of all values",
+        "null, because the header name must be written exactly as 'Accept'",
+        "A HeaderInterface object",
+        "The first value only, as a string"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "getHeader() returns an array of strings and an empty array if the header does not exist; header names are case-insensitive. getHeaderLine() returns the values joined by commas.",
+      "doc_url": "https://www.php-fig.org/psr/psr-7/"
+    },
+    {
+      "id": "STD-PSR3-001",
+      "domain": "dev_standards",
+      "skill": "psr_3_logger_interface_standard",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which of these is NOT one of the log levels defined by PSR-3?",
+      "answers": [
+        "fatal",
+        "emergency",
+        "critical",
+        "notice",
+        "debug",
+        "alert"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-3 defines the eight RFC 5424 levels: emergency, alert, critical, error, warning, notice, info and debug. 'fatal' is not a PSR-3 level.",
+      "doc_url": "https://www.php-fig.org/psr/psr-3/"
+    },
+    {
+      "id": "STD-PSR3-002",
+      "domain": "dev_standards",
+      "skill": "psr_3_logger_interface_standard",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How is the placeholder in this log message handled according to PSR-3?",
+      "code": {
+        "lang": "php",
+        "src": "$this->logger->warning(\n    'User {username} failed to log in',\n    ['username' => $username]\n);"
+      },
+      "answers": [
+        "The implementor may replace {username} with the value of the context key 'username'",
+        "It works like sprintf(); the placeholder must be written as %s",
+        "The context array is ignored unless the option 'interpolate' => true is passed",
+        "Placeholders must be prefixed with a dollar sign, e.g. {$username}",
+        "PSR-3 forbids placeholders; the value must be concatenated into the message"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-3 messages may contain placeholders in curly braces whose names correspond to keys in the context array; implementors may interpolate them. Keeping variable data in context instead of concatenating also helps aggregation and avoids injection into log formats.",
+      "doc_url": "https://www.php-fig.org/psr/psr-3/"
+    },
+    {
+      "id": "STD-PSR3-003",
+      "domain": "dev_standards",
+      "skill": "psr_3_logger_interface_standard",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "How can a service in a TYPO3 v14 extension obtain a PSR-3 logger? (choose 2)",
+      "answers": [
+        "Inject Psr\\Log\\LoggerInterface via the constructor",
+        "Implement LoggerAwareInterface and use LoggerAwareTrait, so that DI calls setLogger()",
+        "Call the static method LoggerInterface::getInstance()",
+        "Read the global variable $GLOBALS['TYPO3_LOGGER']",
+        "Extend Psr\\Log\\AbstractLogger in the service class"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "TYPO3 provides loggers via dependency injection: either by constructor injection of LoggerInterface or via LoggerAwareInterface/LoggerAwareTrait, which autoconfigure detects. Interfaces have no static getInstance(), and extending AbstractLogger would make the service a logger itself.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Logger/Index.html",
+      "tags": [
+        "logging"
+      ]
+    },
+    {
+      "id": "STD-DOC-001",
+      "domain": "dev_standards",
+      "skill": "docblocks_in_php",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which kind of comment is a DocBlock that is returned by ReflectionClass::getDocComment()?",
+      "answers": [
+        "A block comment opened with slash and two asterisks: /** ... */",
+        "A block comment opened with slash and one asterisk: /* ... */",
+        "A line comment introduced by a double slash: // ...",
+        "A line comment introduced by a hash sign: # ...",
+        "An attribute block: #[...]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A DocBlock is a multi-line comment that starts with exactly /** . Normal /* */ comments and line comments are not DocBlocks and are not available via Reflection; #[...] is PHP attribute syntax, not a comment.",
+      "doc_url": "https://docs.phpdoc.org/guide/guides/docblocks.html"
+    },
+    {
+      "id": "STD-DOC-002",
+      "domain": "dev_standards",
+      "skill": "docblocks_in_php",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In TYPO3 v14, how are Extbase validation rules for a domain model property declared?",
+      "answers": [
+        "With PHP attributes such as #[Validate(...)] on the property",
+        "With the DocBlock annotation @Extbase\\Validate(\"NotEmpty\")",
+        "With the DocBlock tag @validate NotEmpty",
+        "Only in the TCA 'eval' setting of the column",
+        "In ext_typoscript_setup.typoscript"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 v14 removed support for DocBlock annotations in Extbase (Breaking #107229); Validate, Lazy, Cascade, Transient etc. must be used as PHP attributes. Leftover annotations are silently ignored.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107229-RemovedSupportOfAnnotationsInExtbase.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "extbase"
+      ]
+    },
+    {
+      "id": "STD-DOC-003",
+      "domain": "dev_standards",
+      "skill": "docblocks_in_php",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which statements about PHPDoc tags are correct? (choose 3)",
+      "answers": [
+        "@param documents the type and meaning of a function parameter",
+        "@throws documents exceptions that a method may throw",
+        "@deprecated marks an element that should no longer be used and may be removed",
+        "A @return tag is enforced by the PHP engine at runtime",
+        "Types like array<int, string> in a DocBlock are validated by PHP when the method is called"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "DocBlock tags are metadata for developers, IDEs and static analysers (PHPStan, Psalm). PHP itself ignores them at runtime; only native type declarations are enforced.",
+      "doc_url": "https://docs.phpdoc.org/guide/references/phpdoc/tags/index.html"
+    },
+    {
+      "id": "STD-PSR15-001",
+      "domain": "dev_standards",
+      "skill": "psr_15_middlewares",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which method signature does Psr\\Http\\Server\\MiddlewareInterface define?",
+      "answers": [
+        "process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface",
+        "handle(ServerRequestInterface $request): ResponseInterface",
+        "__invoke(RequestInterface $request, ResponseInterface $response, callable $next)",
+        "process(RequestInterface $request, ResponseInterface $response): void",
+        "dispatch(object $event): object"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A PSR-15 middleware implements process() and receives the request plus the next handler. handle() belongs to RequestHandlerInterface; the double-pass __invoke() signature is the older, non-standard style.",
+      "doc_url": "https://www.php-fig.org/psr/psr-15/"
+    },
+    {
+      "id": "STD-PSR15-002",
+      "domain": "dev_standards",
+      "skill": "psr_15_middlewares",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where does a TYPO3 v14 extension register its own PSR-15 middleware?",
+      "answers": [
+        "In Configuration/RequestMiddlewares.php",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['HTTP']['middlewares']",
+        "In Configuration/Services.yaml with the tag psr15.middleware",
+        "In ext_tables.php",
+        "In Configuration/Middlewares.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Middlewares are declared per stack (frontend/backend) in Configuration/RequestMiddlewares.php with a target class and before/after ordering. TYPO3 collects and sorts these files from all active extensions.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "middleware"
+      ]
+    },
+    {
+      "id": "STD-PSR15-003",
+      "domain": "dev_standards",
+      "skill": "psr_15_middlewares",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about this middleware registration are correct? (choose 2)",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    'frontend' => [\n        'vendor/my-ext/maintenance' => [\n            'target' => \\Vendor\\MyExt\\Middleware\\Maintenance::class,\n            'after' => ['typo3/cms-frontend/site'],\n            'before' => ['typo3/cms-frontend/page-resolver'],\n        ],\n    ],\n];"
+      },
+      "answers": [
+        "The middleware is only part of the frontend middleware stack",
+        "It runs after the site resolver, so the 'site' request attribute is available",
+        "It is also executed for backend requests",
+        "The array key must be identical to the fully qualified class name",
+        "The middleware must always call $handler->handle(); returning its own response is not allowed"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "The configuration adds the middleware to the 'frontend' stack, ordered after typo3/cms-frontend/site and before the page resolver. The identifier is a free string, and a middleware may short-circuit by returning its own response.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "middleware"
+      ]
+    },
+    {
+      "id": "STD-AUTO-001",
+      "domain": "dev_standards",
+      "skill": "php_autoloading_standards",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Given this composer.json, in which file must the class Vendor\\MyExt\\Domain\\Model\\Product be located?",
+      "code": {
+        "lang": "json",
+        "src": "{\n    \"name\": \"vendor/my-ext\",\n    \"type\": \"typo3-cms-extension\",\n    \"autoload\": {\n        \"psr-4\": {\n            \"Vendor\\\\MyExt\\\\\": \"Classes/\"\n        }\n    }\n}"
+      },
+      "answers": [
+        "Classes/Domain/Model/Product.php",
+        "Classes/Vendor/MyExt/Domain/Model/Product.php",
+        "Classes/Domain/Model/Product.class.php",
+        "Classes/Domain_Model_Product.php",
+        "Domain/Model/Product.class.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-4 strips the namespace prefix Vendor\\MyExt\\ and maps the remaining sub-namespaces to sub-directories of the base directory Classes/, with the class name as file name plus .php (case-sensitive).",
+      "doc_url": "https://www.php-fig.org/psr/psr-4/"
+    },
+    {
+      "id": "STD-AUTO-002",
+      "domain": "dev_standards",
+      "skill": "php_autoloading_standards",
+      "type": "single",
+      "difficulty": 3,
+      "question": "With the PSR-4 prefix Acme\\ mapped to src/, where is the class Acme\\Log_Writer\\File expected?",
+      "answers": [
+        "src/Log_Writer/File.php",
+        "src/Log/Writer/File.php",
+        "src/Acme/Log_Writer/File.php",
+        "src/Log/Writer_File.php",
+        "src/Acme/Log/Writer/File.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In PSR-4, underscores have no special meaning and stay part of the directory name. Converting underscores to directory separators was a PSR-0 rule.",
+      "doc_url": "https://www.php-fig.org/psr/psr-4/"
+    },
+    {
+      "id": "STD-AUTO-003",
+      "domain": "dev_standards",
+      "skill": "php_autoloading_standards",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about Composer autoloading are correct? (choose 2)",
+      "answers": [
+        "A class map maps fully qualified class names directly to file paths",
+        "composer dump-autoload --optimize generates a class map from the PSR-4 rules for faster lookups",
+        "A class map only works if the file name equals the class name",
+        "A PSR-4 autoloader must throw an exception if no file is found for a class",
+        "PSR-4 requires all directory names to be lowercase"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Class maps are generated by scanning files and work regardless of naming; the optimized autoloader turns PSR-4/PSR-0 rules into a class map. PSR-4 autoloaders MUST NOT throw exceptions or raise errors, so other autoloaders can still run.",
+      "doc_url": "https://getcomposer.org/doc/04-schema.md#autoload"
+    },
+    {
+      "id": "STD-PSR18-001",
+      "domain": "dev_standards",
+      "skill": "psr_18_http_client",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which method does Psr\\Http\\Client\\ClientInterface define?",
+      "answers": [
+        "sendRequest(RequestInterface $request): ResponseInterface",
+        "request(string $method, string $uri, array $options = []): ResponseInterface",
+        "send(string $url): string",
+        "handle(ServerRequestInterface $request): ResponseInterface",
+        "get(string $uri): ResponseInterface"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-18 defines a single method, sendRequest(), which takes a PSR-7 request and returns a PSR-7 response. request() with options is Guzzle's (and TYPO3 RequestFactory's) own API.",
+      "doc_url": "https://www.php-fig.org/psr/psr-18/"
+    },
+    {
+      "id": "STD-PSR18-002",
+      "domain": "dev_standards",
+      "skill": "psr_18_http_client",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A PSR-18 client sends a request and the remote server answers with status 404. What does sendRequest() do?",
+      "answers": [
+        "It returns a ResponseInterface with status code 404",
+        "It throws a ClientExceptionInterface",
+        "It throws a NetworkExceptionInterface",
+        "It returns null",
+        "It retries the request automatically until a 2xx response arrives"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-18 says a client MUST NOT treat a well-formed HTTP response as an error: 4xx and 5xx responses are returned normally. Exceptions are only for cases where no response could be obtained.",
+      "doc_url": "https://www.php-fig.org/psr/psr-18/"
+    },
+    {
+      "id": "STD-PSR18-003",
+      "domain": "dev_standards",
+      "skill": "psr_18_http_client",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about PSR-18 exceptions are correct? (choose 3)",
+      "answers": [
+        "A NetworkExceptionInterface is thrown when the request cannot be completed because of network problems, e.g. an unreachable host",
+        "A RequestExceptionInterface is thrown when the request is invalid and cannot be sent",
+        "All exceptions thrown by the client implement ClientExceptionInterface",
+        "An HttpErrorExceptionInterface is thrown for responses with status 5xx",
+        "On a timeout sendRequest() returns null instead of throwing"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "PSR-18 defines ClientExceptionInterface as the base, with RequestExceptionInterface (invalid request) and NetworkExceptionInterface (no response due to network failure). HTTP error status codes do not cause exceptions.",
+      "doc_url": "https://www.php-fig.org/psr/psr-18/"
+    },
+    {
+      "id": "STD-PSR17-001",
+      "domain": "dev_standards",
+      "skill": "psr_17_http_message_factories",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What is the main purpose of PSR-17 compared to PSR-7?",
+      "answers": [
+        "PSR-7 defines the message interfaces but no standard way to create instances; PSR-17 standardises factories so code does not depend on a concrete implementation",
+        "PSR-17 replaces PSR-7, which is deprecated",
+        "PSR-17 makes HTTP messages mutable for better performance",
+        "PSR-17 defines how requests are sent to remote servers",
+        "PSR-17 defines the middleware pipeline for request handling"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-7 only describes request, response, stream, URI etc. PSR-17 adds factory interfaces (ResponseFactoryInterface, StreamFactoryInterface, ...) so libraries can create these objects without knowing the implementation. Sending requests is PSR-18, middlewares are PSR-15.",
+      "doc_url": "https://www.php-fig.org/psr/psr-17/"
+    },
+    {
+      "id": "STD-PSR17-002",
+      "domain": "dev_standards",
+      "skill": "psr_17_http_message_factories",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A TYPO3 controller has ResponseFactoryInterface and StreamFactoryInterface injected. Which method must replace ??? to create the body from the JSON string?",
+      "code": {
+        "lang": "php",
+        "src": "return $this->responseFactory->createResponse()\n    ->withHeader('Content-Type', 'application/json')\n    ->withBody(\n        $this->streamFactory->???(json_encode($data, JSON_THROW_ON_ERROR))\n    );"
+      },
+      "answers": [
+        "createStream()",
+        "createStreamFromFile()",
+        "createBody()",
+        "fromString()",
+        "createStreamFromResource()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "StreamFactoryInterface::createStream(string $content = '') creates a stream from a string. createStreamFromFile() expects a file name and createStreamFromResource() a PHP resource.",
+      "doc_url": "https://www.php-fig.org/psr/psr-17/"
+    },
+    {
+      "id": "STD-PSR17-003",
+      "domain": "dev_standards",
+      "skill": "psr_17_http_message_factories",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which factory interfaces are defined by PSR-17? (choose 3)",
+      "answers": [
+        "ResponseFactoryInterface",
+        "UriFactoryInterface",
+        "UploadedFileFactoryInterface",
+        "MiddlewareFactoryInterface",
+        "HeaderFactoryInterface",
+        "ClientFactoryInterface"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "PSR-17 defines RequestFactoryInterface, ResponseFactoryInterface, ServerRequestFactoryInterface, StreamFactoryInterface, UploadedFileFactoryInterface and UriFactoryInterface. Headers are not separate objects in PSR-7, and there are no middleware or client factories.",
+      "doc_url": "https://www.php-fig.org/psr/psr-17/"
+    },
+    {
+      "id": "STD-PSR14-001",
+      "domain": "dev_standards",
+      "skill": "psr_14_event_dispatching",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does EventDispatcherInterface::dispatch() return according to PSR-14?",
+      "answers": [
+        "The same event object that was passed in, possibly modified by listeners",
+        "Nothing (void)",
+        "true if at least one listener was called",
+        "An array with the return values of all listeners",
+        "A new immutable copy of the event"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "dispatch(object $event): object returns the event that was passed in, so the emitter can read data that listeners changed. Listener return values are ignored.",
+      "doc_url": "https://www.php-fig.org/psr/psr-14/"
+    },
+    {
+      "id": "STD-PSR14-002",
+      "domain": "dev_standards",
+      "skill": "psr_14_event_dispatching",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements are required behaviour according to PSR-14? (choose 2)",
+      "answers": [
+        "If the event implements StoppableEventInterface and isPropagationStopped() returns true, no further listeners are called",
+        "An exception thrown by a listener blocks further listeners and propagates back to the emitter",
+        "Listeners are executed asynchronously in parallel",
+        "The dispatcher must catch listener exceptions and log them",
+        "The listener provider is responsible for invoking the listeners"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "PSR-14 dispatchers call listeners synchronously in order, stop when propagation is stopped and must let listener exceptions propagate. The listener provider only returns the relevant listeners; the dispatcher calls them.",
+      "doc_url": "https://www.php-fig.org/psr/psr-14/"
+    },
+    {
+      "id": "STD-PSR14-003",
+      "domain": "dev_standards",
+      "skill": "psr_14_event_dispatching",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How does TYPO3 determine which event this listener is registered for?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Core\\Attribute\\AsEventListener;\n\n#[AsEventListener(identifier: 'my-ext/cache-lifetime')]\nfinal readonly class ModifyCacheLifetime\n{\n    public function __invoke(ModifyCacheLifetimeForPageEvent $event): void\n    {\n        $event->setCacheLifetime(300);\n    }\n}"
+      },
+      "answers": [
+        "From the type declaration of the listener method's parameter",
+        "From the identifier given in the attribute",
+        "From the class name suffix of the listener",
+        "It must additionally be configured in ext_localconf.php",
+        "It is listening to all events unless the event argument is given"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "When no event is given explicitly, TYPO3 derives the event class from the type of the first parameter of the listener method (__invoke by default). The identifier is only a unique name used for ordering via before/after.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events"
+      ]
+    },
+    {
+      "id": "STD-PSR11-001",
+      "domain": "dev_standards",
+      "skill": "psr_11_dependency_injection",
+      "type": "single",
+      "difficulty": 3,
+      "question": "According to PSR-11, what does it mean when ContainerInterface::has($id) returns true?",
+      "answers": [
+        "get($id) will not throw a NotFoundExceptionInterface, but may still throw another ContainerExceptionInterface",
+        "get($id) is guaranteed to never throw any exception",
+        "The service has already been instantiated",
+        "The service is declared public",
+        "The service is a shared singleton"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-11 explicitly states that has() returning true does not mean get() cannot throw; it only guarantees that no NotFoundExceptionInterface is thrown. Construction of the entry may still fail.",
+      "doc_url": "https://www.php-fig.org/psr/psr-11/"
+    },
+    {
+      "id": "STD-PSR11-002",
+      "domain": "dev_standards",
+      "skill": "psr_11_dependency_injection",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about this Configuration/Services.yaml are correct? (choose 2)",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  _defaults:\n    autowire: true\n    autoconfigure: true\n    public: false\n\n  Vendor\\MyExt\\:\n    resource: '../Classes/*'"
+      },
+      "answers": [
+        "Constructor arguments with class or interface types are injected automatically",
+        "Classes that e.g. implement LoggerAwareInterface or carry #[AsEventListener] are configured automatically",
+        "Because public is false, all services can still be fetched with $container->get() at runtime",
+        "Method injection via inject*() methods is disabled by this configuration",
+        "Every class in Classes/ must additionally be listed individually"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "autowire injects dependencies based on type declarations, autoconfigure adds tags/configuration based on interfaces and attributes, and the resource line registers all classes. Private services are removed or inlined and cannot be fetched from the container directly.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "dependency-injection"
+      ]
+    },
+    {
+      "id": "STD-PSR11-003",
+      "domain": "dev_standards",
+      "skill": "psr_11_dependency_injection",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A service class is never injected anywhere but is always created via GeneralUtility::makeInstance(). Its constructor dependencies should still be autowired. What is required?",
+      "answers": [
+        "The service must be declared public: true in Services.yaml",
+        "The class must implement SingletonInterface",
+        "The class must use method injection only",
+        "Nothing; makeInstance() always autowires private services",
+        "The class must be registered in ext_localconf.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "makeInstance() can only retrieve services from the container that are public. Private services that are not injected anywhere are removed from the compiled container, so makeInstance() would create the object without its dependencies.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "dependency-injection"
+      ]
+    },
+    {
+      "id": "STD-XLF-001",
+      "domain": "dev_standards",
+      "skill": "xliff",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where and under which name is the German translation of an extension's default label file stored?",
+      "answers": [
+        "EXT:my_ext/Resources/Private/Language/de.locallang.xlf",
+        "EXT:my_ext/Resources/Private/Language/locallang.de.xlf",
+        "EXT:my_ext/Resources/Public/Language/de/locallang.xlf",
+        "EXT:my_ext/Configuration/Language/locallang_de.xlf",
+        "EXT:my_ext/Resources/Private/Language/German/locallang.xml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Label files live in Resources/Private/Language/. Translations use the same file name prefixed with the language code, e.g. de.locallang.xlf next to locallang.xlf (the English source).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/XliffFormat.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "STD-XLF-002",
+      "domain": "dev_standards",
+      "skill": "xliff",
+      "type": "single",
+      "difficulty": 3,
+      "question": "This de.locallang.xlf is used in TYPO3 v14 with the default configuration. What is displayed for the label button.save in a German context?",
+      "code": {
+        "lang": "xml",
+        "src": "<xliff version=\"1.2\" xmlns=\"urn:oasis:names:tc:xliff:document:1.2\">\n    <file source-language=\"en\" target-language=\"de\" datatype=\"plaintext\"\n          original=\"EXT:my_ext/Resources/Private/Language/locallang.xlf\">\n        <body>\n            <trans-unit id=\"button.save\" approved=\"no\">\n                <source>Save</source>\n                <target>Speichern</target>\n            </trans-unit>\n        </body>\n    </file>\n</xliff>"
+      },
+      "answers": [
+        "Save, because the unapproved translation is ignored and the English source is used",
+        "Speichern",
+        "An empty string",
+        "The key button.save",
+        "An exception is thrown because approved=\"no\" is invalid"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "By default, TYPO3 loads only approved translations; in XLIFF 1.2 approved=\"no\" marks a translation as not approved. Setting $GLOBALS['TYPO3_CONF_VARS']['LANG']['requireApprovedLocalizations'] to false would load it.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/XliffFormat.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "STD-XLF-003",
+      "domain": "dev_standards",
+      "skill": "xliff",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about XLIFF in TYPO3 v14 are correct? (choose 3)",
+      "answers": [
+        "TYPO3 supports XLIFF 1.2 and 2.x and detects the version automatically",
+        "In XLIFF 2.x, a <unit> contains a <segment> with <source> and an optional <target>",
+        "A label can be referenced as LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:button.save",
+        "One XLIFF file may contain several <file> elements, one per target language",
+        "English labels must be stored in a file prefixed with en., e.g. en.locallang.xlf",
+        "Every <trans-unit> must carry an approved attribute, otherwise the file is not loaded"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 reads XLIFF 1.2 (<trans-unit>) and 2.x (<unit>/<segment>). TYPO3 supports only one <file> element per document, the English source has no prefix, and a missing approved attribute is treated as approved.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/XliffFormat.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "STD-RST-001",
+      "domain": "dev_standards",
+      "skill": "restructuredtext",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How is inline literal text (e.g. a code identifier) marked up in reStructuredText?",
+      "answers": [
+        "Enclose it in double backquotes: ``my_extension``",
+        "Enclose it in single backquotes: `config.yaml`",
+        "Enclose it in double asterisks: **Services.yaml**",
+        "Enclose it in single asterisks: *ext_tables.sql*",
+        "Use the HTML tag <code>composer.json</code>"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In reST, double backquotes create an inline literal. Single backquotes are interpreted text (a role), ** is strong emphasis and * is emphasis; raw HTML is not interpreted.",
+      "doc_url": "https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#inline-literals"
+    },
+    {
+      "id": "STD-RST-002",
+      "domain": "dev_standards",
+      "skill": "restructuredtext",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about reStructuredText as used for TYPO3 documentation are correct? (choose 3)",
+      "answers": [
+        "Directives start with two dots, a space, the directive name and two colons, e.g. .. note::",
+        "Section titles are created by underlining (optionally also overlining) them with punctuation characters at least as long as the title",
+        "The entry point of an extension's documentation is Documentation/Index.rst",
+        "Section titles are created with leading # characters",
+        "Indentation is irrelevant for the content of a directive"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "reST uses explicit markup (.. directive::) and underlined section titles; the content of a directive must be indented. Leading # for headings is Markdown syntax.",
+      "doc_url": "https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingReST/HeadlinesAndSection.html",
+      "tags": [
+        "documentation"
+      ]
+    },
+    {
+      "id": "STD-RST-003",
+      "domain": "dev_standards",
+      "skill": "restructuredtext",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In a TYPO3 manual written in reST, how should you link to a section in another file so that the link survives renaming or moving the file?",
+      "code": {
+        "lang": "text",
+        "src": ".. _extension-configuration:\n\nConfiguration\n=============\n\nSee :ref:`extension-configuration` for all options."
+      },
+      "answers": [
+        "Place a label like .. _my-label: above the section and reference it with :ref:`my-label`",
+        "Use Markdown link syntax [Section](OtherFile.rst#section)",
+        "Write an HTML <a href> tag pointing to the rendered page",
+        "Use the role :link:`OtherFile/Section`",
+        "Repeat the section title in single asterisks"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Explicit target labels referenced with the :ref: role are independent of file paths and also give a link text from the section title. Markdown and raw HTML link syntax are not reST.",
+      "doc_url": "https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingReST/Hyperlinks.html",
+      "tags": [
+        "documentation"
+      ]
+    },
+    {
+      "id": "STD-MD-001",
+      "domain": "dev_standards",
+      "skill": "markdown",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which line creates a level-2 heading (h2) in Markdown (CommonMark)?",
+      "answers": [
+        "## Installation",
+        "==Configuration==",
+        "h2. Usage",
+        "**Changelog**",
+        ".. heading:: Support"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In ATX style, the number of leading # characters (1-6) sets the heading level. ==...== is wiki syntax, h2. is Textile, and **text** only makes text bold.",
+      "doc_url": "https://spec.commonmark.org/0.31.2/#atx-headings"
+    },
+    {
+      "id": "STD-MD-002",
+      "domain": "dev_standards",
+      "skill": "markdown",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "In CommonMark, which ways create a hard line break inside a paragraph? (choose 2)",
+      "answers": [
+        "Ending the line with two or more spaces before the line break",
+        "Ending the line with a backslash before the line break",
+        "A single line break without any trailing characters",
+        "Writing the characters \\n in the text",
+        "Ending the line with a single tab"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "A line ending preceded by two or more spaces or by a backslash is a hard line break. A plain single line ending is only a soft line break, usually rendered as a space.",
+      "doc_url": "https://spec.commonmark.org/0.31.2/#hard-line-breaks"
+    },
+    {
+      "id": "STD-CVE-001",
+      "domain": "dev_standards",
+      "skill": "cve",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which of these is a CVE identifier?",
+      "answers": [
+        "CVE-2024-12345",
+        "TYPO3-CORE-SA-2024-001",
+        "CWE-79",
+        "CVSS:3.1/AV:N/AC:L",
+        "GHSA-2x4v-q7w9-abcd"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "CVE IDs have the form CVE-YYYY-NNNN with a sequence of four or more digits. TYPO3-CORE-SA-... is a TYPO3 security advisory ID, CWE identifies weakness types, CVSS is a scoring vector and GHSA a GitHub advisory ID.",
+      "doc_url": "https://www.cve.org/ResourcesSupport/Glossary"
+    },
+    {
+      "id": "STD-CVE-002",
+      "domain": "dev_standards",
+      "skill": "cve",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which statement about CVE and the severity of a vulnerability is correct?",
+      "answers": [
+        "A CVE ID only identifies a vulnerability; its severity is rated separately, e.g. with a CVSS score",
+        "The sequence number of a CVE ID encodes its severity",
+        "CVE IDs are only assigned to vulnerabilities rated as critical",
+        "The CVE program ranks every vulnerability on a scale from 1 to 5",
+        "The year in a CVE ID is the year the vulnerability was fixed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "CVE provides a unique, standardized identifier and description. Severity is expressed by systems like CVSS (e.g. in the NVD or vendor advisories). The year part reflects when the ID was assigned/reserved, not when it was fixed.",
+      "doc_url": "https://www.cve.org/About/Overview"
+    },
+    {
+      "id": "STD-CVE-003",
+      "domain": "dev_standards",
+      "skill": "cve",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about CVE are correct? (choose 3)",
+      "answers": [
+        "CVE IDs are assigned by CVE Numbering Authorities (CNAs)",
+        "The sequence number of a CVE ID can have four or more digits",
+        "CWE classifies types of weaknesses (e.g. CWE-79 for XSS), while a CVE identifies a concrete vulnerability",
+        "A CVE record contains working exploit code",
+        "Each vendor defines its own CVE ID format",
+        "A CVE ID is reused once the vulnerability has been fixed"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "CNAs (vendors, projects, CERTs) assign CVE IDs within their scope following one common format. Records describe the vulnerability and references, not exploits, and IDs are never reused.",
+      "doc_url": "https://www.cve.org/About/Process"
+    },
+    {
+      "id": "STD-SQLDM-001",
+      "domain": "dev_standards",
+      "skill": "sql_data_management",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does this statement do?",
+      "code": {
+        "lang": "sql",
+        "src": "UPDATE tx_news_domain_model_news SET hidden = 1;"
+      },
+      "answers": [
+        "It sets hidden = 1 for every row in the table",
+        "It fails because UPDATE requires a WHERE clause",
+        "It updates only the first row of the table",
+        "It updates only rows where hidden is currently 0",
+        "It inserts a new row with hidden = 1"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Without a WHERE clause, UPDATE affects all rows of the table. Some clients offer a 'safe updates' mode, but standard SQL does not require a WHERE clause.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/update.html"
+    },
+    {
+      "id": "STD-SQLDM-002",
+      "domain": "dev_standards",
+      "skill": "sql_data_management",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Assuming a transactional storage engine such as InnoDB, what is the state of the accounts table after this script?",
+      "code": {
+        "lang": "sql",
+        "src": "START TRANSACTION;\nUPDATE accounts SET balance = balance - 100 WHERE id = 1;\nUPDATE accounts SET balance = balance + 100 WHERE id = 2;\nROLLBACK;"
+      },
+      "answers": [
+        "Both balances are unchanged, because ROLLBACK undoes all changes of the transaction",
+        "Account 1 is debited, account 2 is unchanged",
+        "Both updates are persisted, because each UPDATE is committed immediately",
+        "Only the second UPDATE is undone",
+        "The script fails because UPDATE is not allowed inside a transaction"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "START TRANSACTION disables autocommit until COMMIT or ROLLBACK. ROLLBACK reverts every change made in the transaction, so the transfer is atomic: all or nothing.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/commit.html"
+    },
+    {
+      "id": "STD-SQLDM-003",
+      "domain": "dev_standards",
+      "skill": "sql_data_management",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Why should values in SQL queries be passed as bound parameters (prepared statements), e.g. via createNamedParameter() in the TYPO3 QueryBuilder? (choose 2)",
+      "answers": [
+        "The value is sent separately from the SQL statement, which prevents SQL injection",
+        "The database can reuse the parsed statement for different parameter values",
+        "Bound parameters make indexes unnecessary",
+        "Bound parameters allow table and column names to be passed safely as values",
+        "Bound parameters automatically escape HTML for output"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Prepared statements separate code and data, so user input cannot change the query structure, and the statement can be reused. Identifiers such as table names cannot be bound as parameters, and HTML escaping is an output concern.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database",
+        "security"
+      ]
+    },
+    {
+      "id": "STD-SQLSM-001",
+      "domain": "dev_standards",
+      "skill": "sql_structure_management",
+      "type": "single",
+      "difficulty": 2,
+      "question": "An extension adds a field to the core table pages with this ext_tables.sql. Why is CREATE TABLE used instead of ALTER TABLE?",
+      "code": {
+        "lang": "sql",
+        "src": "CREATE TABLE pages (\n    tx_myext_teaser text\n);"
+      },
+      "answers": [
+        "TYPO3 parses all ext_tables.sql files, merges the definitions per table and the database analyzer only adds the missing columns",
+        "MySQL silently converts CREATE TABLE into ALTER TABLE if the table exists",
+        "The statement is executed literally and recreates the pages table",
+        "ALTER TABLE is not supported by Doctrine DBAL",
+        "CREATE TABLE is only needed for custom tables; for pages the field is ignored"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "ext_tables.sql is not executed as-is. TYPO3 combines the CREATE TABLE definitions of all extensions into a target schema and the schema migrator (Analyze Database Structure / extension setup) creates the needed ALTER TABLE statements.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/ExtTablesSql.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "STD-SQLSM-002",
+      "domain": "dev_standards",
+      "skill": "sql_structure_management",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which statement about a (non-unique) index on a database column is correct?",
+      "answers": [
+        "It speeds up searching and sorting on that column but needs extra storage and slows down writes slightly",
+        "It makes INSERT and UPDATE statements faster",
+        "It is needed for every column listed in the SELECT clause",
+        "It guarantees that the column contains no duplicate values",
+        "It replaces the need for a primary key"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Indexes let the database find rows without a full table scan, at the cost of storage and index maintenance on writes. Uniqueness is only enforced by a UNIQUE index or primary key.",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/mysql-indexes.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "STD-SQLSM-003",
+      "domain": "dev_standards",
+      "skill": "sql_structure_management",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about relational schema design are correct? (choose 3)",
+      "answers": [
+        "A primary key uniquely identifies each row and cannot be NULL",
+        "A foreign key constraint ensures that a referenced row exists in the parent table",
+        "First normal form requires atomic column values, e.g. no comma-separated lists in one column",
+        "Normalization means storing redundant copies of data to avoid joins",
+        "A table can have several primary keys"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Primary keys are unique and NOT NULL, foreign keys enforce referential integrity and 1NF demands atomic values. Storing redundant copies is denormalization; a table has at most one primary key (which may span several columns).",
+      "doc_url": "https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "STD-HTTP-001",
+      "domain": "dev_standards",
+      "skill": "http",
+      "type": "single",
+      "difficulty": 1,
+      "question": "A logged-in backend user requests a resource they are not allowed to access. Which status code fits best?",
+      "answers": [
+        "403 Forbidden",
+        "401 Unauthorized",
+        "404 Not Found",
+        "400 Bad Request",
+        "405 Method Not Allowed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "403 means the server understood the request and the client is known, but access is refused. 401 indicates missing or invalid authentication credentials.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc9110#name-403-forbidden"
+    },
+    {
+      "id": "STD-HTTP-002",
+      "domain": "dev_standards",
+      "skill": "http",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which status code indicates a permanent redirect where the client must NOT change the request method (e.g. POST stays POST)?",
+      "answers": [
+        "308 Permanent Redirect",
+        "301 Moved Permanently",
+        "302 Found",
+        "303 See Other",
+        "307 Temporary Redirect"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "308 is permanent and preserves method and body. With 301/302, clients may historically change POST to GET; 303 explicitly switches to GET, and 307 preserves the method but is temporary.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc9110#name-308-permanent-redirect"
+    },
+    {
+      "id": "STD-HTTP-003",
+      "domain": "dev_standards",
+      "skill": "http",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which HTTP methods are idempotent according to RFC 9110? (choose 3)",
+      "answers": [
+        "GET",
+        "PUT",
+        "DELETE",
+        "POST",
+        "PATCH"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "A method is idempotent if multiple identical requests have the same effect as one. GET, HEAD, PUT, DELETE, OPTIONS and TRACE are idempotent; POST and PATCH are not.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc9110#name-idempotent-methods"
+    },
+    {
+      "id": "STD-HTTP-004",
+      "domain": "dev_standards",
+      "skill": "http",
+      "type": "single",
+      "difficulty": 3,
+      "question": "The resource has not changed since the client received it with ETag \"abc123\". How does the server answer this request?",
+      "code": {
+        "lang": "text",
+        "src": "GET /fileadmin/report.pdf HTTP/1.1\nHost: example.org\nIf-None-Match: \"abc123\""
+      },
+      "answers": [
+        "304 Not Modified without a body",
+        "200 OK with the full body",
+        "204 No Content",
+        "412 Precondition Failed",
+        "409 Conflict"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "For a GET with If-None-Match, a matching ETag means the cached copy is still valid, so the server responds 304 without content. 412 is used when a precondition fails for state-changing methods such as If-Match on PUT.",
+      "doc_url": "https://www.rfc-editor.org/rfc/rfc9110#name-if-none-match"
+    }
+  ]
+}

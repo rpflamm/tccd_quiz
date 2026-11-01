@@ -1,0 +1,2784 @@
+{
+  "questions": [
+    {
+      "id": "SDC-DDD-001",
+      "domain": "dev_concepts",
+      "skill": "domain_driven_design_ddd",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In Domain-Driven Design, what distinguishes an Entity from a Value Object?",
+      "answers": [
+        "An Entity has a stable identity that persists over time; a Value Object is defined only by its attribute values",
+        "An Entity is always stored in the database; a Value Object is never persisted",
+        "An Entity is immutable; a Value Object can be changed freely",
+        "An Entity contains business logic; a Value Object may only contain getters"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Entities are tracked by identity (two customers with the same name are still different customers), while Value Objects are equal when all their values are equal and are usually immutable. Value Objects can be persisted too, e.g. as part of an entity.",
+      "doc_url": "https://martinfowler.com/bliki/ValueObject.html",
+      "tags": [
+        "ddd"
+      ]
+    },
+    {
+      "id": "SDC-DDD-002",
+      "domain": "dev_concepts",
+      "skill": "domain_driven_design_ddd",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which of the following are core building blocks or concepts of Domain-Driven Design?",
+      "answers": [
+        "Ubiquitous Language shared by developers and domain experts",
+        "Bounded Context",
+        "Aggregate with an Aggregate Root",
+        "Active Record as the mandatory persistence mechanism",
+        "Global registry for all domain objects"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "DDD centres on a ubiquitous language, explicit bounded contexts and aggregates guarded by an aggregate root (accessed via repositories). DDD does not prescribe Active Record, and global registries contradict its explicit model boundaries.",
+      "doc_url": "https://martinfowler.com/bliki/DomainDrivenDesign.html",
+      "tags": [
+        "ddd"
+      ]
+    },
+    {
+      "id": "SDC-DDD-003",
+      "domain": "dev_concepts",
+      "skill": "domain_driven_design_ddd",
+      "type": "single",
+      "difficulty": 3,
+      "question": "An Extbase extension models a Blog (aggregate root) with Posts and Comments that only exist inside a blog. Following DDD as applied by Extbase, for which class(es) should a repository be created?",
+      "answers": [
+        "Only for Blog, because repositories are provided for aggregate roots",
+        "For Blog, Post and Comment, because every domain model needs its own repository",
+        "Only for Comment, because it is the leaf of the aggregate",
+        "For none of them; Extbase persists models without repositories"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In DDD, repositories exist for aggregate roots; inner objects are reached and persisted through the root (Extbase cascades persistence of child objects). Creating a repository per class breaks the aggregate's consistency boundary.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html",
+      "tags": [
+        "ddd",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-DBMS-001",
+      "domain": "dev_concepts",
+      "skill": "database_management_systems_dbms",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which database management systems are officially supported by TYPO3 v14 via Doctrine DBAL?",
+      "answers": [
+        "MySQL",
+        "MariaDB",
+        "PostgreSQL",
+        "SQLite",
+        "MongoDB",
+        "Apache Cassandra"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "TYPO3 uses Doctrine DBAL and supports the relational systems MySQL, MariaDB, PostgreSQL and SQLite. Document stores such as MongoDB or wide-column stores such as Cassandra are not supported as the main TYPO3 database.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SDC-DBMS-002",
+      "domain": "dev_concepts",
+      "skill": "database_management_systems_dbms",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does the 'A' in the ACID properties of database transactions stand for?",
+      "answers": [
+        "Atomicity: a transaction is applied completely or not at all",
+        "Availability: the database is always reachable",
+        "Authorization: every statement is checked against user permissions",
+        "Asynchronicity: statements are executed in parallel"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "ACID = Atomicity, Consistency, Isolation, Durability. Atomicity means all statements of a transaction succeed or are rolled back together; availability belongs to the CAP theorem, not to ACID.",
+      "doc_url": "https://en.wikipedia.org/wiki/ACID",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SDC-DBMS-003",
+      "domain": "dev_concepts",
+      "skill": "database_management_systems_dbms",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Why does TYPO3 core code access the database through Doctrine DBAL's ConnectionPool and QueryBuilder rather than calling mysqli functions directly?",
+      "answers": [
+        "DBAL abstracts vendor-specific SQL and drivers so the same code works on all supported DBMS",
+        "mysqli is not available in PHP 8.2 and later",
+        "DBAL stores data in a TYPO3-specific file format that is faster than SQL",
+        "QueryBuilder caches every query result automatically in the caching framework"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Doctrine DBAL is a database abstraction layer: it quotes identifiers, generates platform-specific SQL and hides driver differences, so TYPO3 runs on MySQL, MariaDB, PostgreSQL and SQLite. mysqli still exists in PHP 8; DBAL does not cache results automatically.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SDC-MODEL-001",
+      "domain": "dev_concepts",
+      "skill": "model",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In the MVC pattern, which responsibility belongs to the Model?",
+      "answers": [
+        "Representing domain data and business rules",
+        "Rendering HTML output",
+        "Mapping incoming HTTP requests to actions",
+        "Defining the URL structure of the site"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The model holds domain data, state and business logic. Rendering is the view's task, and receiving requests/choosing actions is the controller's task.",
+      "doc_url": "https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller",
+      "tags": [
+        "mvc"
+      ]
+    },
+    {
+      "id": "SDC-MODEL-002",
+      "domain": "dev_concepts",
+      "skill": "model",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about Extbase domain models in TYPO3 v14 are correct?",
+      "answers": [
+        "Entities typically extend TYPO3\\CMS\\Extbase\\DomainObject\\AbstractEntity",
+        "They are located in Classes/Domain/Model/ by convention",
+        "By convention a model Vendor\\Shop\\Domain\\Model\\Product maps to the table tx_shop_domain_model_product",
+        "Every model must implement ResponseInterface",
+        "Models must be declared public in Services.yaml to be persisted"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Extbase entities extend AbstractEntity (value objects extend AbstractValueObject), live in Classes/Domain/Model and map to tx_<extkey>_domain_model_<name> by convention. Models are plain data objects, not responses, and are not DI services.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Model.html",
+      "tags": [
+        "mvc",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-MODEL-003",
+      "domain": "dev_concepts",
+      "skill": "model",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A developer puts the following into an Extbase model. Which MVC guideline does this violate most clearly?",
+      "code": {
+        "lang": "php",
+        "src": "class Product extends AbstractEntity\n{\n    protected string $title = '';\n\n    public function getTitleHtml(): string\n    {\n        return '<h2 class=\"product\">' . htmlspecialchars($this->title) . '</h2>';\n    }\n}"
+      },
+      "answers": [
+        "The model generates presentation markup, which is the view's responsibility",
+        "The model must not contain any methods besides getters and setters",
+        "The model must not use string properties",
+        "htmlspecialchars() may only be called inside repositories"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Business methods in models are fine, but producing HTML couples the model to one presentation format. Markup belongs in the view (Fluid template), which also handles escaping.",
+      "doc_url": "https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller",
+      "tags": [
+        "mvc"
+      ]
+    },
+    {
+      "id": "SDC-VIEW-001",
+      "domain": "dev_concepts",
+      "skill": "view_pattern",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which templating engine is used as the view layer in Extbase/TYPO3 v14?",
+      "answers": [
+        "Fluid",
+        "Twig",
+        "Smarty",
+        "Blade"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 uses Fluid (Fluid 5 in v14) as its template engine for Extbase views, PAGEVIEW and FLUIDTEMPLATE. Twig, Smarty and Blade are template engines of other ecosystems.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/Index.html",
+      "tags": [
+        "mvc",
+        "fluid"
+      ]
+    },
+    {
+      "id": "SDC-VIEW-002",
+      "domain": "dev_concepts",
+      "skill": "view_pattern",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In an Extbase action, which code passes data to the view and returns the rendered result?",
+      "answers": [
+        "$this->view->assign('posts', $posts); return $this->htmlResponse();",
+        "return $this->view->render('posts', $posts);",
+        "$this->response->setContent($posts); return null;",
+        "echo $this->view->assign('posts', $posts);"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Variables are assigned to the view with assign()/assignMultiple(); since TYPO3 v12 actions must return a ResponseInterface, and htmlResponse() renders the view into it. Echoing or returning null is not allowed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html",
+      "tags": [
+        "mvc",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-VIEW-003",
+      "domain": "dev_concepts",
+      "skill": "view_pattern",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which tasks belong to the view in a clean MVC architecture?",
+      "answers": [
+        "Presenting the data passed by the controller",
+        "Escaping output for the target format (e.g. HTML)",
+        "Formatting values such as dates for display",
+        "Querying the database for additional records",
+        "Persisting changes of domain objects"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The view presents and formats data and Fluid escapes output by default. Fetching or persisting data is done by the controller via repositories, not by the template.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/Index.html",
+      "tags": [
+        "mvc",
+        "fluid"
+      ]
+    },
+    {
+      "id": "SDC-CTRL-001",
+      "domain": "dev_concepts",
+      "skill": "controller",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the main responsibility of a controller in MVC?",
+      "answers": [
+        "Handling the request, coordinating model and services, and choosing the view/response",
+        "Storing the domain data permanently",
+        "Defining the visual layout of the page",
+        "Compiling templates into PHP code"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The controller receives input, delegates to the model/services/repositories and decides which view or response to return. Persistence is done by the model layer, layout by the view.",
+      "doc_url": "https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller",
+      "tags": [
+        "mvc"
+      ]
+    },
+    {
+      "id": "SDC-CTRL-002",
+      "domain": "dev_concepts",
+      "skill": "controller",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which signature is correct for an Extbase controller action in TYPO3 v14?",
+      "answers": [
+        "public function listAction(): ResponseInterface",
+        "public function list(): string",
+        "public function listAction(): void",
+        "protected function actionList(): array"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extbase action methods follow the naming convention <name>Action, must be public and must return a PSR-7 ResponseInterface (mandatory since v12). Returning strings or void is no longer supported.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html",
+      "tags": [
+        "mvc",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-CTRL-003",
+      "domain": "dev_concepts",
+      "skill": "controller",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the following Extbase controller are correct?",
+      "code": {
+        "lang": "php",
+        "src": "final class PostController extends ActionController\n{\n    public function __construct(\n        private readonly PostRepository $postRepository,\n    ) {}\n\n    public function showAction(Post $post): ResponseInterface\n    {\n        $this->view->assign('post', $post);\n        return $this->htmlResponse();\n    }\n}"
+      },
+      "answers": [
+        "The repository is injected via constructor injection (autowiring)",
+        "showAction receives a Post object that Extbase maps from the request argument via property mapping",
+        "The action returns a PSR-7 response",
+        "The controller must be registered with GeneralUtility::makeInstance() in ext_localconf.php to work",
+        "The action name used in plugin configuration is 'showAction'"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Controllers are DI services, so the repository is autowired. The argument is resolved by Extbase's property mapper (e.g. from a uid). In ExtensionUtility::configurePlugin() the action is referenced without the suffix ('show'); no makeInstance registration is needed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html",
+      "tags": [
+        "mvc",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-PREP-001",
+      "domain": "dev_concepts",
+      "skill": "prepared_statements",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the main security benefit of prepared statements?",
+      "answers": [
+        "User input is sent separately from the SQL statement, which prevents SQL injection",
+        "All data is encrypted before it is written to the database",
+        "Queries are executed with a read-only database user",
+        "Output is automatically HTML-escaped"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With prepared statements the SQL structure is fixed and parameters are bound as data, so input can never change the query structure. They do not encrypt data or escape HTML output.",
+      "doc_url": "https://www.php.net/manual/en/pdo.prepared-statements.php",
+      "tags": [
+        "database",
+        "security"
+      ]
+    },
+    {
+      "id": "SDC-PREP-002",
+      "domain": "dev_concepts",
+      "skill": "prepared_statements",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which TYPO3 QueryBuilder method should be used to safely bind a user-supplied value as a parameter?",
+      "answers": [
+        "createNamedParameter()",
+        "quoteIdentifier()",
+        "escapeLikeWildcards()",
+        "addSelectLiteral()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "createNamedParameter() binds a value as a named placeholder of a prepared statement. quoteIdentifier() is for table/column names, escapeLikeWildcards() only escapes % and _ for LIKE and is not a protection on its own.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database",
+        "security"
+      ]
+    },
+    {
+      "id": "SDC-PREP-003",
+      "domain": "dev_concepts",
+      "skill": "prepared_statements",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Why is the following query vulnerable, and what is the correct fix?",
+      "code": {
+        "lang": "php",
+        "src": "$uid = $_GET['uid'];\n$rows = $queryBuilder\n    ->select('*')\n    ->from('tt_content')\n    ->where('uid = ' . $uid)\n    ->executeQuery()\n    ->fetchAllAssociative();"
+      },
+      "answers": [
+        "The value is concatenated into the SQL; use ->where($qb->expr()->eq('uid', $qb->createNamedParameter($uid, Connection::PARAM_INT)))",
+        "The query is not vulnerable because where() escapes its arguments automatically",
+        "It is vulnerable only on PostgreSQL; on MySQL it is safe",
+        "Wrapping $_GET['uid'] in htmlspecialchars() is the correct fix"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "where() accepts raw SQL expressions, so concatenating request data allows SQL injection. Binding the value with createNamedParameter() (typed as integer) makes it a prepared-statement parameter; htmlspecialchars() is for HTML output, not SQL.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "database",
+        "security"
+      ]
+    },
+    {
+      "id": "SDC-DI-001",
+      "domain": "dev_concepts",
+      "skill": "dependency_injection",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is dependency injection?",
+      "answers": [
+        "Passing an object's collaborators to it from outside instead of letting it create or look them up itself",
+        "Injecting SQL fragments into queries at runtime",
+        "Loading PHP classes automatically on first use",
+        "Copying the code of a dependency into the own project"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With DI a class declares what it needs (e.g. in its constructor) and a container or caller supplies it. This decouples the class from concrete implementations and eases testing; autoloading is a different mechanism.",
+      "doc_url": "https://martinfowler.com/articles/injection.html",
+      "tags": [
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-DI-002",
+      "domain": "dev_concepts",
+      "skill": "dependency_injection",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "In TYPO3 v14, which ways of receiving dependencies are supported for services managed by the Symfony DI container?",
+      "answers": [
+        "Constructor injection",
+        "Method injection via inject*() methods",
+        "Autowiring of type-hinted constructor arguments",
+        "Annotating properties with @inject in a docblock",
+        "Reading services from $GLOBALS['TYPO3_SERVICES']"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 recommends constructor injection with autowiring; inject*() methods are also supported. The old @inject annotation was removed long ago and there is no $GLOBALS['TYPO3_SERVICES'] container.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-DI-003",
+      "domain": "dev_concepts",
+      "skill": "dependency_injection",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which file configures the Symfony dependency injection container for an extension (e.g. autowire/autoconfigure defaults)?",
+      "answers": [
+        "Configuration/Services.yaml",
+        "ext_localconf.php",
+        "Configuration/DependencyInjection.json",
+        "ext_emconf.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Each extension configures its services in Configuration/Services.yaml (or Services.php), typically with _defaults autowire/autoconfigure and a resource entry for Classes/*. ext_localconf.php is not used for DI configuration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-DI-004",
+      "domain": "dev_concepts",
+      "skill": "dependency_injection",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A service class is never injected anywhere but fetched with GeneralUtility::makeInstance() from a non-DI context. What must be ensured so that makeInstance() returns the container-built instance with its constructor dependencies?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n    _defaults:\n        autowire: true\n        autoconfigure: true\n        public: false\n\n    Vendor\\MyExt\\:\n        resource: '../Classes/*'\n\n    Vendor\\MyExt\\Service\\ReportService:\n        public: true"
+      },
+      "answers": [
+        "The service must be public (e.g. 'public: true' in Services.yaml or because it is autoconfigured as public)",
+        "The class must implement SingletonInterface",
+        "The class must be registered in $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']",
+        "Nothing; makeInstance() always resolves private services"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Symfony container removes or inlines private services that are not referenced, so makeInstance() can only fetch services marked public. SingletonInterface only controls instance reuse; it does not make a service available in the container.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-BUILD-001",
+      "domain": "dev_concepts",
+      "skill": "builder_design_pattern",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What problem does the Builder design pattern solve?",
+      "answers": [
+        "Constructing a complex object step by step, separating its construction from its representation",
+        "Ensuring that only one instance of a class exists",
+        "Notifying multiple listeners when an object changes state",
+        "Converting the interface of a class into another interface clients expect"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Builder assembles complex objects in steps and finally produces the result (e.g. via build()/getSQL()). Single instance is Singleton, notifications are Observer and interface conversion is Adapter.",
+      "doc_url": "https://refactoring.guru/design-patterns/builder",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-BUILD-002",
+      "domain": "dev_concepts",
+      "skill": "builder_design_pattern",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which TYPO3/Doctrine APIs are typical examples of the Builder pattern with a fluent interface?",
+      "answers": [
+        "Doctrine DBAL QueryBuilder (select()->from()->where()...)",
+        "Extbase UriBuilder (reset()->setTargetPageUid()->build())",
+        "TYPO3\\CMS\\Core\\Registry",
+        "PSR-14 EventDispatcher",
+        "SingletonInterface"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "QueryBuilder builds an SQL statement step by step and UriBuilder builds a URI before build() returns the result. The Registry is a key-value store, the EventDispatcher implements Observer/Mediator and SingletonInterface is a marker interface.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-BUILD-003",
+      "domain": "dev_concepts",
+      "skill": "builder_design_pattern",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What makes the following QueryBuilder chain possible?",
+      "code": {
+        "lang": "php",
+        "src": "$result = $queryBuilder\n    ->select('uid', 'title')\n    ->from('pages')\n    ->where($queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)))\n    ->orderBy('sorting')\n    ->executeQuery();"
+      },
+      "answers": [
+        "Each builder method returns the builder instance itself ($this), enabling a fluent interface",
+        "PHP automatically chains all methods of an object",
+        "Each method returns a new database connection",
+        "The methods are static and share a global state"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Builder methods such as select(), from() and where() return the QueryBuilder itself, so calls can be chained; the final executeQuery() produces the result. No static global state is involved.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
+      "tags": [
+        "design-patterns",
+        "database"
+      ]
+    },
+    {
+      "id": "SDC-DPAT-001",
+      "domain": "dev_concepts",
+      "skill": "software_design_patterns",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is a software design pattern?",
+      "answers": [
+        "A general, reusable solution template for a commonly occurring design problem",
+        "A finished library that can be installed with Composer",
+        "A coding style guide such as PSR-12",
+        "A database schema for a specific application"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Design patterns (e.g. from the 'Gang of Four' book) describe proven solutions to recurring problems; they are concepts to be adapted, not ready-made code or style guides.",
+      "doc_url": "https://en.wikipedia.org/wiki/Software_design_pattern",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-DPAT-002",
+      "domain": "dev_concepts",
+      "skill": "software_design_patterns",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Match patterns to TYPO3 usages. Which pairings are correct?",
+      "answers": [
+        "Chain of Responsibility: PSR-15 middleware stack",
+        "Observer: PSR-14 event listeners",
+        "Factory: ConnectionPool::getQueryBuilderForTable() returning configured QueryBuilder objects",
+        "Singleton: every Extbase domain model",
+        "Adapter: Fluid template inheritance with layouts"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Each PSR-15 middleware decides whether to handle the request or pass it on (chain of responsibility); PSR-14 listeners observe dispatched events; ConnectionPool creates configured objects (factory). Domain models are regular objects with many instances, and Fluid layouts are not an adapter.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Middlewares.html",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-DPAT-003",
+      "domain": "dev_concepts",
+      "skill": "software_design_patterns",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which design pattern does the following code implement?",
+      "code": {
+        "lang": "php",
+        "src": "interface ShippingCostCalculator\n{\n    public function calculate(Order $order): Money;\n}\n\nfinal class Checkout\n{\n    public function __construct(private ShippingCostCalculator $calculator) {}\n\n    public function total(Order $order): Money\n    {\n        return $order->getSubtotal()->add($this->calculator->calculate($order));\n    }\n}"
+      },
+      "answers": [
+        "Strategy",
+        "Singleton",
+        "Builder",
+        "Registry"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The algorithm (how to calculate shipping) is encapsulated behind an interface and interchangeable at runtime by injecting a different implementation: that is the Strategy pattern.",
+      "doc_url": "https://refactoring.guru/design-patterns/strategy",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-SCA-001",
+      "domain": "dev_concepts",
+      "skill": "static_code_analysis",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What characterizes static code analysis?",
+      "answers": [
+        "Code is examined without executing it",
+        "Code is analyzed while running in production",
+        "Code is executed by unit tests and coverage is measured",
+        "Only the compiled bytecode is profiled for performance"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Static analysis inspects source code (types, dead code, style, known deprecations) without running it. Running tests or profiling are dynamic analysis techniques.",
+      "doc_url": "https://en.wikipedia.org/wiki/Static_program_analysis",
+      "tags": [
+        "tooling"
+      ]
+    },
+    {
+      "id": "SDC-SCA-002",
+      "domain": "dev_concepts",
+      "skill": "static_code_analysis",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which tools perform static analysis of PHP code in a TYPO3 project?",
+      "answers": [
+        "PHPStan",
+        "Psalm",
+        "TYPO3 Extension Scanner",
+        "Xdebug",
+        "PHPUnit"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "PHPStan and Psalm analyze types and errors statically, and the Extension Scanner statically matches code against deprecated/removed core API. Xdebug is a debugger/profiler and PHPUnit executes tests (dynamic).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/ExtensionScanner.html",
+      "tags": [
+        "tooling"
+      ]
+    },
+    {
+      "id": "SDC-SCA-003",
+      "domain": "dev_concepts",
+      "skill": "static_code_analysis",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does the 'level' setting in a PHPStan configuration control?",
+      "answers": [
+        "How strict the rule set is: higher levels enable more checks",
+        "The PHP version the code is analyzed against",
+        "How many CPU cores are used",
+        "The maximum directory depth that is scanned"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PHPStan levels (0 to max) progressively enable stricter rules, e.g. type checks of arguments and return types. The PHP version is configured separately via phpVersion.",
+      "doc_url": "https://phpstan.org/user-guide/rule-levels",
+      "tags": [
+        "tooling"
+      ]
+    },
+    {
+      "id": "SDC-VM-001",
+      "domain": "dev_concepts",
+      "skill": "view_models",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the purpose of a View Model?",
+      "answers": [
+        "Preparing and encapsulating exactly the data and presentation logic a template needs",
+        "Storing domain entities in the database",
+        "Routing URLs to controller actions",
+        "Replacing the controller entirely"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A view model is an intermediate object between controller and view that holds pre-processed, display-ready data. It keeps templates simple and avoids exposing full domain entities or putting logic into templates.",
+      "doc_url": "https://martinfowler.com/eaaDev/PresentationModel.html",
+      "tags": [
+        "mvc"
+      ]
+    },
+    {
+      "id": "SDC-VM-002",
+      "domain": "dev_concepts",
+      "skill": "view_models",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which are benefits of passing a dedicated view model to a Fluid template instead of raw domain entities?",
+      "answers": [
+        "Templates contain less logic because values are pre-computed",
+        "The template is decoupled from changes in the domain model",
+        "Only the data needed for rendering is exposed",
+        "Database queries are automatically avoided for lazy-loaded relations in all cases",
+        "Fluid escaping is no longer necessary"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "View models give a stable, minimal and pre-formatted data contract for templates. They do not disable or replace output escaping, and they do not magically prevent queries; they only help if the controller builds them deliberately.",
+      "doc_url": "https://martinfowler.com/eaaDev/PresentationModel.html",
+      "tags": [
+        "mvc"
+      ]
+    },
+    {
+      "id": "SDC-VM-003",
+      "domain": "dev_concepts",
+      "skill": "view_models",
+      "type": "single",
+      "difficulty": 3,
+      "question": "In TYPO3 content rendering with PAGEVIEW or FLUIDTEMPLATE, which mechanism best plays the role of preparing view data before it reaches the template?",
+      "answers": [
+        "Data processors (dataProcessing), which transform records into template variables",
+        "TCA columns with renderType",
+        "PSR-15 middlewares",
+        "ext_tables.sql"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Data processors (e.g. MenuProcessor, DatabaseQueryProcessor, FilesProcessor) fetch and prepare data and expose it as variables for the Fluid template, similar to a view model. Middlewares process HTTP requests, TCA configures backend forms.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentElements/CustomDataProcessing.html",
+      "tags": [
+        "mvc",
+        "fluid"
+      ]
+    },
+    {
+      "id": "SDC-SOLID-001",
+      "domain": "dev_concepts",
+      "skill": "solid_principles",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does the 'S' in SOLID stand for?",
+      "answers": [
+        "Single Responsibility Principle",
+        "Separation of State Principle",
+        "Static Dependency Principle",
+        "Substitution Principle"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "SOLID = Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion. Substitution is the 'L'.",
+      "doc_url": "https://en.wikipedia.org/wiki/SOLID",
+      "tags": [
+        "solid"
+      ]
+    },
+    {
+      "id": "SDC-SOLID-002",
+      "domain": "dev_concepts",
+      "skill": "solid_principles",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which SOLID principle is violated by this class?",
+      "code": {
+        "lang": "php",
+        "src": "final class InvoiceService\n{\n    public function validate(Invoice $invoice): bool { /* ... */ }\n    public function saveToDatabase(Invoice $invoice): void { /* ... */ }\n    public function renderPdf(Invoice $invoice): string { /* ... */ }\n    public function sendMail(Invoice $invoice, string $to): void { /* ... */ }\n}"
+      },
+      "answers": [
+        "Single Responsibility Principle",
+        "Liskov Substitution Principle",
+        "Interface Segregation Principle",
+        "Open/Closed Principle"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The class has several reasons to change: validation, persistence, PDF rendering and e-mail delivery. SRP demands one responsibility (one reason to change) per class; these concerns should be split into separate services.",
+      "doc_url": "https://en.wikipedia.org/wiki/Single-responsibility_principle",
+      "tags": [
+        "solid"
+      ]
+    },
+    {
+      "id": "SDC-SOLID-003",
+      "domain": "dev_concepts",
+      "skill": "solid_principles",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which SOLID principle is violated here?",
+      "code": {
+        "lang": "php",
+        "src": "class Storage\n{\n    public function save(string $key, string $value): void { /* ... */ }\n}\n\nclass ReadOnlyStorage extends Storage\n{\n    public function save(string $key, string $value): void\n    {\n        throw new \\LogicException('Not supported');\n    }\n}"
+      },
+      "answers": [
+        "Liskov Substitution Principle",
+        "Single Responsibility Principle",
+        "Dependency Inversion Principle",
+        "Interface Segregation Principle"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Code written against Storage expects save() to work; ReadOnlyStorage cannot be substituted for its parent without breaking that expectation. LSP requires subtypes to honour the contract of their base type.",
+      "doc_url": "https://en.wikipedia.org/wiki/Liskov_substitution_principle",
+      "tags": [
+        "solid"
+      ]
+    },
+    {
+      "id": "SDC-SOLID-004",
+      "domain": "dev_concepts",
+      "skill": "solid_principles",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements correctly describe SOLID principles?",
+      "answers": [
+        "Open/Closed: modules should be open for extension but closed for modification",
+        "Dependency Inversion: high-level modules should depend on abstractions, not on concrete low-level modules",
+        "Interface Segregation: clients should not be forced to depend on methods they do not use",
+        "Dependency Inversion: classes should instantiate their dependencies themselves with new",
+        "Open/Closed: every class should be declared final and must never be changed"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "OCP, DIP and ISP are described correctly in the first three statements. Instantiating dependencies with new is exactly what DIP/DI avoid, and OCP is about extension points (interfaces, events), not about forbidding all changes.",
+      "doc_url": "https://en.wikipedia.org/wiki/SOLID",
+      "tags": [
+        "solid"
+      ]
+    },
+    {
+      "id": "SDC-TEST-001",
+      "domain": "dev_concepts",
+      "skill": "software_tests",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What characterizes a unit test?",
+      "answers": [
+        "It tests a small unit of code (e.g. one class) in isolation, with dependencies replaced by test doubles",
+        "It tests the whole application in a real browser",
+        "It always requires a fully installed TYPO3 instance with database",
+        "It is executed manually by an editor"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Unit tests check single units in isolation and run fast. Tests with database and a TYPO3 instance are functional tests; browser-based tests are acceptance/end-to-end tests.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Testing/Index.html",
+      "tags": [
+        "testing"
+      ]
+    },
+    {
+      "id": "SDC-TEST-002",
+      "domain": "dev_concepts",
+      "skill": "software_tests",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about testing TYPO3 extensions with typo3/testing-framework are correct?",
+      "answers": [
+        "Unit tests extend TYPO3\\TestingFramework\\Core\\Unit\\UnitTestCase",
+        "Functional tests extend TYPO3\\TestingFramework\\Core\\Functional\\FunctionalTestCase and run against a real database",
+        "Functional tests can import fixture records from CSV files with importCSVDataSet()",
+        "Unit tests must always boot the full TYPO3 backend",
+        "The testing framework replaces PHPUnit with its own test runner"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The testing framework provides UnitTestCase and FunctionalTestCase on top of PHPUnit; functional tests set up an instance with a database and can load CSV fixtures. Unit tests do not boot TYPO3, and PHPUnit remains the runner.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Testing/Index.html",
+      "tags": [
+        "testing"
+      ]
+    },
+    {
+      "id": "SDC-TEST-003",
+      "domain": "dev_concepts",
+      "skill": "software_tests",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In current PHPUnit versions (as used for TYPO3 v14 extensions), how is a public method marked as a test without the 'test' name prefix?",
+      "answers": [
+        "With the attribute #[Test] (PHPUnit\\Framework\\Attributes\\Test)",
+        "With the docblock annotation @runTest",
+        "By registering it in phpunit.xml under <tests>",
+        "By making the method static"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Modern PHPUnit uses PHP attributes such as #[Test], #[DataProvider] and #[CoversClass]; docblock annotations are deprecated/removed in recent PHPUnit versions. phpunit.xml defines test suites (directories), not single methods.",
+      "doc_url": "https://docs.phpunit.de/en/12.0/attributes.html",
+      "tags": [
+        "testing"
+      ]
+    },
+    {
+      "id": "SDC-STI-001",
+      "domain": "dev_concepts",
+      "skill": "single_table_inheritance",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How does Single Table Inheritance (STI) store a class hierarchy?",
+      "answers": [
+        "All subclasses share one table, and a type column identifies the concrete class of each row",
+        "Each subclass gets its own table with all inherited columns",
+        "The parent class and each subclass get separate tables joined by foreign keys",
+        "Objects are serialized into a single BLOB column"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "STI maps the whole hierarchy to one table with a discriminator (type) column; columns not used by a subclass stay empty. Separate tables per class are Concrete Table or Class Table Inheritance.",
+      "doc_url": "https://martinfowler.com/eaaCatalog/singleTableInheritance.html",
+      "tags": [
+        "database",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-STI-002",
+      "domain": "dev_concepts",
+      "skill": "single_table_inheritance",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In Extbase, where is single table inheritance configured (record type and subclasses of a model)?",
+      "answers": [
+        "Configuration/Extbase/Persistence/Classes.php",
+        "ext_tables.sql",
+        "Configuration/Services.yaml",
+        "Configuration/TypoScript/setup.typoscript under plugin.tx_*.persistence.subclasses only; there is no PHP configuration"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since TYPO3 v10, Extbase persistence mapping (tableName, recordType, subclasses, properties) is defined in Configuration/Extbase/Persistence/Classes.php. The TypoScript persistence.classes configuration was removed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-STI-003",
+      "domain": "dev_concepts",
+      "skill": "single_table_inheritance",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Given the following configuration and a TCA 'ctrl' => ['type' => 'record_type'] for tx_shop_domain_model_product, which statements are correct?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    \\Vendor\\Shop\\Domain\\Model\\Product::class => [\n        'subclasses' => [\n            'book' => \\Vendor\\Shop\\Domain\\Model\\Book::class,\n            'ebook' => \\Vendor\\Shop\\Domain\\Model\\Ebook::class,\n        ],\n    ],\n    \\Vendor\\Shop\\Domain\\Model\\Book::class => [\n        'tableName' => 'tx_shop_domain_model_product',\n        'recordType' => 'book',\n    ],\n    \\Vendor\\Shop\\Domain\\Model\\Ebook::class => [\n        'tableName' => 'tx_shop_domain_model_product',\n        'recordType' => 'ebook',\n    ],\n];"
+      },
+      "answers": [
+        "Rows with record_type = 'book' are mapped to the Book class",
+        "Book and Ebook are stored in the same table tx_shop_domain_model_product",
+        "The TCA ctrl 'type' field acts as the discriminator column",
+        "Extbase creates a separate table tx_shop_domain_model_book automatically",
+        "The 'subclasses' key is not needed for querying via the Product repository"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "recordType maps the value of the TCA type field to the class and tableName points all subclasses to the same table, i.e. STI. No extra table is created, and 'subclasses' on the parent tells Extbase which classes to instantiate when querying the parent repository.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-ROUTE-001",
+      "domain": "dev_concepts",
+      "skill": "routing",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In TYPO3 v14, where are frontend route enhancers for speaking URLs configured?",
+      "answers": [
+        "In the site configuration (config/sites/<identifier>/config.yaml) under routeEnhancers",
+        "In TypoScript config.tx_realurl",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['FE']['routes']",
+        "In the .htaccess file with RewriteRules per extension"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Routing is part of the site handling: routeEnhancers (and aspects) are defined in the site's config.yaml (since v14.1 they can also be provided by site sets). RealURL is a legacy third-party extension; .htaccess only forwards requests to index.php.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/Index.html",
+      "tags": [
+        "routing"
+      ]
+    },
+    {
+      "id": "SDC-ROUTE-002",
+      "domain": "dev_concepts",
+      "skill": "routing",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which route enhancer types are provided by the TYPO3 core?",
+      "answers": [
+        "Simple",
+        "Plugin",
+        "Extbase",
+        "PageType",
+        "RealUrl",
+        "Rewrite"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Core ships the Simple, Plugin and Extbase enhancers plus the PageType decorator (e.g. for .html suffixes or typeNum). RealUrl and Rewrite are not core enhancer types.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/EnhancementsAspects/Index.html",
+      "tags": [
+        "routing"
+      ]
+    },
+    {
+      "id": "SDC-ROUTE-003",
+      "domain": "dev_concepts",
+      "skill": "routing",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the purpose of the 'aspects' section in this routing configuration?",
+      "code": {
+        "lang": "yaml",
+        "src": "routeEnhancers:\n  NewsDetail:\n    type: Extbase\n    extension: News\n    plugin: Pi1\n    routes:\n      - routePath: '/{news-title}'\n        _controller: 'News::detail'\n        _arguments:\n          news-title: news\n    aspects:\n      news-title:\n        type: PersistedAliasMapper\n        tableName: tx_news_domain_model_news\n        routeFieldName: path_segment"
+      },
+      "answers": [
+        "It maps the internal numeric uid to a speaking path segment (and back) using the record's path_segment field",
+        "It restricts the route to backend users",
+        "It defines the cache lifetime of the generated URL",
+        "It converts the route into a redirect stored in sys_redirect"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Aspects transform route parameters: PersistedAliasMapper replaces the uid with the value of routeFieldName (e.g. 'my-news-title') when generating URLs and resolves it back when processing a request. Without it, the raw uid would appear in the URL.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/EnhancementsAspects/Index.html",
+      "tags": [
+        "routing"
+      ]
+    },
+    {
+      "id": "SDC-RECUR-001",
+      "domain": "dev_concepts",
+      "skill": "recurring_code_tasks",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How are recurring tasks of the TYPO3 Scheduler typically triggered?",
+      "answers": [
+        "A system cron job regularly runs 'vendor/bin/typo3 scheduler:run', which executes all due tasks",
+        "TYPO3 starts a permanent background thread on every frontend request",
+        "Tasks run automatically whenever an editor logs into the backend",
+        "The web server executes ext_localconf.php every minute"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Scheduler does not run on its own: a cron job (or similar) calls the scheduler:run console command, which then checks which tasks are due. Relying on frontend or backend requests would be unreliable.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/main/en-us/Installation/CronJob/Index.html",
+      "tags": [
+        "scheduler"
+      ]
+    },
+    {
+      "id": "SDC-RECUR-002",
+      "domain": "dev_concepts",
+      "skill": "recurring_code_tasks",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about recurring tasks in TYPO3 are correct?",
+      "answers": [
+        "Symfony console commands registered in TYPO3 can be scheduled via the 'Execute console commands' scheduler task",
+        "A console command can be excluded from the scheduler with schedulable: false in its console.command tag",
+        "Tasks can be configured with a frequency in cron syntax",
+        "The scheduler requires a Redis server",
+        "Recurring tasks must be implemented as PSR-15 middlewares"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Console commands (registered via #[AsCommand] or the console.command tag) are schedulable by default unless schedulable: false is set, and task frequencies accept intervals or cron expressions. No Redis is needed; middlewares handle HTTP requests only.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Index.html",
+      "tags": [
+        "scheduler"
+      ]
+    },
+    {
+      "id": "SDC-RECUR-003",
+      "domain": "dev_concepts",
+      "skill": "recurring_code_tasks",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A cleanup job must run every night at 02:30. Which cron expression is correct?",
+      "answers": [
+        "30 2 * * *",
+        "2 30 * * *",
+        "30 2 1 * *",
+        "30 2 * * 7"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Cron fields are: minute, hour, day of month, month, day of week. '30 2 * * *' means 02:30 daily; '30 2 1 * *' would run only on the first day of each month and '30 2 * * 7' only on Sundays.",
+      "doc_url": "https://en.wikipedia.org/wiki/Cron",
+      "tags": [
+        "scheduler"
+      ]
+    },
+    {
+      "id": "SDC-MIG-001",
+      "domain": "dev_concepts",
+      "skill": "migration_between_versions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which tools help to migrate extension code from TYPO3 v13 to v14?",
+      "answers": [
+        "Extension Scanner in the Install Tool / Admin Tools",
+        "Rector with TYPO3-specific rules (typo3-rector)",
+        "Upgrade wizards ('Upgrade Wizard' in Admin Tools or 'vendor/bin/typo3 upgrade:run')",
+        "The Scheduler task 'Optimize MySQL database tables'",
+        "The page module's 'Translate' wizard"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The Extension Scanner finds usages of deprecated/removed API, Rector rewrites code automatically, and upgrade wizards migrate database contents and configuration. Table optimization and translation wizards are unrelated to version migration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/ExtensionScanner.html",
+      "tags": [
+        "upgrade"
+      ]
+    },
+    {
+      "id": "SDC-MIG-002",
+      "domain": "dev_concepts",
+      "skill": "migration_between_versions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What is the recommended upgrade path for a TYPO3 v12 LTS project to v14 LTS?",
+      "answers": [
+        "Upgrade to v13 LTS first (fix deprecations, run upgrade wizards), then to v14 LTS",
+        "Jump directly from v12 to v14 and run only the v14 upgrade wizards",
+        "Export all records as CSV and re-import them into a fresh v14 installation",
+        "Only update composer.json constraints; no further steps are needed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 supports upgrading from one major version to the next. Upgrade wizards of the skipped version would be missing when jumping directly, so each LTS step must be done in sequence.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Administration/Upgrade/Major/Index.html",
+      "tags": [
+        "upgrade"
+      ]
+    },
+    {
+      "id": "SDC-MIG-003",
+      "domain": "dev_concepts",
+      "skill": "migration_between_versions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which interface and attribute are used to provide a custom upgrade wizard in TYPO3 v14?",
+      "answers": [
+        "Implement UpgradeWizardInterface and register it with the #[UpgradeWizard('myIdentifier')] attribute",
+        "Extend AbstractUpdate and register it in $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']",
+        "Implement MiddlewareInterface and tag it as 'install.update'",
+        "Create a class in Classes/Update/ — it is detected purely by folder convention"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Upgrade wizards implement TYPO3\\CMS\\Install\\Updates\\UpgradeWizardInterface (optionally ChattyInterface, RepeatableInterface) and are registered via the #[UpgradeWizard] attribute. The legacy SC_OPTIONS registration is no longer supported.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html",
+      "tags": [
+        "upgrade"
+      ]
+    },
+    {
+      "id": "SDC-PHPEXT-001",
+      "domain": "dev_concepts",
+      "skill": "php_extensions",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is a PHP extension?",
+      "answers": [
+        "A compiled module (usually written in C) that adds functions or classes to the PHP runtime, e.g. intl or gd",
+        "A Composer package written in PHP",
+        "A TYPO3 extension stored in typo3conf/ext",
+        "A JavaScript file loaded by PHP"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PHP extensions are compiled modules loaded by the PHP engine (enabled via php.ini 'extension=...'). Composer packages and TYPO3 extensions are PHP code running on top of the runtime.",
+      "doc_url": "https://www.php.net/manual/en/install.pecl.php",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-PHPEXT-002",
+      "domain": "dev_concepts",
+      "skill": "php_extensions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "How can a TYPO3 extension or project declare and check that a PHP extension such as intl is available?",
+      "answers": [
+        "Add \"ext-intl\": \"*\" to the require section of composer.json",
+        "Call extension_loaded('intl') at runtime",
+        "Run 'php -m' to list loaded extensions",
+        "Run 'composer require intl/intl' to compile and install it",
+        "Add 'intl' to the depends section of the site config.yaml"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Composer platform packages (ext-*) declare required PHP extensions and make installation fail if missing; extension_loaded() and php -m check availability. Composer cannot compile PHP extensions, and site configuration has no PHP dependency section.",
+      "doc_url": "https://getcomposer.org/doc/01-basic-usage.md#platform-packages",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-PHPEXT-003",
+      "domain": "dev_concepts",
+      "skill": "php_extensions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which PHP extension is used by TYPO3 for image processing as an alternative to ImageMagick/GraphicsMagick, e.g. for GIFBUILDER?",
+      "answers": [
+        "gd",
+        "intl",
+        "pdo_mysql",
+        "opcache"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "GD provides image creation and manipulation functions used e.g. by GIFBUILDER. intl handles internationalization, pdo_mysql is a database driver and opcache caches compiled bytecode.",
+      "doc_url": "https://www.php.net/manual/en/book.image.php",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-ASYNC-001",
+      "domain": "dev_concepts",
+      "skill": "asynchronous_task_execution_message_queue",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the main benefit of processing a task asynchronously through a message queue?",
+      "answers": [
+        "The request can respond quickly while the time-consuming work is processed later by a worker",
+        "The task is guaranteed to finish faster in absolute CPU time",
+        "No error handling is needed for queued tasks",
+        "The queue removes the need for a database"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A message is put into a queue and processed by a consumer/worker independently from the user request, improving response time and scalability. It does not reduce the actual work or remove the need for error handling and retries.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html",
+      "tags": [
+        "message-bus"
+      ]
+    },
+    {
+      "id": "SDC-ASYNC-002",
+      "domain": "dev_concepts",
+      "skill": "asynchronous_task_execution_message_queue",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the TYPO3 v14 message bus are correct?",
+      "answers": [
+        "It is based on the Symfony Messenger component",
+        "A handler can be registered with the #[AsMessageHandler] attribute",
+        "Messages are dispatched via Symfony\\Component\\Messenger\\MessageBusInterface::dispatch()",
+        "By default messages are handled synchronously",
+        "Messages are always processed asynchronously by a built-in Redis transport"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "TYPO3 integrates Symfony Messenger: inject MessageBusInterface, dispatch message objects and handle them in classes marked with #[AsMessageHandler]. The default transport is synchronous; the core offers a Doctrine (database) transport for async processing, not a built-in Redis transport.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html",
+      "tags": [
+        "message-bus"
+      ]
+    },
+    {
+      "id": "SDC-ASYNC-003",
+      "domain": "dev_concepts",
+      "skill": "asynchronous_task_execution_message_queue",
+      "type": "single",
+      "difficulty": 3,
+      "question": "All messages are routed to the asynchronous Doctrine transport with the following configuration. How are queued messages processed?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['SYS']['messenger']['routing']['*'] = 'doctrine';"
+      },
+      "answers": [
+        "A worker started with 'vendor/bin/typo3 messenger:consume doctrine' consumes and handles them",
+        "They are processed at the end of the next frontend request automatically",
+        "The scheduler task 'Table garbage collection' processes them",
+        "They are handled immediately during dispatch(), the routing only adds logging"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With the doctrine transport, dispatch() only stores the message in the database queue; a consumer process (messenger:consume doctrine, e.g. run by a process manager or cron) handles them. Without a consumer the messages remain in the queue.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html",
+      "tags": [
+        "message-bus"
+      ]
+    },
+    {
+      "id": "SDC-L10N-001",
+      "domain": "dev_concepts",
+      "skill": "localization",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which file format does TYPO3 use for translatable labels of extensions?",
+      "answers": [
+        "XLIFF (.xlf)",
+        "gettext (.po/.mo)",
+        "INI files",
+        "YAML translation catalogs"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 labels are stored in XLIFF files, e.g. Resources/Private/Language/locallang.xlf with translations in de.locallang.xlf. gettext and YAML catalogs are used by other frameworks.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/Index.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "SDC-L10N-002",
+      "domain": "dev_concepts",
+      "skill": "localization",
+      "type": "single",
+      "difficulty": 2,
+      "question": "An extension has Resources/Private/Language/locallang.xlf. Where should the German translation of these labels be placed?",
+      "answers": [
+        "Resources/Private/Language/de.locallang.xlf",
+        "Resources/Private/Language/locallang.de.xlf",
+        "Resources/Private/Language/de_DE/locallang.xlf",
+        "Resources/Private/Translations/German/locallang.xlf"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Translated XLIFF files carry the language code as prefix: de.locallang.xlf, containing <target> elements. Translations downloaded from Crowdin/translation server are stored in var/labels by default.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/XliffFormat.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "SDC-L10N-003",
+      "domain": "dev_concepts",
+      "skill": "localization",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about localized records in TYPO3 v14 are correct?",
+      "answers": [
+        "A translated record references its default-language record via the field defined in TCA ctrl 'transOrigPointerField' (usually l10n_parent)",
+        "The language of a record is stored in the field defined by TCA ctrl 'languageField' (usually sys_language_uid)",
+        "The site language setting 'fallbackType' (e.g. strict, fallback, free) controls how missing translations are handled",
+        "Translated records are stored in a separate table per language, e.g. tt_content_de",
+        "sys_language_uid = -1 means 'record is hidden in all languages'"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Translations live in the same table and point to their original via l10n_parent; sys_language_uid stores the language, and fallbackType in the site configuration controls the overlay/fallback behaviour. -1 means 'all languages', not hidden.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/ManagingTranslations.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "SDC-I18N-001",
+      "domain": "dev_concepts",
+      "skill": "internationalization",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the difference between internationalization (i18n) and localization (l10n)?",
+      "answers": [
+        "i18n prepares software to support multiple languages/regions; l10n adapts it to a specific language/region",
+        "i18n translates texts; l10n converts currencies only",
+        "Both terms mean exactly the same",
+        "i18n is done by translators; l10n is done by developers"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Internationalization is the engineering work (externalized labels, locale-aware formatting, UTF-8) that makes localization possible; localization is the actual adaptation, such as translating labels and using regional formats.",
+      "doc_url": "https://www.w3.org/International/questions/qa-i18n",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "SDC-I18N-002",
+      "domain": "dev_concepts",
+      "skill": "internationalization",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which practices support internationalization of a TYPO3 extension?",
+      "answers": [
+        "Using label references such as LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:key instead of hard-coded text",
+        "Rendering labels in Fluid with <f:translate key=\"...\" />",
+        "Formatting dates and numbers according to the current site language's locale",
+        "Hard-coding English labels in PHP and translating them later with str_replace()",
+        "Storing all texts in ISO-8859-1 to save space"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Externalized labels (LLL references, f:translate) and locale-aware formatting are i18n basics. Hard-coded strings and legacy single-byte encodings hinder localization; TYPO3 uses UTF-8.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/Index.html",
+      "tags": [
+        "localization"
+      ]
+    },
+    {
+      "id": "SDC-I18N-003",
+      "domain": "dev_concepts",
+      "skill": "internationalization",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In a TYPO3 v14 site configuration, which language setting defines the locale used e.g. for date/number formatting and the HTML lang attribute?",
+      "answers": [
+        "locale (e.g. 'de_DE.UTF-8')",
+        "typo3Language",
+        "sys_language_isocode in TypoScript",
+        "flag"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Each site language defines 'locale'; TYPO3 derives formatting and the language code from it. 'flag' only defines the backend icon, and TypoScript language settings were replaced by site configuration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/AddLanguages.html",
+      "tags": [
+        "localization",
+        "site-handling"
+      ]
+    },
+    {
+      "id": "SDC-META-001",
+      "domain": "dev_concepts",
+      "skill": "meta_programming",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is meta programming?",
+      "answers": [
+        "Writing code that inspects, generates or modifies code (or its structure) at runtime or compile time",
+        "Writing documentation comments for code",
+        "Programming HTML meta tags",
+        "Programming in pairs with another developer"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Meta programming treats programs as data: e.g. PHP Reflection, attributes read at runtime, magic methods, or code generation such as a compiled DI container.",
+      "doc_url": "https://en.wikipedia.org/wiki/Metaprogramming",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-META-002",
+      "domain": "dev_concepts",
+      "skill": "meta_programming",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which PHP features are tools for meta programming?",
+      "answers": [
+        "The Reflection API (ReflectionClass, ReflectionMethod, ...)",
+        "Attributes read via ReflectionClass::getAttributes()",
+        "Magic methods such as __call() and __get()",
+        "The strict_types declaration",
+        "The match expression"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Reflection lets code examine classes and methods, attributes attach metadata that frameworks read via reflection, and magic methods intercept calls dynamically. strict_types and match are regular language features.",
+      "doc_url": "https://www.php.net/manual/en/book.reflection.php",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-META-003",
+      "domain": "dev_concepts",
+      "skill": "meta_programming",
+      "type": "single",
+      "difficulty": 3,
+      "question": "How does TYPO3 v14 discover an event listener registered as follows?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsEventListener(identifier: 'my-ext/content-modifier')]\nfinal class ContentModifier\n{\n    public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void\n    {\n        // ...\n    }\n}"
+      },
+      "answers": [
+        "During container compilation, the attribute is read via reflection and the class is registered as a listener for the event type of its __invoke() parameter",
+        "At every request, TYPO3 scans all PHP files with a regular expression for 'AsEventListener'",
+        "The listener must additionally be listed in ext_localconf.php",
+        "PHP itself calls the listener whenever an object of type AfterCacheableContentIsGeneratedEvent is created"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 uses Symfony DI autoconfiguration: while building (and caching) the container, attributes such as #[AsEventListener] are evaluated via reflection. The event type is inferred from the method signature; no runtime scanning or extra registration is needed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events",
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-IOC-001",
+      "domain": "dev_concepts",
+      "skill": "inversion_of_control",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which phrase is commonly used to summarize Inversion of Control?",
+      "answers": [
+        "\"Don't call us, we'll call you\" (Hollywood Principle)",
+        "\"You aren't gonna need it\"",
+        "\"Keep it simple, stupid\"",
+        "\"Fail fast\""
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With IoC the framework controls the flow and calls the custom code (listeners, controllers, middlewares) instead of the custom code calling the framework. YAGNI, KISS and fail-fast are other principles.",
+      "doc_url": "https://martinfowler.com/bliki/InversionOfControl.html",
+      "tags": [
+        "ioc"
+      ]
+    },
+    {
+      "id": "SDC-IOC-002",
+      "domain": "dev_concepts",
+      "skill": "inversion_of_control",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which TYPO3 mechanisms are examples of Inversion of Control?",
+      "answers": [
+        "The core dispatches a PSR-14 event and calls registered listeners",
+        "The PSR-15 middleware dispatcher calls each registered middleware's process() method",
+        "The DI container constructs services and passes their dependencies",
+        "An extension calling json_encode() directly",
+        "A PHP script including a file with require_once"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "In all three mechanisms the framework decides when the custom code runs or how objects are wired. Calling a library function or including a file is ordinary direct control flow.",
+      "doc_url": "https://martinfowler.com/bliki/InversionOfControl.html",
+      "tags": [
+        "ioc"
+      ]
+    },
+    {
+      "id": "SDC-IOC-003",
+      "domain": "dev_concepts",
+      "skill": "inversion_of_control",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What distinguishes a framework from a library in terms of Inversion of Control?",
+      "answers": [
+        "A framework calls your code (it owns the control flow), while your code calls a library",
+        "A library is always larger than a framework",
+        "A framework cannot be installed via Composer",
+        "A library must be written in an object-oriented style"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Inversion of control is the defining difference: you plug code into a framework which invokes it, whereas you decide when to call a library's functions.",
+      "doc_url": "https://martinfowler.com/bliki/InversionOfControl.html",
+      "tags": [
+        "ioc"
+      ]
+    },
+    {
+      "id": "SDC-REG-001",
+      "domain": "dev_concepts",
+      "skill": "registry_pattern",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does the Registry pattern provide?",
+      "answers": [
+        "A well-known central object to store and look up shared objects or values",
+        "Step-by-step construction of complex objects",
+        "Conversion between incompatible interfaces",
+        "Automatic loading of classes"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A registry is a globally reachable store for objects or settings looked up by key. Step-by-step construction is Builder, interface conversion is Adapter.",
+      "doc_url": "https://martinfowler.com/eaaCatalog/registry.html",
+      "tags": [
+        "design-patterns"
+      ]
+    },
+    {
+      "id": "SDC-REG-002",
+      "domain": "dev_concepts",
+      "skill": "registry_pattern",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The TYPO3 class TYPO3\\CMS\\Core\\Registry persists entries in which database table, and how is an entry addressed?",
+      "answers": [
+        "sys_registry; by namespace and key",
+        "sys_log; by uid only",
+        "cache_hash; by cache tag",
+        "be_users.uc; by user and module"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The system registry stores serialized values in sys_registry, identified by a namespace (usually the extension key) and a key, e.g. set('tx_myext', 'lastRun', time()). It is meant for small amounts of persistent system data.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SystemRegistry/Index.html",
+      "tags": [
+        "registry"
+      ]
+    },
+    {
+      "id": "SDC-REG-003",
+      "domain": "dev_concepts",
+      "skill": "registry_pattern",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the following code are correct?",
+      "code": {
+        "lang": "php",
+        "src": "public function __construct(private readonly Registry $registry) {}\n\npublic function run(): void\n{\n    $lastRun = $this->registry->get('tx_myext', 'lastRun', 0);\n    // ...\n    $this->registry->set('tx_myext', 'lastRun', time());\n}"
+      },
+      "answers": [
+        "get() returns the default value 0 if no entry exists",
+        "The value is stored persistently and survives cache flushes",
+        "removeAllByNamespace('tx_myext') would delete all entries of this extension",
+        "The Registry is a cache and is cleared by 'Flush all caches'",
+        "Only string values can be stored"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Registry entries are persisted in sys_registry, so they are not affected by cache flushes; get() supports a default value and removeAllByNamespace() clears a namespace. Values are serialized, so arrays/scalars are supported as well.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SystemRegistry/Index.html",
+      "tags": [
+        "registry"
+      ]
+    },
+    {
+      "id": "SDC-KV-001",
+      "domain": "dev_concepts",
+      "skill": "key_value_storage",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What characterizes a key-value store?",
+      "answers": [
+        "Each value is stored and retrieved via a unique key, without a fixed schema for the value",
+        "Data is stored in normalized tables with foreign keys",
+        "Data is modelled as nodes and edges",
+        "Values can only be queried with SQL JOINs"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Key-value stores (e.g. Redis, Memcached, APCu) offer very fast lookups by key with opaque values. Relational tables and graph models are other paradigms.",
+      "doc_url": "https://en.wikipedia.org/wiki/Key%E2%80%93value_database",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-KV-002",
+      "domain": "dev_concepts",
+      "skill": "key_value_storage",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which TYPO3 caching framework backends store data in a key-value store or in-memory key-value structure?",
+      "answers": [
+        "RedisBackend",
+        "MemcachedBackend",
+        "ApcuBackend",
+        "Typo3DatabaseBackend",
+        "FileBackend"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Redis, Memcached and APCu are key-value stores. Typo3DatabaseBackend stores entries in relational cache tables and FileBackend in files (both still addressed by identifier, but not via a key-value server).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Backends/Index.html",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-KV-003",
+      "domain": "dev_concepts",
+      "skill": "key_value_storage",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A key-value store like Redis is configured for a TYPO3 cache. Which limitation of pure key-value stores must the TYPO3 cache backend work around for flushByTag()?",
+      "answers": [
+        "Key-value stores cannot query values by content, so the backend must maintain additional tag-to-identifier index entries",
+        "Key-value stores cannot store strings longer than 255 bytes",
+        "Key-value stores do not support expiration of entries",
+        "Key-value stores require a fixed table schema per cache"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Lookups are only possible by key, so to find all entries with a tag the Redis backend keeps extra sets mapping tags to identifiers. Redis supports large values and TTL natively and is schemaless.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Backends/Index.html",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-REL-001",
+      "domain": "dev_concepts",
+      "skill": "relationship_types_cardinalities",
+      "type": "single",
+      "difficulty": 1,
+      "question": "A blog post can have many tags, and a tag can be assigned to many posts. Which cardinality is this?",
+      "answers": [
+        "m:n (many-to-many)",
+        "1:1 (one-to-one)",
+        "1:n (one-to-many)",
+        "n:1 (many-to-one)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Both sides can reference multiple records of the other side, which is many-to-many; in relational databases it is realized with an intermediate (MM) table.",
+      "doc_url": "https://en.wikipedia.org/wiki/Many-to-many_(data_model)",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "SDC-REL-002",
+      "domain": "dev_concepts",
+      "skill": "relationship_types_cardinalities",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In TCA, which configuration typically models a 1:n relation where child records store the uid of their parent (e.g. IRRE)?",
+      "answers": [
+        "type 'inline' with 'foreign_table' and 'foreign_field'",
+        "type 'select' with 'MM' set",
+        "type 'input' with 'eval' => 'int'",
+        "type 'passthrough' with 'foreign_table'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Inline (IRRE) with foreign_field stores the parent uid in the child table, which is a 1:n relation. An MM table models m:n; input and passthrough do not define relations.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html",
+      "tags": [
+        "database",
+        "tca"
+      ]
+    },
+    {
+      "id": "SDC-REL-003",
+      "domain": "dev_concepts",
+      "skill": "relationship_types_cardinalities",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about m:n relations with an intermediate MM table in TYPO3 are correct?",
+      "answers": [
+        "The MM table contains the columns uid_local and uid_foreign",
+        "Sorting of the relation can be stored in the MM table (sorting, sorting_foreign)",
+        "In Extbase, such a relation is typically represented by an ObjectStorage property",
+        "The MM table must contain a 'pid' column and is shown in the list module",
+        "m:n relations require the TCA type 'inline' without foreign_table"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "MM tables link uid_local and uid_foreign and may keep sorting columns; Extbase maps to-many relations into ObjectStorage. MM tables are not regular records with pid and are not edited in the list module.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Relations.html",
+      "tags": [
+        "database",
+        "tca",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-REPO-001",
+      "domain": "dev_concepts",
+      "skill": "repository_design_pattern",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the main purpose of the Repository pattern?",
+      "answers": [
+        "Mediating between the domain and data mapping layers using a collection-like interface for domain objects",
+        "Rendering domain objects as HTML",
+        "Storing global configuration values",
+        "Versioning source code"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A repository hides how domain objects are retrieved and stored, so business logic works with a collection-like API (findAll, add, remove) instead of SQL. It is not a version control repository.",
+      "doc_url": "https://martinfowler.com/eaaCatalog/repository.html",
+      "tags": [
+        "design-patterns",
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-REPO-002",
+      "domain": "dev_concepts",
+      "skill": "repository_design_pattern",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which methods are provided out of the box by TYPO3\\CMS\\Extbase\\Persistence\\Repository?",
+      "answers": [
+        "findAll()",
+        "findByUid()",
+        "add()",
+        "remove()",
+        "renderList()"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The Extbase base repository offers findAll(), findByUid(), findBy()/findOneBy()/count(), add(), update() and remove(). Rendering is not a repository task.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-REPO-003",
+      "domain": "dev_concepts",
+      "skill": "repository_design_pattern",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the effect of this custom repository method?",
+      "code": {
+        "lang": "php",
+        "src": "public function findCheaperThan(float $maxPrice): QueryResultInterface\n{\n    $query = $this->createQuery();\n    $query->matching($query->lessThan('price', $maxPrice));\n    $query->setOrderings(['price' => QueryInterface::ORDER_ASCENDING]);\n    return $query->execute();\n}"
+      },
+      "answers": [
+        "It returns published products cheaper than $maxPrice, ordered by price ascending, using Extbase's query object instead of raw SQL",
+        "It deletes all products cheaper than $maxPrice",
+        "It throws an exception because custom methods in repositories are not allowed",
+        "It returns an array of raw database rows ignoring enable fields"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "createQuery() returns a QueryInterface; constraints and orderings are built with it and execute() returns a QueryResult of domain objects (respecting enable fields and storage pids by default). Custom finder methods are the intended way to extend repositories.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-SANI-001",
+      "domain": "dev_concepts",
+      "skill": "data_sanitization",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is data sanitization?",
+      "answers": [
+        "Cleaning or neutralizing input/output data so it cannot cause harm, e.g. stripping or escaping dangerous characters",
+        "Compressing data before storing it",
+        "Deleting old records from the database",
+        "Encrypting passwords with a hash function"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Sanitization transforms data into a safe form (e.g. casting to int, escaping HTML, removing disallowed tags). Hashing passwords and garbage collection are different security/maintenance concerns.",
+      "doc_url": "https://owasp.org/www-community/attacks/xss/",
+      "tags": [
+        "security"
+      ]
+    },
+    {
+      "id": "SDC-SANI-002",
+      "domain": "dev_concepts",
+      "skill": "data_sanitization",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which measures sanitize data correctly in TYPO3?",
+      "answers": [
+        "Casting an expected integer request argument with (int)",
+        "Relying on Fluid's default escaping of {variable} output",
+        "Using f:format.html / the HTML sanitizer for rich text content from the RTE",
+        "Wrapping user content in <f:format.raw> to remove HTML",
+        "Applying strip_tags() to values before using them in SQL instead of prepared statements"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Type casting, Fluid's automatic escaping and the TYPO3 HTML sanitizer (used by parseFunc/f:format.html) neutralize dangerous content. f:format.raw disables escaping, and strip_tags() does not protect against SQL injection.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Security/GuidelinesExtensionDevelopment/Index.html",
+      "tags": [
+        "security"
+      ]
+    },
+    {
+      "id": "SDC-SANI-003",
+      "domain": "dev_concepts",
+      "skill": "data_sanitization",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the security problem in this Fluid template?",
+      "code": {
+        "lang": "html",
+        "src": "<div class=\"comment\">\n    <f:format.raw>{comment.text}</f:format.raw>\n</div>"
+      },
+      "answers": [
+        "f:format.raw disables escaping, so user-supplied HTML/JavaScript is output unescaped (XSS)",
+        "There is no problem; Fluid always escapes output regardless of ViewHelpers",
+        "f:format.raw removes all HTML tags, so the comment is displayed without formatting",
+        "The template causes an SQL injection"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "By default Fluid escapes variables with htmlspecialchars; f:format.raw explicitly turns that off. Combined with user input this enables cross-site scripting. It has nothing to do with SQL.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/Security/GuidelinesExtensionDevelopment/Index.html",
+      "tags": [
+        "security",
+        "fluid"
+      ]
+    },
+    {
+      "id": "SDC-ERR-001",
+      "domain": "dev_concepts",
+      "skill": "error_exception_handling",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which PHP construct catches an exception so the program can react to it?",
+      "answers": [
+        "try { ... } catch (SomeException $e) { ... }",
+        "if (error) { ... }",
+        "on_error { ... }",
+        "rescue (SomeException $e) { ... }"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PHP handles exceptions with try/catch (and optionally finally). The other constructs do not exist in PHP.",
+      "doc_url": "https://www.php.net/manual/en/language.exceptions.php",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-ERR-002",
+      "domain": "dev_concepts",
+      "skill": "error_exception_handling",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which convention does TYPO3 use for exception codes in core and extension code?",
+      "answers": [
+        "The current Unix timestamp at the time the exception is written, making codes unique",
+        "Consecutive numbers starting at 1 per extension",
+        "The HTTP status code of the response",
+        "The line number where the exception is thrown"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 coding guidelines require a unique exception code, by convention the Unix timestamp of when the code was written, e.g. throw new \\RuntimeException('...', 1730000000). This makes the code easily searchable.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/PhpArchitecture/WorkingWithExceptions.html",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-ERR-003",
+      "domain": "dev_concepts",
+      "skill": "error_exception_handling",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about error and exception handling in TYPO3 v14 are correct?",
+      "answers": [
+        "Production and debug exception handlers are configured in $GLOBALS['TYPO3_CONF_VARS']['SYS']['productionExceptionHandler'] / ['debugExceptionHandler']",
+        "Site configuration can define errorHandling for status codes such as 404 (e.g. show a page or a Fluid template)",
+        "Throwing PropagateResponseException allows returning a prepared PSR-7 response from deep within the code",
+        "Catching \\Throwable everywhere and ignoring it is recommended to avoid error pages",
+        "displayErrors = 1 should be enabled on production systems"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 has configurable exception handlers, per-site error handling (Page, Fluid, PHP) and PropagateResponseException for early responses. Silently swallowing exceptions hides bugs, and displaying errors in production leaks information.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Index.html",
+      "tags": [
+        "php"
+      ]
+    },
+    {
+      "id": "SDC-DEBUG-001",
+      "domain": "dev_concepts",
+      "skill": "debugging",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which Fluid ViewHelper outputs the content and structure of a variable for debugging?",
+      "answers": [
+        "<f:debug>{variable}</f:debug>",
+        "<f:dump>{variable}</f:dump>",
+        "<f:var_dump>{variable}</f:var_dump>",
+        "<f:inspect>{variable}</f:inspect>"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "f:debug renders a debug view of the given variable (using Extbase's DebuggerUtility). The other ViewHelpers do not exist in Fluid core.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/Index.html",
+      "tags": [
+        "debugging",
+        "fluid"
+      ]
+    },
+    {
+      "id": "SDC-DEBUG-002",
+      "domain": "dev_concepts",
+      "skill": "debugging",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which tools and settings help with debugging a TYPO3 v14 installation?",
+      "answers": [
+        "Using Xdebug with step debugging in the IDE",
+        "\\TYPO3\\CMS\\Extbase\\Utility\\DebuggerUtility::var_dump($object)",
+        "Activating the 'Debug' configuration preset in Admin Tools > Settings",
+        "Setting the application context TYPO3_CONTEXT=Development",
+        "Enabling 'Optimize database tables' in the Scheduler"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Xdebug, DebuggerUtility, the Debug preset (displayErrors, exception handler, etc.) and the Development context all support debugging. Optimizing tables is a maintenance task.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Debugging/Index.html",
+      "tags": [
+        "debugging"
+      ]
+    },
+    {
+      "id": "SDC-DEBUG-003",
+      "domain": "dev_concepts",
+      "skill": "debugging",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A frontend shows an outdated value after changing a template. Which is the most systematic first debugging step?",
+      "answers": [
+        "Reproduce the issue and isolate the cause, e.g. clear caches, check logs in var/log and verify the effective configuration",
+        "Reinstall TYPO3 completely",
+        "Add random var_dump() calls in core files and commit them",
+        "Disable all extensions on the production system"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Debugging means reproducing, isolating and verifying hypotheses: caches, log files (var/log/typo3_*.log) and the configuration modules reveal the actual state. Editing core files or disabling everything in production is neither systematic nor safe.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Index.html",
+      "tags": [
+        "debugging"
+      ]
+    },
+    {
+      "id": "SDC-CACHE-001",
+      "domain": "dev_concepts",
+      "skill": "caching",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In the TYPO3 caching framework, what is the role of the cache 'frontend' vs. the cache 'backend'?",
+      "answers": [
+        "The frontend is the API used by code (and handles e.g. serialization); the backend stores the data (database, file, Redis, ...)",
+        "The frontend caches pages for website visitors; the backend caches the TYPO3 backend modules",
+        "The frontend is used only in production; the backend only in development",
+        "There is no difference; both terms refer to the same class"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Each cache combines a frontend (VariableFrontend, PhpFrontend) offering get/set/has/flushByTag, with a storage backend such as Typo3DatabaseBackend, FileBackend or RedisBackend. The names are unrelated to the website frontend/backend.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Architecture/Index.html",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-CACHE-002",
+      "domain": "dev_concepts",
+      "skill": "caching",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the TYPO3 caching framework are correct?",
+      "answers": [
+        "Caches are configured in $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']",
+        "Entries can be tagged and invalidated together with flushByTag()",
+        "A cache instance can be obtained via CacheManager::getCache('identifier') or injected via DI",
+        "Caches can be assigned to groups such as 'pages' and 'system' for selective flushing",
+        "All caches are always stored in Redis"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Caches are declared in cacheConfigurations with frontend, backend, options and groups; tagging allows targeted invalidation. The default backend for most caches is the database or file system; Redis is optional.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Index.html",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-CACHE-003",
+      "domain": "dev_concepts",
+      "skill": "caching",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What does the following code do?",
+      "code": {
+        "lang": "php",
+        "src": "$identifier = 'product_stats_42';\n$value = $this->cache->get($identifier);\nif ($value === false) {\n    $value = $this->calculator->calculate(42);\n    $this->cache->set($identifier, $value, ['product_42'], 3600);\n}\nreturn $value;"
+      },
+      "answers": [
+        "It returns a cached value if present; otherwise it computes it and stores it for one hour tagged 'product_42'",
+        "It always recomputes the value and never reads from the cache",
+        "It flushes the whole cache before every set() call",
+        "It stores the value permanently and ignores the lifetime argument"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "This is the cache-aside pattern: check with get(), compute on miss and set() with tags and lifetime (3600 seconds). Later the entry can be invalidated with flushByTag('product_42').",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Developer/Index.html",
+      "tags": [
+        "caching"
+      ]
+    },
+    {
+      "id": "SDC-VALID-001",
+      "domain": "dev_concepts",
+      "skill": "data_validation",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is the difference between data validation and data sanitization?",
+      "answers": [
+        "Validation checks whether data meets rules and rejects it otherwise; sanitization transforms data into a safe form",
+        "Validation is done in the browser only; sanitization on the server only",
+        "Validation encrypts data; sanitization decrypts it",
+        "There is no difference"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Validation answers 'is this input acceptable?' (e.g. a valid e-mail) and rejects invalid data, whereas sanitization cleans or escapes data. Client-side validation alone is never sufficient; the server must validate as well.",
+      "doc_url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+      "tags": [
+        "security",
+        "validation"
+      ]
+    },
+    {
+      "id": "SDC-VALID-002",
+      "domain": "dev_concepts",
+      "skill": "data_validation",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How is a property of an Extbase domain model validated as not empty and at most 255 characters long in TYPO3 v14?",
+      "answers": [
+        "#[Validate('NotEmpty')] and #[Validate('StringLength', options: ['maximum' => 255])] on the property",
+        "@validate NotEmpty, StringLength(maximum=255) in the docblock",
+        "'eval' => 'required,max255' in Services.yaml",
+        "Calling $this->validate() at the beginning of each controller action"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extbase validators are declared with the #[Validate] attribute (TYPO3\\CMS\\Extbase\\Attribute\\Validate). Extbase validates action arguments automatically before the action is called; docblock annotations are no longer supported.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html",
+      "tags": [
+        "extbase",
+        "validation"
+      ]
+    },
+    {
+      "id": "SDC-VALID-003",
+      "domain": "dev_concepts",
+      "skill": "data_validation",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about validation in TYPO3 v14 are correct?",
+      "answers": [
+        "When Extbase argument validation fails, the request is forwarded to the errorAction, which by default returns to the referring action",
+        "#[IgnoreValidation] can be used to skip validation of an action argument, e.g. for an edit form",
+        "In TCA, a field can be made mandatory with 'required' => true",
+        "Backend TCA validation also automatically validates Extbase frontend form input",
+        "Client-side HTML5 'required' attributes make server-side validation unnecessary"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Extbase validates arguments and on failure calls errorAction (forwarding back with errors). IgnoreValidation skips argument validation, and TCA 'required' validates backend forms. TCA eval/required does not apply to Extbase frontend input, and client-side checks can be bypassed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html",
+      "tags": [
+        "extbase",
+        "validation"
+      ]
+    },
+    {
+      "id": "SDC-PKG-001",
+      "domain": "dev_concepts",
+      "skill": "package_dependency_management",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which file records the exact installed versions of all Composer dependencies so that every environment installs the same versions?",
+      "answers": [
+        "composer.lock",
+        "composer.json",
+        "vendor/autoload.php",
+        "ext_emconf.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "composer.lock pins the resolved versions; 'composer install' installs exactly these. composer.json contains the version constraints, and vendor/autoload.php is the generated autoloader.",
+      "doc_url": "https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control",
+      "tags": [
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-PKG-002",
+      "domain": "dev_concepts",
+      "skill": "package_dependency_management",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What is the difference between 'composer install' and 'composer update'?",
+      "answers": [
+        "install installs versions from composer.lock; update resolves new versions within the constraints and rewrites composer.lock",
+        "install downloads only TYPO3 core; update downloads extensions",
+        "install is for production only; update cannot be used in production",
+        "There is no difference; update is an alias"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "composer install is reproducible (lock file), composer update looks for newer versions allowed by composer.json and updates the lock file. Deployments typically run install with the committed lock file.",
+      "doc_url": "https://getcomposer.org/doc/03-cli.md#update-u-upgrade",
+      "tags": [
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-PKG-003",
+      "domain": "dev_concepts",
+      "skill": "package_dependency_management",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the composer.json of a TYPO3 v14 extension are correct?",
+      "code": {
+        "lang": "json",
+        "src": "{\n    \"name\": \"vendor/my-ext\",\n    \"type\": \"typo3-cms-extension\",\n    \"require\": {\n        \"typo3/cms-core\": \"^14.3\"\n    },\n    \"extra\": {\n        \"typo3/cms\": {\n            \"extension-key\": \"my_ext\"\n        }\n    }\n}"
+      },
+      "answers": [
+        "The 'type' should be 'typo3-cms-extension'",
+        "The extension key is defined in extra.typo3/cms.extension-key",
+        "Dependencies to TYPO3 core packages are expressed e.g. as \"typo3/cms-core\": \"^14.3\"",
+        "Test tools like PHPUnit belong in 'require' so they are installed in production",
+        "Composer ignores the 'require' section of extensions installed as dependencies"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 extensions use type typo3-cms-extension, declare their key in extra.typo3/cms.extension-key and require core packages with version constraints. Development tools belong in require-dev, and Composer resolves 'require' of all packages transitively.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/ComposerJson.html",
+      "tags": [
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-COC-001",
+      "domain": "dev_concepts",
+      "skill": "convention_over_configuration",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does 'Convention over Configuration' mean?",
+      "answers": [
+        "Sensible defaults and naming conventions apply automatically; configuration is needed only for deviations",
+        "Every setting must be configured explicitly before the application works",
+        "Configuration files take precedence over code conventions in all cases",
+        "Conventions are only documented, never enforced by the framework"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The framework assumes conventional names/locations (e.g. template paths, table names), so developers only configure what differs. This reduces boilerplate.",
+      "doc_url": "https://en.wikipedia.org/wiki/Convention_over_configuration",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-COC-002",
+      "domain": "dev_concepts",
+      "skill": "convention_over_configuration",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which are examples of convention over configuration in TYPO3/Extbase?",
+      "answers": [
+        "The template of PostController::listAction() is looked up as Resources/Private/Templates/Post/List.html",
+        "A model Vendor\\Blog\\Domain\\Model\\Post is mapped to the table tx_blog_domain_model_post",
+        "Configuration/TCA/<tablename>.php is loaded automatically to define the TCA of that table",
+        "Each extension must list all of its PHP classes in ext_emconf.php",
+        "Fluid templates must always be registered individually in TypoScript"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Extbase derives template paths and table names from class/action names, and TYPO3 loads TCA files by naming convention. Classes are found by PSR-4 autoloading, and template paths only need configuration for overrides.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Index.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-COC-003",
+      "domain": "dev_concepts",
+      "skill": "convention_over_configuration",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Following Extbase conventions, which repository class belongs to the model Vendor\\Shop\\Domain\\Model\\Product?",
+      "answers": [
+        "Vendor\\Shop\\Domain\\Repository\\ProductRepository",
+        "Vendor\\Shop\\Repository\\Product",
+        "Vendor\\Shop\\Domain\\Model\\ProductRepository",
+        "Vendor\\Shop\\Persistence\\ProductStorage"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "By convention the repository lives in Domain\\Repository and is named <Model>Repository; Extbase derives the managed object type from that name.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html",
+      "tags": [
+        "extbase"
+      ]
+    },
+    {
+      "id": "SDC-SEMVER-001",
+      "domain": "dev_concepts",
+      "skill": "semantic_versioning",
+      "type": "single",
+      "difficulty": 1,
+      "question": "According to Semantic Versioning, which part of the version must be incremented for a backwards-incompatible API change?",
+      "answers": [
+        "MAJOR",
+        "MINOR",
+        "PATCH",
+        "The build metadata"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "SemVer MAJOR.MINOR.PATCH: MAJOR for incompatible changes, MINOR for backwards-compatible features, PATCH for backwards-compatible bug fixes.",
+      "doc_url": "https://semver.org/",
+      "tags": [
+        "semver"
+      ]
+    },
+    {
+      "id": "SDC-SEMVER-002",
+      "domain": "dev_concepts",
+      "skill": "semantic_versioning",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which versions satisfy the Composer constraint \"^14.3\"?",
+      "answers": [
+        ">= 14.3.0 and < 15.0.0",
+        ">= 14.3.0 and < 14.4.0",
+        "Exactly 14.3.0",
+        ">= 14.3.0 with no upper limit"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The caret operator allows all non-breaking updates according to SemVer: ^14.3 means >=14.3.0 <15.0.0. The tilde ~14.3.0 would mean >=14.3.0 <14.4.0.",
+      "doc_url": "https://getcomposer.org/doc/articles/versions.md#caret-version-range-",
+      "tags": [
+        "semver",
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-SEMVER-003",
+      "domain": "dev_concepts",
+      "skill": "semantic_versioning",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "An extension is at version 2.4.1. Which next version numbers are correct according to SemVer?",
+      "answers": [
+        "Bug fix only: 2.4.2",
+        "New backwards-compatible feature: 2.5.0",
+        "Removal of a public method: 3.0.0",
+        "New backwards-compatible feature: 2.4.2",
+        "Removal of a public method: 2.5.0"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Patch releases contain fixes, minor releases add compatible features (resetting PATCH to 0), and breaking changes require a new MAJOR version (resetting MINOR and PATCH).",
+      "doc_url": "https://semver.org/",
+      "tags": [
+        "semver"
+      ]
+    },
+    {
+      "id": "SDC-AUTO-001",
+      "domain": "dev_concepts",
+      "skill": "code_autoloading",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which PSR standard defines how a fully qualified class name maps to a file path for autoloading?",
+      "answers": [
+        "PSR-4",
+        "PSR-3",
+        "PSR-7",
+        "PSR-14"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PSR-4 maps a namespace prefix to a base directory, the remaining namespace parts to subdirectories and the class name to <ClassName>.php. PSR-3 is logging, PSR-7 HTTP messages, PSR-14 event dispatching.",
+      "doc_url": "https://www.php-fig.org/psr/psr-4/",
+      "tags": [
+        "autoloading"
+      ]
+    },
+    {
+      "id": "SDC-AUTO-002",
+      "domain": "dev_concepts",
+      "skill": "code_autoloading",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Given the following autoload configuration, in which file must the class Vendor\\MyExt\\Service\\Mailer be located?",
+      "code": {
+        "lang": "json",
+        "src": "{\n    \"autoload\": {\n        \"psr-4\": {\n            \"Vendor\\\\MyExt\\\\\": \"Classes/\"\n        }\n    }\n}"
+      },
+      "answers": [
+        "Classes/Service/Mailer.php",
+        "Classes/Vendor/MyExt/Service/Mailer.php",
+        "Service/Mailer.class.php",
+        "Classes/MyExt/Service/Mailer.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The prefix Vendor\\MyExt\\ maps to Classes/, the remaining namespace part Service becomes a subdirectory and the class name the file name. The namespace prefix itself is not repeated in the path.",
+      "doc_url": "https://www.php-fig.org/psr/psr-4/",
+      "tags": [
+        "autoloading",
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-AUTO-003",
+      "domain": "dev_concepts",
+      "skill": "code_autoloading",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about autoloading in a Composer-based TYPO3 v14 project are correct?",
+      "answers": [
+        "Composer generates vendor/autoload.php, which registers the autoloader via spl_autoload_register()",
+        "After adding a new PSR-4 namespace to composer.json, 'composer dump-autoload' must be run",
+        "Test classes should be mapped in 'autoload-dev' rather than 'autoload'",
+        "Every class must be loaded manually with require_once in ext_localconf.php",
+        "Autoloading loads all classes of all extensions eagerly at the start of each request"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Composer's autoloader is registered with spl_autoload_register() and loads classes lazily on first use; namespace changes require regenerating the autoload files, and dev-only classes go into autoload-dev. Manual require_once is unnecessary.",
+      "doc_url": "https://getcomposer.org/doc/04-schema.md#autoload",
+      "tags": [
+        "autoloading",
+        "composer"
+      ]
+    },
+    {
+      "id": "SDC-LOOSE-001",
+      "domain": "dev_concepts",
+      "skill": "loose_coupling",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does loose coupling mean?",
+      "answers": [
+        "Components depend on each other as little as possible, typically via abstractions, so they can change independently",
+        "Components share global variables to communicate quickly",
+        "All classes are placed in one file to reduce dependencies",
+        "Components are connected only via database triggers"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Loosely coupled components know little about each other's internals and communicate through interfaces, events or messages. Shared global state increases coupling.",
+      "doc_url": "https://en.wikipedia.org/wiki/Loose_coupling",
+      "tags": [
+        "architecture"
+      ]
+    },
+    {
+      "id": "SDC-LOOSE-002",
+      "domain": "dev_concepts",
+      "skill": "loose_coupling",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which techniques reduce coupling in a TYPO3 extension?",
+      "answers": [
+        "Type-hinting against interfaces and injecting implementations via DI",
+        "Reacting to core behaviour with PSR-14 event listeners instead of XCLASSing core classes",
+        "Dispatching messages via the message bus to decouple sender and handler",
+        "Calling static methods of other extensions' internal classes directly",
+        "Accessing other extensions' database tables with hard-coded SQL"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Interfaces with DI, events and messages let components interact without knowing concrete implementations. Static calls to internal classes and direct SQL against foreign tables create tight coupling.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "architecture",
+        "events"
+      ]
+    },
+    {
+      "id": "SDC-LOOSE-003",
+      "domain": "dev_concepts",
+      "skill": "loose_coupling",
+      "type": "single",
+      "difficulty": 3,
+      "question": "How can the tight coupling in this class be removed most effectively?",
+      "code": {
+        "lang": "php",
+        "src": "final class OrderService\n{\n    public function place(Order $order): void\n    {\n        // ...\n        $mailer = new SmtpMailer('smtp.example.org', 587);\n        $mailer->send($order->getCustomerEmail(), 'Order placed');\n    }\n}"
+      },
+      "answers": [
+        "Depend on an interface (e.g. NotifierInterface) passed in via the constructor and configured in Services.yaml",
+        "Make SmtpMailer a static class",
+        "Move the 'new SmtpMailer()' call into a private method",
+        "Mark OrderService as public in Services.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The class creates a concrete dependency itself, so it cannot be replaced or mocked. Injecting an abstraction (Dependency Inversion) decouples it; moving 'new' into another method or making things static keeps the coupling.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
+      "tags": [
+        "architecture",
+        "di"
+      ]
+    },
+    {
+      "id": "SDC-EVENT-001",
+      "domain": "dev_concepts",
+      "skill": "event_handling",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which PSR standard does the TYPO3 event dispatcher implement?",
+      "answers": [
+        "PSR-14",
+        "PSR-15",
+        "PSR-11",
+        "PSR-6"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3's event dispatching follows PSR-14 (Event Dispatcher). PSR-15 is HTTP middleware, PSR-11 container interface, PSR-6 caching.",
+      "doc_url": "https://www.php-fig.org/psr/psr-14/",
+      "tags": [
+        "events"
+      ]
+    },
+    {
+      "id": "SDC-EVENT-002",
+      "domain": "dev_concepts",
+      "skill": "event_handling",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about PSR-14 events in TYPO3 v14 are correct?",
+      "answers": [
+        "Listeners can be registered with the #[AsEventListener] attribute",
+        "Listeners can alternatively be registered in Services.yaml with the 'event.listener' tag",
+        "An event implementing StoppableEventInterface can stop the propagation to further listeners",
+        "Events are dispatched with $eventDispatcher->dispatch($event) using the injected Psr\\EventDispatcher\\EventDispatcherInterface",
+        "Listeners must be registered in $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['hooks']"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "TYPO3 registers listeners via attribute or event.listener tag and dispatches events through the injected PSR-14 dispatcher; stoppable events can end propagation. SC_OPTIONS hooks are the legacy mechanism and not used for PSR-14 listeners.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events"
+      ]
+    },
+    {
+      "id": "SDC-EVENT-003",
+      "domain": "dev_concepts",
+      "skill": "event_handling",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Two listeners for the same event must run in a defined order. How can this be achieved in TYPO3 v14?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsEventListener(\n    identifier: 'my-ext/second-listener',\n    after: 'my-ext/first-listener',\n)]\nfinal class SecondListener\n{\n    public function __invoke(SomeEvent $event): void {}\n}"
+      },
+      "answers": [
+        "Use the 'before' or 'after' option referencing another listener's identifier",
+        "Name the listener classes alphabetically",
+        "Set a 'priority' key in ext_emconf.php",
+        "The order cannot be influenced; listeners run in random order"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Listener ordering is defined with before/after (attribute arguments or Services.yaml tag options) referencing listener identifiers. Without it, the order follows registration (package loading) and should not be relied upon.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
+      "tags": [
+        "events"
+      ]
+    }
+  ]
+}

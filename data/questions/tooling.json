@@ -1,0 +1,481 @@
+{
+  "questions": [
+    {
+      "id": "TOOL-DEBUG-001",
+      "domain": "tooling",
+      "skill": "debugging_in_php",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which utility renders an HTML dump of an Extbase domain object, including its type, properties and recursion handling?",
+      "answers": [
+        "\\TYPO3\\CMS\\Extbase\\Utility\\DebuggerUtility::var_dump()",
+        "\\TYPO3\\CMS\\Core\\Log\\LogManager::dump()",
+        "\\TYPO3\\CMS\\Core\\Utility\\ArrayUtility::dump()",
+        "\\TYPO3\\CMS\\Extbase\\Persistence\\Repository::debug()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "DebuggerUtility::var_dump($variable, 'Title') prints a structured, collapsible dump with depth control; in Fluid the equivalent is <f:debug>. The other methods do not exist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Debugging/Index.html"
+    },
+    {
+      "id": "TOOL-DEBUG-002",
+      "domain": "tooling",
+      "skill": "debugging_in_php",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about step debugging with Xdebug 3 are correct?",
+      "answers": [
+        "Step debugging is enabled with xdebug.mode=debug.",
+        "The default port the IDE listens on is 9003.",
+        "With xdebug.start_with_request=trigger, a session starts only when a trigger such as the XDEBUG_SESSION cookie or parameter is present.",
+        "The default port is 9000.",
+        "xdebug.remote_enable=1 is required to activate step debugging."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Xdebug 3 replaced the remote_* settings with xdebug.mode and xdebug.client_host/client_port, and changed the default port from 9000 to 9003.",
+      "doc_url": "https://xdebug.org/docs/step_debug"
+    },
+    {
+      "id": "TOOL-DEBUG-003",
+      "domain": "tooling",
+      "skill": "debugging_in_php",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What is the effect of this configuration?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['SYS']['displayErrors'] = -1;\n$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = '192.168.1.*,127.0.0.1';"
+      },
+      "answers": [
+        "Detailed exception output (debug exception handler) is shown only to clients whose IP matches devIPmask; all others get the production exception handler.",
+        "Errors are never displayed, regardless of the client IP.",
+        "Errors are always displayed to everybody, devIPmask is ignored.",
+        "Errors are only written to the log file, and devIPmask controls who may read it in the backend."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "displayErrors = -1 lets TYPO3 decide: if the client IP matches devIPmask, the debugExceptionHandler is used, otherwise the productionExceptionHandler. 0 never and 1 always displays errors.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Configuration/Index.html"
+    },
+    {
+      "id": "TOOL-LOG-001",
+      "domain": "tooling",
+      "skill": "system_and_typo3_error_logs",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In a Composer-based TYPO3 v14 installation, where does the default FileWriter write its log files (e.g. typo3_<hash>.log)?",
+      "answers": [
+        "var/log/",
+        "public/typo3temp/logs/",
+        "public/typo3conf/logs/",
+        "/var/log/typo3/"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Log files go to <var-path>/log, which is var/log/ in Composer mode and typo3temp/var/log/ in classic mode. typo3conf no longer exists in Composer mode.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Configuration/Index.html"
+    },
+    {
+      "id": "TOOL-LOG-002",
+      "domain": "tooling",
+      "skill": "system_and_typo3_error_logs",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which log writers are shipped with the TYPO3 Core logging API?",
+      "answers": [
+        "FileWriter",
+        "DatabaseWriter",
+        "SyslogWriter",
+        "RotatingFileWriter",
+        "SlackWriter",
+        "ElasticsearchWriter"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "TYPO3\\CMS\\Core\\Log\\Writer contains FileWriter, RotatingFileWriter, DatabaseWriter (sys_log), SyslogWriter, PhpErrorLogWriter and NullWriter. Writers for Slack or Elasticsearch need third-party code.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Writers/Index.html"
+    },
+    {
+      "id": "TOOL-LOG-003",
+      "domain": "tooling",
+      "skill": "system_and_typo3_error_logs",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What does this configuration in config/system/additional.php do?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['LOG']['MyVendor']['MyExt']['writerConfiguration'] = [\n    \\Psr\\Log\\LogLevel::DEBUG => [\n        \\TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter::class => [\n            'logFile' => \\TYPO3\\CMS\\Core\\Core\\Environment::getVarPath() . '/log/myext.log',\n        ],\n    ],\n];"
+      },
+      "answers": [
+        "Log records of level DEBUG and above from classes in the MyVendor\\MyExt namespace are written to var/log/myext.log.",
+        "Only records of exactly level DEBUG from MyVendor\\MyExt are written to var/log/myext.log.",
+        "All log records of the whole installation are written to var/log/myext.log.",
+        "Debug output of MyVendor\\MyExt is displayed in the frontend."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "writerConfiguration is keyed by the minimum log level and applies to the namespace path of the logger; a writer receives all records of that level and higher severity.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Logging/Configuration/Index.html"
+    },
+    {
+      "id": "TOOL-LOG-004",
+      "domain": "tooling",
+      "skill": "system_and_typo3_error_logs",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A production site shows \"Oops, an error occurred! Code: 20261101123456ab12cd34\". Where do you find the details of this exception?",
+      "answers": [
+        "In the TYPO3 log file in var/log/, searching for the shown code",
+        "In the browser's JavaScript console",
+        "In the HTML source of the page, as a comment",
+        "Nowhere; the production exception handler discards the exception"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The production exception handler hides details from visitors but logs the exception together with the shown code, so it can be found in the TYPO3 log. If TYPO3 cannot even boot, check the web server and PHP error logs.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Configuration/Index.html"
+    },
+    {
+      "id": "TOOL-SCAN-001",
+      "domain": "tooling",
+      "skill": "extension_scanner",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where do you run the Extension Scanner in TYPO3?",
+      "answers": [
+        "In the Upgrade backend module, using \"Scan Extension Files\"",
+        "In the Extension Manager, using \"Check for updates\"",
+        "In the Reports module, under \"Status Report\"",
+        "In the Scheduler, using the task \"Extension scanner\""
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Extension Scanner is part of the Upgrade module (System > Upgrade in v14). It scans one or all non-Core extensions and links matches to the related changelog entries.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/ExtensionScanner.html"
+    },
+    {
+      "id": "TOOL-SCAN-002",
+      "domain": "tooling",
+      "skill": "extension_scanner",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The Extension Scanner reports a \"weak\" match. What does that mean?",
+      "answers": [
+        "The scanner could not verify the match exactly (e.g. only the method name of a dynamic call matched), so it may be a false positive.",
+        "The deprecated code will still work in the next major version.",
+        "The match is in a comment and can be ignored.",
+        "The extension uses the API correctly but inefficiently."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A strong match means the scanner is sure, e.g. full class name plus method name and argument count. Weak matches, typically dynamic -> calls where the class is unknown, need manual review.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/ExtensionScanner.html"
+    },
+    {
+      "id": "TOOL-SCAN-003",
+      "domain": "tooling",
+      "skill": "extension_scanner",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the Extension Scanner are correct?",
+      "answers": [
+        "It performs static analysis of PHP files; TypoScript and Fluid templates are not scanned.",
+        "It does not understand version checks, so calls wrapped in a TYPO3 version check are still reported.",
+        "A single false positive can be suppressed with a // @extensionScannerIgnoreLine comment above the line.",
+        "A result without matches guarantees that the extension works with the new TYPO3 version.",
+        "It automatically rewrites deprecated calls to the new API."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The scanner is a static PHP analyzer that links findings to changelog documents. It cannot follow runtime flow, does not modify code (that is what Rector does) and a clean result is no guarantee of compatibility.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/ExtensionScanner.html"
+    },
+    {
+      "id": "TOOL-ADMP-001",
+      "domain": "tooling",
+      "skill": "admin_panel_usage_as_a_developer",
+      "type": "single",
+      "difficulty": 2,
+      "question": "EXT:adminpanel is installed and config.admPanel = 1 is set in TypoScript. What else is required to see the Admin Panel in the frontend?",
+      "code": {
+        "lang": "typoscript",
+        "src": "# TypoScript setup\nconfig.admPanel = 1\n\n# User TSconfig\nadmPanel.enable.all = 1"
+      },
+      "answers": [
+        "A logged-in backend user for whom the panel is enabled (admins by default, others via user TSconfig admPanel.enable)",
+        "A logged-in frontend user",
+        "The application context must be Development",
+        "The URL parameter ?admPanel=1"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Admin Panel is only displayed for logged-in backend users. Admins have admPanel.enable.all by default; other users need it enabled via user TSconfig.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Configuration/Index.html"
+    },
+    {
+      "id": "TOOL-ADMP-002",
+      "domain": "tooling",
+      "skill": "admin_panel_usage_as_a_developer",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which information does the Debug module of the Admin Panel provide?",
+      "answers": [
+        "The PSR-14 events dispatched while rendering the page",
+        "Log entries generated during the current request",
+        "The SQL queries executed for the page, including placeholder values",
+        "The page title providers that were checked",
+        "A CPU profile generated by Xdebug",
+        "OPcache statistics of the server"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The Debug module has the tabs Events, Log, Page title and Query Information. Profiling with Xdebug or OPcache statistics is not part of the Admin Panel.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Inspecting/Debug/Index.html"
+    },
+    {
+      "id": "TOOL-ADMP-003",
+      "domain": "tooling",
+      "skill": "admin_panel_usage_as_a_developer",
+      "type": "single",
+      "difficulty": 3,
+      "question": "How does an extension register its own main module in the Admin Panel?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['adminpanel']['modules']['mymodule'] = [\n    'module' => \\MyVendor\\MyExt\\AdminPanel\\MyModule::class,\n    'before' => ['cache'],\n];"
+      },
+      "answers": [
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['adminpanel']['modules'], with keys 'module' and optional 'before'/'after'",
+        "In Configuration/Backend/Modules.php with the parent 'adminpanel'",
+        "In user TSconfig with admPanel.modules.mymodule = MyVendor\\MyExt\\MyModule",
+        "In Configuration/Sets/*/settings.definitions.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Admin Panel modules (extending AbstractModule and implementing e.g. ShortInfoProviderInterface) are registered in EXTCONF in ext_localconf.php; submodules go below ['modules'][parent]['submodules']. Backend modules and TSconfig are unrelated.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Extending/Index.html"
+    },
+    {
+      "id": "TOOL-CS-001",
+      "domain": "tooling",
+      "skill": "php_code_style_tools",
+      "type": "single",
+      "difficulty": 1,
+      "question": "PHP_CodeSniffer ships two command-line tools. Which one fixes coding standard violations automatically?",
+      "answers": [
+        "phpcbf",
+        "phpcs",
+        "phpstan",
+        "phpunit"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "phpcs (PHP Code Sniffer) detects violations of a ruleset, phpcbf (PHP Code Beautifier and Fixer) fixes the automatically fixable ones. PHPStan is a static analyser and PHPUnit a test framework.",
+      "doc_url": "https://github.com/PHPCSStandards/PHP_CodeSniffer"
+    },
+    {
+      "id": "TOOL-CS-002",
+      "domain": "tooling",
+      "skill": "php_code_style_tools",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In a CI pipeline, PHP-CS-Fixer should report violations and fail without modifying any file. Which command fits?",
+      "code": {
+        "lang": "bash",
+        "src": "# .php-cs-fixer.dist.php exists in the project root\n???"
+      },
+      "answers": [
+        "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "vendor/bin/php-cs-fixer fix --force",
+        "vendor/bin/php-cs-fixer lint src/",
+        "vendor/bin/php-cs-fixer fix --verify-only"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "--dry-run prevents writing changes and makes the command exit with a non-zero code if files need fixing; --diff shows the changes. The other options do not exist.",
+      "doc_url": "https://cs.symfony.com/doc/usage.html"
+    },
+    {
+      "id": "TOOL-CS-003",
+      "domain": "tooling",
+      "skill": "php_code_style_tools",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about PHP code style tools in TYPO3 projects are correct?",
+      "answers": [
+        "The package typo3/coding-standards provides a ready-made PHP-CS-Fixer configuration following the TYPO3 coding guidelines.",
+        "PHP-CS-Fixer is configured with a PHP file such as .php-cs-fixer.dist.php that defines rules (e.g. '@PER-CS') and a Finder.",
+        "PHP_CodeSniffer rulesets are usually configured in a phpcs.xml(.dist) file.",
+        "PHP-CS-Fixer finds type errors and undefined methods like PHPStan.",
+        "Code style tools must be installed as regular (non-dev) dependencies so TYPO3 can run them on every request."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Code style tools format code by rules and are dev dependencies run locally or in CI. Finding type errors is the job of static analysers like PHPStan, not of formatters.",
+      "doc_url": "https://github.com/TYPO3/coding-standards"
+    },
+    {
+      "id": "TOOL-PHPDOC-001",
+      "domain": "tooling",
+      "skill": "phpdocumentor",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which command generates API documentation with phpDocumentor from the src directory into build/api?",
+      "code": {
+        "lang": "bash",
+        "src": "# phpDocumentor is installed as phar or Docker image\n???"
+      },
+      "answers": [
+        "phpdoc run -d src -t build/api",
+        "phpdoc -s src -o build/api",
+        "phpdoc build src build/api",
+        "composer docs src build/api"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "phpDocumentor parses the PHP files in the directories given with -d (directory) and writes the rendered output to -t (target). Settings can also be stored in phpdoc.dist.xml.",
+      "doc_url": "https://docs.phpdoc.org/guide/getting-started/index.html"
+    },
+    {
+      "id": "TOOL-PHPDOC-002",
+      "domain": "tooling",
+      "skill": "phpdocumentor",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which of the following are valid PHPDoc tags that phpDocumentor understands?",
+      "code": {
+        "lang": "php",
+        "src": "/**\n * Imports the given file.\n *\n * @param string $path Absolute file path\n * @return int Number of imported records\n * @throws \\RuntimeException If the file cannot be read\n */\npublic function import(string $path): int"
+      },
+      "answers": [
+        "@param",
+        "@return",
+        "@throws",
+        "@deprecated",
+        "@returns",
+        "@raises"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "@param, @return, @throws and @deprecated are standard PHPDoc tags. @returns and @raises are not PHPDoc tags (they come from other languages' documentation tools).",
+      "doc_url": "https://docs.phpdoc.org/guide/references/phpdoc/tags/index.html"
+    },
+    {
+      "id": "TOOL-PHPDOC-003",
+      "domain": "tooling",
+      "skill": "phpdocumentor",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The official TYPO3 documentation is rendered from reStructuredText with the render-guides tool (Docker image). On which project is it built?",
+      "answers": [
+        "phpDocumentor Guides (phpdocumentor/guides)",
+        "Sphinx",
+        "MkDocs",
+        "Doxygen"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 replaced its Sphinx-based rendering with render-guides, a PHP application built on the phpDocumentor Guides library, which parses reStructuredText and Markdown.",
+      "doc_url": "https://github.com/TYPO3-Documentation/render-guides"
+    },
+    {
+      "id": "TOOL-MIGR-001",
+      "domain": "tooling",
+      "skill": "code_migration",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which tool automatically migrates non-PHP files of a TYPO3 extension, such as TypoScript, FlexForms, Fluid templates and YAML, to a newer TYPO3 version?",
+      "answers": [
+        "Fractor (a9f/typo3-fractor)",
+        "TYPO3 Rector (ssch/typo3-rector)",
+        "PHP-CS-Fixer",
+        "The Extension Scanner"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Rector rewrites PHP code via the AST; Fractor is its counterpart for TypoScript, FlexForm XML, Fluid, YAML, .htaccess and composer.json. The Extension Scanner only reports, it does not change files.",
+      "doc_url": "https://github.com/andreaswolf/fractor"
+    },
+    {
+      "id": "TOOL-MIGR-002",
+      "domain": "tooling",
+      "skill": "code_migration",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does this command do?",
+      "code": {
+        "lang": "bash",
+        "src": "vendor/bin/rector process --dry-run"
+      },
+      "answers": [
+        "Rector shows the changes its configured rules would apply as a diff, without modifying files.",
+        "Rector applies all changes and creates a backup of each file.",
+        "Rector only checks the PHP syntax of all files.",
+        "Rector uploads the code to getrector.com for analysis."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "process applies the rules configured in rector.php; with --dry-run it only prints the diff (and exits non-zero if changes would be made), which is useful for review and CI.",
+      "doc_url": "https://getrector.com/documentation"
+    },
+    {
+      "id": "TOOL-MIGR-003",
+      "domain": "tooling",
+      "skill": "code_migration",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about TYPO3 Rector are correct?",
+      "answers": [
+        "It works on the abstract syntax tree (AST) of the PHP code.",
+        "It provides rule sets for TYPO3 versions, e.g. level sets to upgrade up to a given major version.",
+        "Its changes must be reviewed and tested, because not every breaking change can be migrated automatically.",
+        "It hooks into TYPO3 at runtime and rewrites deprecated calls on the fly.",
+        "It makes reading the changelog unnecessary because it covers all breaking changes."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 Rector (ssch/typo3-rector) is a dev tool built on Rector; it refactors source files based on configured rule sets. Many but not all changelog entries have rules, so manual review and the changelog remain necessary.",
+      "doc_url": "https://github.com/sabbelasichon/typo3-rector"
+    }
+  ]
+}
