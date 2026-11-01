@@ -7,9 +7,9 @@ var flash: ColorRect
 
 
 func _ready() -> void:
-	get_tree().root.theme = ThemeBuilder.build()
-	theme = ThemeBuilder.build()
+	_apply_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	Layout.changed.connect(_on_layout_changed)
 
 	background = ColorRect.new()
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -35,6 +35,17 @@ func _ready() -> void:
 	Router.host = host
 	Router.go("main_menu", {}, false)
 	Audio.play_music("menu")
+
+
+func _apply_theme() -> void:
+	get_tree().root.theme = ThemeBuilder.build()
+	theme = ThemeBuilder.build()
+
+
+func _on_layout_changed(_mode: int) -> void:
+	_apply_theme()
+	Router.apply_layout()
+	Router.reload()
 
 
 func _on_resize() -> void:

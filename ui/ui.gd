@@ -157,7 +157,7 @@ static func scroll(child: Control) -> ScrollContainer:
 ## Standard screen header: back button + title (+ optional right side widget).
 static func header(title: String, on_back: Callable, right: Control = null) -> HBoxContainer:
 	var row := hbox(16)
-	row.add_child(button("Back", "arrow_left", "GhostButton", on_back))
+	row.add_child(button("" if Layout.is_portrait() else "Back", "arrow_left", "GhostButton", on_back))
 	var t := label(title, "HeadingLabel")
 	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(t)

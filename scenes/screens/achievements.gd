@@ -4,9 +4,9 @@ extends Screen
 
 func build() -> void:
 	var p := Profile.data
-	root.add_child(UI.header("Achievements  %d / %d" % [p.achievements.size(), Achievements.LIST.size()], on_back))
+	root.add_child(UI.header(("%d / %d" if portrait() else "Achievements  %d / %d") % [p.achievements.size(), Achievements.LIST.size()], on_back))
 	var grid := GridContainer.new()
-	grid.columns = 3
+	grid.columns = pick(3, 2, 1)
 	grid.add_theme_constant_override("h_separation", 14)
 	grid.add_theme_constant_override("v_separation", 14)
 	for a in Achievements.LIST:

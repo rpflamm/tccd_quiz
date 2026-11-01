@@ -1,5 +1,5 @@
 extends Screen
-## Main menu: profile card, mode cards, navigation.
+## Main menu: profile card, mode cards, navigation. Single column on phones in portrait.
 
 var _cards: GridContainer
 
@@ -10,29 +10,42 @@ func build() -> void:
 	var pool: QuestionPool = QuestionBank.pool
 
 	# ---- top row: logo + profile
-	var top := UI.hbox(24)
+	var brand := UI.hbox(pick(24, 16, 12))
 	var logo := TextureRect.new()
 	logo.texture = load("res://assets/icons/app_icon.svg")
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	logo.custom_minimum_size = Vector2(84, 84)
-	top.add_child(logo)
+	var logo_size: int = pick(84, 60, 52)
+	logo.custom_minimum_size = Vector2(logo_size, logo_size)
+	brand.add_child(logo)
 	var title_col := UI.vbox(0)
-	var title := UI.label("TCCD Quizz", "TitleLabel")
-	title_col.add_child(title)
-	var sub := UI.label("Get ready for the TYPO3 CMS Certified Developer exam  ·  v14 LTS", "MutedLabel")
+	title_col.add_child(UI.label("TCCD Quizz", "TitleLabel"))
+	var sub_text := "Get ready for the TYPO3 CMS Certified Developer exam  ·  v14 LTS"
+	if portrait():
+		sub_text = "TYPO3 CMS Certified Developer · v14 LTS"
+	var sub := UI.wrap_label(sub_text, "MutedLabel")
 	title_col.add_child(sub)
 	title_col.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	top.add_child(title_col)
-	top.add_child(UI.spacer())
-	top.add_child(_profile_card(p))
-	root.add_child(top)
+	title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	brand.add_child(title_col)
+
+	var content := UI.vbox(pick(18, 12, 12))
+	if portrait():
+		content.add_child(brand)
+		content.add_child(_profile_card(p))
+	else:
+		var top := UI.hbox(24)
+		brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		top.add_child(brand)
+		top.add_child(_profile_card(p))
+		content.add_child(top)
 
 	# ---- mode cards
 	_cards = GridContainer.new()
-	_cards.columns = 3
-	_cards.add_theme_constant_override("h_separation", 18)
-	_cards.add_theme_constant_override("v_separation", 18)
+	_cards.columns = pick(3, 3, 1)
+	var gap: int = pick(18, 12, 10)
+	_cards.add_theme_constant_override("h_separation", gap)
+	_cards.add_theme_constant_override("v_separation", gap)
 	_cards.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var due := SrsMode.due_total(pool, p)
 	var last_exam := "No exam taken yet"
@@ -46,28 +59,43 @@ func build() -> void:
 	_add_card("Spaced Repetition", "Leitner boxes bring back exactly the questions you are about to forget.", "brain", Palette.PURPLE, "%d due today" % due if due > 0 else "Nothing due — learn new questions", func(): Router.go("srs_setup"))
 	_add_card("Daily Challenge", "A fresh seeded set every day. Keep your streak alive!", "calendar", Palette.WARNING, daily_text, _start_daily)
 	_add_card("Statistics", "Mastery radar, accuracy per domain and your exam history.", "chart", Palette.TEAL, "Rank: " + Ranks.title_for(p.xp), func(): Router.go("stats"))
-	root.add_child(_cards)
+	content.add_child(_cards)
 
 	# ---- bottom bar
-	var bottom := UI.hbox(10)
-	bottom.add_child(UI.button("Achievements  %d / %d" % [p.achievements.size(), Achievements.LIST.size()], "trophy", "", func(): Router.go("achievements")))
-	bottom.add_child(UI.button("Settings", "gear", "", func(): Router.go("settings")))
-	if OS.get_name() != "Web":
-		bottom.add_child(UI.button("Quit", "cross", "GhostButton", func(): get_tree().quit()))
-	bottom.add_child(UI.spacer())
-	var note := UI.label("Unofficial practice tool · not affiliated with the TYPO3 Association or TYPO3 GmbH", "SmallLabel")
+	var buttons := UI.hbox(10)
+	var ach_text := "%d / %d" if portrait() else "Achievements  %d / %d"
+	buttons.add_child(UI.button(ach_text % [p.achievements.size(), Achievements.LIST.size()], "trophy", "", func(): Router.go("achievements")))
+	buttons.add_child(UI.button("Settings", "gear", "", func(): Router.go("settings")))
+	if OS.get_name() != "Web" and not Layout.touch:
+		buttons.add_child(UI.button("Quit", "cross", "GhostButton", func(): get_tree().quit()))
+	var note := UI.wrap_label("Unofficial practice tool · not affiliated with the TYPO3 Association or TYPO3 GmbH", "SmallLabel")
 	note.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bottom.add_child(note)
-	root.add_child(bottom)
+	if portrait():
+		for b in buttons.get_children():
+			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		content.add_child(buttons)
+		content.add_child(note)
+		root.add_child(UI.scroll(content))
+	else:
+		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		buttons.add_child(note)
+		var bottom := buttons
+		if compact():
+			root.add_child(UI.scroll(content))
+		else:
+			content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+			root.add_child(content)
+		root.add_child(bottom)
 
-	FX.stagger(_cards, 0.06)
+	if not params.get("reloaded", false):
+		FX.stagger(_cards, 0.06)
 	if pool.size() == 0:
 		Router.toast("No questions found", "data/questions/*.json is empty.", "cross", Palette.ERROR)
 
 
 func _profile_card(p: ProfileData) -> PanelContainer:
 	var card := UI.panel("CardPanel")
-	card.custom_minimum_size = Vector2(340, 0)
+	card.custom_minimum_size = Vector2(0 if portrait() else 340, 0)
 	var col := UI.vbox(6)
 	var row := UI.hbox(10)
 	row.add_child(UI.icon("star", 22, Palette.ACCENT_2))
@@ -93,18 +121,21 @@ func _add_card(title: String, desc: String, icon_name: String, color: Color, foo
 	var card := ClickCard.new(color)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var col := UI.vbox(10)
+	if compact():
+		card.add_theme_stylebox_override("panel", ThemeBuilder.box(Palette.SURFACE, 16, Palette.BORDER, 1, 16, 12))
+		card._base_style = card.get_theme_stylebox("panel")
+	var col := UI.vbox(pick(10, 6, 6))
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var head := UI.hbox(14)
-	head.add_child(ClickCard.icon_badge(icon_name, color))
+	head.add_child(ClickCard.icon_badge(icon_name, color, pick(52, 40, 44)))
 	var t := UI.label(title, "SubtitleLabel")
-	t.add_theme_font_size_override("font_size", 22)
+	t.add_theme_font_size_override("font_size", pick(22, 19, 20))
 	t.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	head.add_child(t)
 	col.add_child(head)
-	var d := UI.wrap_label(desc, "MutedLabel")
-	col.add_child(d)
-	col.add_child(UI.spacer(false))
+	col.add_child(UI.wrap_label(desc, "MutedLabel"))
+	if not portrait():
+		col.add_child(UI.spacer(false))
 	var f := UI.label(footer, "SmallLabel")
 	f.add_theme_color_override("font_color", color.lightened(0.2))
 	col.add_child(f)

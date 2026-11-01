@@ -11,6 +11,10 @@ var data := ProfileData.new()
 
 func _ready() -> void:
 	load_profile()
+	if OS.has_feature("web"):
+		# Ask the browser to keep IndexedDB data (prevents Safari's 7-day eviction for installed apps
+		# and makes Chrome/Firefox treat the storage as persistent).
+		JavaScriptBridge.eval("navigator.storage && navigator.storage.persist && navigator.storage.persist()", true)
 
 
 func load_profile() -> void:

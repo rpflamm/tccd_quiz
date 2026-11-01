@@ -4,7 +4,7 @@ extends Screen
 
 func build() -> void:
 	root.add_child(UI.header("Settings", on_back))
-	var cols := UI.hbox(18)
+	var cols := flow(pick(18, 12, 12))
 	cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var left := UI.panel("CardPanel")
@@ -40,11 +40,12 @@ func build() -> void:
 	rc.add_child(UI.gap(6))
 	rc.add_child(UI.label("Credits", "SubtitleLabel"))
 	rc.add_child(UI.wrap_label("Engine: Godot 4.7 (MIT)  ·  Tests: GUT (MIT)\nFonts: Inter, JetBrains Mono (SIL OFL 1.1)\nIcons, sounds and music: generated for this project (tools/gen_icons.py, tools/gen_audio.py)\nSyllabus: TYPO3 Education Committee — CMS Certified Developer 14 LTS", "SmallLabel"))
-	rc.add_child(UI.spacer(false))
+	if not compact():
+		rc.add_child(UI.spacer(false))
 	rc.add_child(UI.label("Version %s" % ProjectSettings.get_setting("application/config/version", "dev"), "SmallLabel"))
 	right.add_child(rc)
 	cols.add_child(right)
-	root.add_child(cols)
+	root.add_child(scroll_if_compact(cols))
 
 
 func _skill_count() -> int:
@@ -58,7 +59,7 @@ func _slider(title: String, value: float, on_change: Callable) -> HBoxContainer:
 	var row := UI.hbox(12)
 	row.add_child(UI.icon("volume", 20, Palette.MUTED))
 	var l := UI.label(title, "MutedLabel")
-	l.custom_minimum_size = Vector2(150, 0)
+	l.custom_minimum_size = Vector2(pick(150, 130, 96), 0)
 	row.add_child(l)
 	var s := HSlider.new()
 	s.min_value = 0.0
@@ -80,6 +81,8 @@ func _slider(title: String, value: float, on_change: Callable) -> HBoxContainer:
 func _toggle(title: String, value: bool, on_change: Callable) -> CheckButton:
 	var c := CheckButton.new()
 	c.text = title
+	c.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.button_pressed = value
 	c.toggled.connect(func(v: bool):
 		Audio.play("click")

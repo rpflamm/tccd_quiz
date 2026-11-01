@@ -7,7 +7,11 @@ func build() -> void:
 	var pool: QuestionPool = QuestionBank.pool
 	root.add_child(UI.header("Statistics", on_back))
 
-	var tiles := UI.hbox(14)
+	var content := UI.vbox(pick(18, 12, 12))
+	var tiles := GridContainer.new()
+	tiles.columns = pick(5, 5, 2)
+	tiles.add_theme_constant_override("h_separation", 12)
+	tiles.add_theme_constant_override("v_separation", 12)
 	var answered := p.counter("answered")
 	var correct := p.counter("correct")
 	tiles.add_child(_tile("Answered", str(answered), "check", Palette.INFO))
@@ -15,14 +19,15 @@ func build() -> void:
 	tiles.add_child(_tile("XP", str(p.xp), "star", Palette.ACCENT))
 	tiles.add_child(_tile("Exams passed", "%d / %d" % [p.exam_history.filter(func(e): return e.get("passed", false)).size(), p.exam_history.size()], "exam", Palette.PURPLE))
 	tiles.add_child(_tile("Arcade best", str(p.highscore("arcade")), "flame", Palette.ERROR))
-	root.add_child(tiles)
+	content.add_child(tiles)
 
-	var body := UI.hbox(18)
+	var body := flow(pick(18, 12, 12))
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var radar_card := UI.panel("CardPanel")
 	var rc := UI.vbox(6)
 	rc.add_child(UI.label("Mastery (orange: box ≥ 3) · Accuracy (blue)", "SmallLabel"))
 	var radar := RadarChart.new()
+	radar.custom_minimum_size = pick(Vector2(420, 380), Vector2(380, 320), Vector2(0, 360))
 	radar.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var labels := PackedStringArray()
 	var values := PackedFloat32Array()
@@ -48,16 +53,22 @@ func build() -> void:
 		var row := UI.vbox(4)
 		var top := UI.hbox(8)
 		top.add_child(UI.icon(Palette.domain_icon(d.id), 18, c))
-		var name := UI.label(d.name, "MutedLabel")
+		var name := UI.label(_short(d.name) if portrait() else d.name, "MutedLabel")
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		top.add_child(name)
-		top.add_child(UI.label("%d / %d correct · %d %% mastered" % [int(ds.correct), int(ds.answered), int(round(p.mastery(pool, d.id) * 100))], "SmallLabel"))
+		var fmt := "%d/%d · %d %%" if portrait() else "%d / %d correct · %d %% mastered"
+		top.add_child(UI.label(fmt % [int(ds.correct), int(ds.answered), int(round(p.mastery(pool, d.id) * 100))], "SmallLabel"))
 		row.add_child(top)
 		row.add_child(UI.progress(p.mastery(pool, d.id), c, 8))
 		lc.add_child(row)
-	list_card.add_child(UI.scroll(lc))
+	if compact():
+		list_card.add_child(lc)
+	else:
+		list_card.add_child(UI.scroll(lc))
 	body.add_child(list_card)
-	root.add_child(body)
+	content.add_child(body)
+	root.add_child(scroll_if_compact(content))
 
 	var reset := UI.button("Reset all progress", "refresh", "DangerButton", _confirm_reset)
 	reset.size_flags_horizontal = Control.SIZE_SHRINK_END

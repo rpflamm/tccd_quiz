@@ -13,17 +13,24 @@ func build() -> void:
 	for c in COUNTS:
 		var b := UI.button("All" if c == 0 else str(c), "", "", _set_count.bind(c))
 		b.toggle_mode = true
-		b.custom_minimum_size = Vector2(64, 0)
+		b.custom_minimum_size = Vector2(pick(64, 56, 0), 44)
+		if portrait():
+			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_count_buttons.append(b)
 		counts.add_child(b)
 	_refresh_counts()
-	root.add_child(UI.header("Practice by domain", on_back, counts))
-	root.add_child(UI.label("Pick a syllabus domain. Each answer shows an explanation and a link to the official TYPO3 documentation.", "MutedLabel"))
+	if portrait():
+		root.add_child(UI.header("Practice", on_back))
+		root.add_child(counts)
+	else:
+		root.add_child(UI.header("Practice by domain", on_back, counts))
+	if not compact():
+		root.add_child(UI.wrap_label("Pick a syllabus domain. Each answer shows an explanation and a link to the official TYPO3 documentation.", "MutedLabel"))
 
 	var grid := GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 14)
-	grid.add_theme_constant_override("v_separation", 14)
+	grid.columns = pick(3, 3, 1)
+	grid.add_theme_constant_override("h_separation", pick(14, 10, 10))
+	grid.add_theme_constant_override("v_separation", pick(14, 10, 10))
 	var pool: QuestionPool = QuestionBank.pool
 	var counts_by_domain := pool.count_by_domain()
 	grid.add_child(_domain_card("", "All domains", "Mixed questions from the whole syllabus.", pool.size(), Palette.ACCENT, "star"))

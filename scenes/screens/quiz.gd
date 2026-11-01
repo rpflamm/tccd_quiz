@@ -65,7 +65,14 @@ func build() -> void:
 		phase = Phase.OVER
 		return
 	_show_question()
-	if mode is ArcadeMode:
+	var resumed: bool = params.get("reloaded", false) or mode.index > 0 or mode.elapsed > 0.0
+	if mode.instant_feedback() and mode.is_answered():
+		# Rebuilt after a rotation while the feedback was showing.
+		phase = Phase.FEEDBACK
+		var ok: bool = mode.results.get(mode.index, false)
+		_show_feedback(mode.current(), ok, {"correct": ok})
+		_update_actions()
+	elif mode is ArcadeMode and not resumed:
 		_countdown()
 	else:
 		phase = Phase.ANSWERING
@@ -75,15 +82,21 @@ func build() -> void:
 
 func _build_hud() -> Control:
 	var hud := UI.panel("HudPanel")
-	var row := UI.hbox(18)
+	var row := UI.hbox(pick(18, 12, 8))
 	var icon_name := "exam" if mode is ExamMode else ("flame" if mode is ArcadeMode else ("brain" if mode is SrsMode else "target"))
 	if mode.key == "daily":
 		icon_name = "calendar"
 	row.add_child(UI.icon(icon_name, 26, Palette.ACCENT))
 	var title_col := UI.vbox(0)
-	title_col.add_child(UI.label(mode.title, "SubtitleLabel"))
+	var title_label := UI.label(mode.title.replace("Practice: ", "") if portrait() else mode.title, "SubtitleLabel")
+	if portrait():
+		title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_col.add_child(title_label)
 	_progress_label = UI.label("", "SmallLabel")
 	title_col.add_child(_progress_label)
+	if portrait():
+		title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_col.clip_contents = true
 	row.add_child(title_col)
 
 	var timer_col := UI.vbox(4)
@@ -96,13 +109,14 @@ func _build_hud() -> Control:
 	timer_row.add_child(_timer_label)
 	timer_col.add_child(timer_row)
 	_timer_bar = TimerBar.new()
-	_timer_bar.custom_minimum_size = Vector2(260, 8)
+	_timer_bar.custom_minimum_size = Vector2(pick(260, 140, 100), 8)
 	timer_col.add_child(_timer_bar)
 	var has_timer := mode.total_time_limit() > 0.0 or mode.question_time_limit() > 0.0
 	_timer_bar.visible = has_timer
-	row.add_child(timer_col)
+	if not portrait():
+		row.add_child(timer_col)
 
-	_lives_box = UI.hbox(4)
+	_lives_box = UI.hbox(2 if portrait() else 4)
 	_lives_box.visible = mode.max_lives() > 0
 	row.add_child(_lives_box)
 
@@ -112,19 +126,25 @@ func _build_hud() -> Control:
 	row.add_child(_streak_chip)
 
 	_score_label = UI.label("", "HeadingLabel")
-	_score_label.custom_minimum_size = Vector2(90, 0)
+	_score_label.custom_minimum_size = Vector2(pick(90, 70, 0), 0)
 	_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_score_label.visible = mode is ArcadeMode
 	row.add_child(_score_label)
 
 	row.add_child(UI.button("", "cross", "GhostButton", on_back))
-	hud.add_child(row)
+	if portrait():
+		var col := UI.vbox(6)
+		col.add_child(row)
+		col.add_child(timer_col)
+		hud.add_child(col)
+	else:
+		hud.add_child(row)
 	return hud
 
 
 func _update_hud() -> void:
 	if mode is ExamMode:
-		_progress_label.text = "Question %d / %d  ·  %d answered" % [mode.index + 1, mode.question_count(), mode.answered_count()]
+		_progress_label.text = ("Q %d / %d · %d done" if portrait() else "Question %d / %d  ·  %d answered") % [mode.index + 1, mode.question_count(), mode.answered_count()]
 	elif mode.is_endless():
 		_progress_label.text = "Question %d  ·  %d correct" % [mode.index + 1, mode.correct_total]
 	else:
@@ -134,7 +154,7 @@ func _update_hud() -> void:
 			c.queue_free()
 		for i in mode.max_lives():
 			var alive := i < mode.lives()
-			_lives_box.add_child(UI.icon("heart" if alive else "heart_empty", 26, Palette.ERROR if alive else Palette.FAINT))
+			_lives_box.add_child(UI.icon("heart" if alive else "heart_empty", 22 if portrait() else 26, Palette.ERROR if alive else Palette.FAINT))
 	_streak_label.text = "%d" % mode.streak
 	if mode is ArcadeMode:
 		_score_label.text = str(mode.score)
@@ -170,6 +190,8 @@ func _show_question() -> void:
 	_selected = []
 	if mode.is_answered():
 		_selected = mode.selections[mode.index].duplicate()
+	elif params.get("pending", {}).get("index", -1) == mode.index:
+		_selected = params.pending.sel.duplicate()     # restored after a rotation
 
 	var meta := UI.hbox(10)
 	var dcolor := Palette.domain_color(q.domain)
@@ -178,7 +200,8 @@ func _show_question() -> void:
 	skill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	skill.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	skill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	meta.add_child(skill)
+	if not portrait():
+		meta.add_child(skill)
 	if q.tags.has("breaking-change"):
 		meta.add_child(UI.chip("v14 change", Palette.PINK, "bolt"))
 	if q.review:
@@ -188,6 +211,9 @@ func _show_question() -> void:
 		meta.add_child(rv)
 	meta.add_child(_difficulty_dots(q.difficulty))
 	_card_box.add_child(meta)
+	if portrait():
+		skill.size_flags_horizontal = Control.SIZE_FILL
+		_card_box.add_child(skill)
 
 	var text := RichTextLabel.new()
 	text.bbcode_enabled = true
@@ -256,6 +282,7 @@ func _on_answer_pressed(b: AnswerButton) -> void:
 			_selected.append(b.original_index)
 	else:
 		_selected = [b.original_index]
+	params["pending"] = {"index": mode.index, "sel": _selected.duplicate()}
 	Audio.play("select", 1.0 + _selected.size() * 0.05)
 	_refresh_selection_states()
 	FX.pop(b, 0.03, 0.18)
@@ -382,7 +409,7 @@ func _streak_banner(n: int) -> void:
 	Audio.play("streak", 1.0 + minf(n, 30) * 0.01)
 	var texts := {3: "Nice streak!", 5: "On fire!", 10: "Unstoppable!", 15: "Cache hit!", 20: "Core Merger mode!", 25: "Legendary!"}
 	var l := UI.label("%d in a row — %s" % [n, texts.get(n, "Keep going!")], "TitleLabel", HORIZONTAL_ALIGNMENT_CENTER)
-	l.add_theme_font_size_override("font_size", 44)
+	l.add_theme_font_size_override("font_size", pick(44, 36, 28))
 	l.add_theme_color_override("font_color", Palette.ACCENT_2)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.7))
 	l.add_theme_constant_override("outline_size", 10)
@@ -406,32 +433,43 @@ func _streak_banner(n: int) -> void:
 func _build_actions() -> void:
 	for c in _actions.get_children():
 		c.queue_free()
+	var small := portrait()
 	if mode is ExamMode:
-		_actions.add_child(UI.button("Previous", "arrow_left", "", _prev))
-		_flag_btn = UI.button("Flag", "flag", "", _toggle_flag)
+		_actions.add_child(UI.button("" if small else "Previous", "arrow_left", "", _prev))
+		_flag_btn = UI.button("" if small else "Flag", "flag", "", _toggle_flag)
 		_actions.add_child(_flag_btn)
-		_actions.add_child(UI.button("Overview", "grid", "", _show_overview))
+		_actions.add_child(UI.button("" if small else "Overview", "grid", "", _show_overview))
 		_actions.add_child(UI.spacer())
 		_nav_label = UI.label("", "SmallLabel")
 		_nav_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_nav_label.visible = not small
 		_actions.add_child(_nav_label)
-		_actions.add_child(UI.button("Finish exam", "check", "DangerButton", _confirm_finish))
-		_submit_btn = UI.button("Next", "arrow_right", "AccentButton", _next)
+		_actions.add_child(UI.button("Finish" if small else "Finish exam", "check", "DangerButton", _confirm_finish))
+		_submit_btn = UI.button("" if small else "Next", "arrow_right", "AccentButton", _next)
 		_actions.add_child(_submit_btn)
+		if small:
+			for b in _actions.get_children():
+				if b is Button:
+					b.custom_minimum_size = Vector2(52, 48)
 	else:
-		var hint := UI.label("Keys: 1–6 select · Enter confirm · Esc quit", "SmallLabel")
-		hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		_actions.add_child(hint)
+		if not Layout.touch and not small:
+			var hint := UI.label("Keys: 1–6 select · Enter confirm · Esc quit", "SmallLabel")
+			hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			_actions.add_child(hint)
 		_actions.add_child(UI.spacer())
 		_submit_btn = UI.button("Submit", "check", "AccentButton", _on_primary)
-		_submit_btn.custom_minimum_size = Vector2(190, 0)
+		_submit_btn.custom_minimum_size = Vector2(190, 48)
+		if small:
+			_submit_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_actions.add_child(_submit_btn)
 
 
 func _update_actions() -> void:
 	if mode is ExamMode:
 		_submit_btn.disabled = mode.index >= mode.question_count() - 1
-		_flag_btn.text = "Unflag" if mode.flags.has(mode.index) else "Flag"
+		if not portrait():
+			_flag_btn.text = "Unflag" if mode.flags.has(mode.index) else "Flag"
+		_flag_btn.modulate = Palette.WARNING if mode.flags.has(mode.index) else Color.WHITE
 		_nav_label.text = "%d flagged · %d open" % [mode.flags.size(), mode.question_count() - mode.answered_count()]
 		return
 	var q := mode.current()
@@ -487,13 +525,13 @@ func _toggle_flag() -> void:
 
 func _show_overview() -> void:
 	var grid := GridContainer.new()
-	grid.columns = 15
+	grid.columns = pick(15, 15, 6)
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
 	for i in mode.question_count():
 		var b := Button.new()
 		b.text = str(i + 1)
-		b.custom_minimum_size = Vector2(52, 40)
+		b.custom_minimum_size = pick(Vector2(52, 40), Vector2(48, 30), Vector2(54, 44))
 		b.focus_mode = Control.FOCUS_NONE
 		var bg := Palette.SURFACE_2
 		var border := Palette.BORDER
@@ -514,7 +552,12 @@ func _show_overview() -> void:
 		grid.add_child(b)
 	var legend := UI.hbox(18, [
 		UI.chip("answered", Palette.INFO), UI.chip("flagged", Palette.WARNING), UI.chip("current", Palette.ACCENT)])
-	_open_overlay("Exam overview", [legend, grid], [UI.button("Close", "cross", "", _close_overlay)])
+	var body: Control = grid
+	if compact():
+		var sc := UI.scroll(grid)
+		sc.custom_minimum_size = Vector2(0, pick(0, 240, 520))
+		body = sc
+	_open_overlay("Exam overview", [legend, body], [UI.button("Close", "cross", "", _close_overlay)])
 
 
 func _confirm_finish() -> void:
@@ -560,15 +603,17 @@ func _open_overlay(title: String, body: Array, buttons: Array) -> void:
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var card := UI.panel("CardPanelRaised")
-	card.custom_minimum_size = Vector2(560, 0)
+	card.custom_minimum_size = Vector2(minf(560.0, size.x - 24.0), 0)
 	var col := UI.vbox(16)
 	col.add_child(UI.label(title, "HeadingLabel"))
 	for b in body:
 		col.add_child(b)
-	var row := UI.hbox(10)
+	var row: BoxContainer = UI.vbox(8) if portrait() and buttons.size() > 1 else UI.hbox(10)
 	row.alignment = BoxContainer.ALIGNMENT_END
 	for b in buttons:
 		row.add_child(b)
+		if portrait():
+			(b as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	col.add_child(row)
 	card.add_child(col)
 	center.add_child(card)
