@@ -47,7 +47,7 @@
       "skill": "handling_user_input",
       "type": "single",
       "difficulty": 3,
-      "question": "The sort column is taken from the request. What is the correct way to make this query safe?",
+      "question": "The sort column is taken from the request. What is the correct way to make sure only intended columns can be used for sorting?",
       "code": {
         "lang": "php",
         "src": "$sortBy = $request->getQueryParams()['sort'] ?? 'title';\n\n$rows = $queryBuilder\n    ->select('*')\n    ->from('tx_myext_item')\n    ->orderBy($sortBy)\n    ->executeQuery()\n    ->fetchAllAssociative();"
@@ -61,7 +61,7 @@
       "correct": [
         0
       ],
-      "explanation": "Identifiers such as column names cannot be bound as parameters; a named parameter would be treated as a value literal. An allow-list is the robust solution. HTML escaping or addslashes() do not prevent SQL injection in an identifier.",
+      "explanation": "Identifiers such as column names cannot be bound as parameters; a named parameter would be treated as a value literal. TYPO3's QueryBuilder::orderBy() quotes the identifier, but without an allow-list a visitor can still sort by any column (e.g. sensitive ones) or trigger SQL errors. HTML escaping or addslashes() are no solution for identifiers.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/DoctrineDbal/QueryBuilder/Index.html",
       "tags": [
         "database"
@@ -300,7 +300,7 @@
       "correct": [
         0
       ],
-      "explanation": "PasswordHashFactory returns the configured default hash mechanism for the FE or BE context (e.g. Argon2i/Argon2id or bcrypt) and handles salts. Plain fast hashes like MD5/SHA-256 are unsuitable for passwords, base64 is only an encoding.",
+      "explanation": "PasswordHashFactory returns the configured default hash mechanism for the FE or BE context (Argon2id by default in v14, see TYPO3_CONF_VARS[FE|BE][passwordHashing]) and handles salts. Plain fast hashes like MD5/SHA-256 are unsuitable for passwords, base64 is only an encoding.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/PasswordHashing/Index.html"
     },
     {
