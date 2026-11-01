@@ -4,7 +4,8 @@ extends Screen
 
 func build() -> void:
 	root.add_child(UI.header("Spaced repetition", on_back))
-	root.add_child(UI.wrap_label("The Leitner system: a correct answer moves a question one box up and it returns later (box 1: today, 2: 1 day, 3: 3 days, 4: 7 days, 5: 14 days). A mistake sends it back to box 1.", "MutedLabel"))
+	var content := UI.vbox(pick(18, 12, 14))
+	content.add_child(UI.wrap_label("The Leitner system: a correct answer moves a question one box up and it returns later (box 1: today, 2: 1 day, 3: 3 days, 4: 7 days, 5: 14 days). A mistake sends it back to box 1.", "MutedLabel"))
 
 	var pool: QuestionPool = QuestionBank.pool
 	var p := Profile.data
@@ -18,18 +19,21 @@ func build() -> void:
 			boxes[b - 1] += 1
 	var due := SrsMode.due_total(pool, p)
 
-	var row := UI.hbox(14)
+	var row := UI.hbox(pick(14, 10, 6))
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	var colors := [Palette.ERROR, Palette.WARNING, Palette.INFO, Palette.PURPLE, Palette.SUCCESS]
 	var max_box: int = maxi(boxes.max(), 1)
 	for i in 5:
 		var card := UI.panel("CardPanel")
-		card.custom_minimum_size = Vector2(170, 230)
+		card.custom_minimum_size = pick(Vector2(170, 230), Vector2(120, 170), Vector2(0, 170))
+		if portrait():
+			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			card.add_theme_stylebox_override("panel", ThemeBuilder.box(Palette.SURFACE, 12, Palette.BORDER, 1, 6, 10))
 		var col := UI.vbox(8)
-		col.add_child(UI.label("Box %d" % (i + 1), "SubtitleLabel", HORIZONTAL_ALIGNMENT_CENTER))
+		col.add_child(UI.label(("B%d" if portrait() else "Box %d") % (i + 1), "SubtitleLabel", HORIZONTAL_ALIGNMENT_CENTER))
 		var bar_holder := Control.new()
 		bar_holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		bar_holder.custom_minimum_size = Vector2(0, 110)
+		bar_holder.custom_minimum_size = Vector2(0, pick(110, 60, 70))
 		var bar := ColorRect.new()
 		bar.color = colors[i]
 		bar_holder.add_child(bar)
@@ -47,20 +51,22 @@ func build() -> void:
 		col.add_child(n)
 		card.add_child(col)
 		row.add_child(card)
-	root.add_child(row)
+	content.add_child(row)
 
-	var info := UI.hbox(30)
+	var info := flow(pick(30, 30, 8))
 	info.alignment = BoxContainer.ALIGNMENT_CENTER
 	info.add_child(UI.hbox(8, [UI.icon("clock", 22, Palette.WARNING), UI.label("%d due today" % due, "SubtitleLabel")]))
 	info.add_child(UI.hbox(8, [UI.icon("star", 22, Palette.INFO), UI.label("%d not seen yet" % unseen, "SubtitleLabel")]))
-	root.add_child(info)
-	root.add_child(UI.spacer(false))
+	content.add_child(info)
+	root.add_child(scroll_if_compact(content))
 
 	var start := UI.button("Start session (20 questions)", "play", "AccentButton", func():
 		var mode := SrsMode.new()
 		mode.setup(QuestionBank.pool, Profile.data, null, {"count": 20})
 		Router.go("quiz", {"mode": mode}))
 	start.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	start.custom_minimum_size = Vector2(340, 56)
+	start.custom_minimum_size = Vector2(pick(340, 320, 0), 56)
+	if portrait():
+		start.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_child(start)
 	start.grab_focus()

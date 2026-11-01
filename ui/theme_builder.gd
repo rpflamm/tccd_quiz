@@ -11,7 +11,7 @@ const FONT_BOLD := "res://assets/fonts/Inter-Bold.ttf"
 const FONT_BLACK := "res://assets/fonts/Inter-Black.ttf"
 const FONT_MONO := "res://assets/fonts/JetBrainsMono-Regular.ttf"
 
-static var _cache: Theme
+static var _cache := {}
 
 
 static func font(path: String) -> FontFile:
@@ -34,29 +34,42 @@ static func box(bg: Color, radius: int = 12, border: Color = Color.TRANSPARENT, 
 	return sb
 
 
-static func build() -> Theme:
-	if _cache != null:
-		return _cache
+## Size of a theme font role for a layout mode (0 desktop, 1 compact landscape, 2 portrait).
+static func size_for(role: String, layout_mode: int) -> int:
+	var sizes := {
+		"title": [54, 40, 34], "heading": [28, 24, 22], "subtitle": [20, 19, 18], "big": [40, 32, 30],
+		"question": [22, 20, 20], "mono": [19, 17, 16], "code": [16, 15, 14],
+	}
+	return sizes[role][clampi(layout_mode, 0, 2)]
+
+
+## Theme for the current layout mode (cached per mode).
+static func build(layout_mode: int = -1) -> Theme:
+	if layout_mode < 0:
+		layout_mode = Layout.mode
+	if _cache.has(layout_mode):
+		return _cache[layout_mode]
+	var m := layout_mode
 	var t := Theme.new()
 	t.default_font = font(FONT_REGULAR)
 	t.default_font_size = 18
 
 	# ---- Labels
 	t.set_color("font_color", "Label", Palette.TEXT)
-	_variation(t, "TitleLabel", "Label", {"font": FONT_BLACK, "size": 54, "color": Palette.TEXT})
-	_variation(t, "HeadingLabel", "Label", {"font": FONT_BOLD, "size": 28, "color": Palette.TEXT})
-	_variation(t, "SubtitleLabel", "Label", {"font": FONT_SEMIBOLD, "size": 20, "color": Palette.TEXT})
+	_variation(t, "TitleLabel", "Label", {"font": FONT_BLACK, "size": size_for("title", m), "color": Palette.TEXT})
+	_variation(t, "HeadingLabel", "Label", {"font": FONT_BOLD, "size": size_for("heading", m), "color": Palette.TEXT})
+	_variation(t, "SubtitleLabel", "Label", {"font": FONT_SEMIBOLD, "size": size_for("subtitle", m), "color": Palette.TEXT})
 	_variation(t, "MutedLabel", "Label", {"font": FONT_REGULAR, "size": 16, "color": Palette.MUTED})
 	_variation(t, "SmallLabel", "Label", {"font": FONT_MEDIUM, "size": 13, "color": Palette.MUTED})
-	_variation(t, "BigNumberLabel", "Label", {"font": FONT_BLACK, "size": 40, "color": Palette.TEXT})
+	_variation(t, "BigNumberLabel", "Label", {"font": FONT_BLACK, "size": size_for("big", m), "color": Palette.TEXT})
 
 	# ---- RichTextLabel (question text)
 	t.set_font("normal_font", "RichTextLabel", font(FONT_MEDIUM))
 	t.set_font("bold_font", "RichTextLabel", font(FONT_BOLD))
 	t.set_font("mono_font", "RichTextLabel", font(FONT_MONO))
-	t.set_font_size("normal_font_size", "RichTextLabel", 22)
-	t.set_font_size("bold_font_size", "RichTextLabel", 22)
-	t.set_font_size("mono_font_size", "RichTextLabel", 19)
+	t.set_font_size("normal_font_size", "RichTextLabel", size_for("question", m))
+	t.set_font_size("bold_font_size", "RichTextLabel", size_for("question", m))
+	t.set_font_size("mono_font_size", "RichTextLabel", size_for("mono", m))
 	t.set_color("default_color", "RichTextLabel", Palette.TEXT)
 
 	# ---- Buttons
@@ -160,7 +173,7 @@ static func build() -> Theme:
 
 	# ---- CodeEdit (question snippets)
 	t.set_font("font", "CodeEdit", font(FONT_MONO))
-	t.set_font_size("font_size", "CodeEdit", 16)
+	t.set_font_size("font_size", "CodeEdit", size_for("code", m))
 	t.set_color("font_color", "CodeEdit", Color("d7dcef"))
 	t.set_color("font_readonly_color", "CodeEdit", Color("d7dcef"))
 	t.set_color("background_color", "CodeEdit", Color("0c0e15"))
@@ -171,7 +184,7 @@ static func build() -> Theme:
 	t.set_stylebox("read_only", "CodeEdit", box(Color("0c0e15"), 12, Palette.BORDER, 1, 14, 12))
 	t.set_stylebox("focus", "CodeEdit", box(Color.TRANSPARENT, 12, Palette.BORDER, 1, 14, 12))
 
-	_cache = t
+	_cache[layout_mode] = t
 	return t
 
 

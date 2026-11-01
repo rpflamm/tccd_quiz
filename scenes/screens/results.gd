@@ -19,6 +19,7 @@ func build() -> void:
 	var correct: int = int(result.correct)
 	var accuracy := float(correct) / float(total)
 
+	var content := UI.vbox(pick(18, 12, 14))
 	# ---- headline
 	var head := UI.vbox(4)
 	head.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -41,12 +42,15 @@ func build() -> void:
 	var h := UI.label(headline, "TitleLabel", HORIZONTAL_ALIGNMENT_CENTER)
 	h.add_theme_color_override("font_color", color)
 	head.add_child(h)
-	head.add_child(UI.label(sub, "MutedLabel", HORIZONTAL_ALIGNMENT_CENTER))
-	root.add_child(head)
+	head.add_child(UI.wrap_label(sub, "MutedLabel", HORIZONTAL_ALIGNMENT_CENTER))
+	content.add_child(head)
 
 	# ---- tiles
-	var tiles := UI.hbox(14)
-	tiles.alignment = BoxContainer.ALIGNMENT_CENTER
+	var tiles := GridContainer.new()
+	tiles.columns = pick(5, 5, 2)
+	tiles.add_theme_constant_override("h_separation", 12)
+	tiles.add_theme_constant_override("v_separation", 12)
+	tiles.size_flags_horizontal = Control.SIZE_SHRINK_CENTER if not portrait() else Control.SIZE_EXPAND_FILL
 	if mode is ArcadeMode:
 		tiles.add_child(_tile("Score", int(result.score), "%d", "trophy", Palette.ACCENT_2))
 	tiles.add_child(_tile("Accuracy", int(round(accuracy * 100)), "%d %%", "target", color))
@@ -54,40 +58,42 @@ func build() -> void:
 	if mode.instant_feedback():
 		tiles.add_child(_tile("Best streak", int(result.best_streak), "%d", "flame", Palette.WARNING))
 	tiles.add_child(_tile("XP gained", int(result.xp), "+%d", "star", Palette.ACCENT))
-	root.add_child(tiles)
+	content.add_child(tiles)
 
 	if result.new_highscore and int(result.score) > 0 and mode is ArcadeMode:
 		var hs := UI.chip("NEW HIGHSCORE!", Palette.WARNING, "trophy")
 		hs.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		root.add_child(hs)
+		content.add_child(hs)
 		FX.pulse(hs, Color(1.3, 1.2, 0.8))
 
 	# ---- body: rank progress + domains
-	var body := UI.hbox(18)
+	var body := flow(pick(18, 12, 12))
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(_rank_card())
 	body.add_child(_domain_card())
-	root.add_child(body)
+	content.add_child(body)
+	root.add_child(scroll_if_compact(content))
 
 	# ---- buttons
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_child(UI.button("Main menu", "home", "", func(): Router.go("main_menu")))
+	row.add_child(UI.button(pick("Main menu", "Main menu", "Menu"), "home", "", func(): Router.go("main_menu")))
 	if result.total > 0:
-		row.add_child(UI.button("Review answers", "book", "", func(): Router.go("review", {"mode": mode})))
-	var again := UI.button("Play again", "refresh", "AccentButton", _play_again)
+		row.add_child(UI.button(pick("Review answers", "Review answers", "Review"), "book", "", func(): Router.go("review", {"mode": mode})))
+	var again := UI.button(pick("Play again", "Play again", "Again"), "refresh", "AccentButton", _play_again)
 	row.add_child(again)
 	root.add_child(row)
 	again.grab_focus()
 
-	if not params.get("revisit", false):
+	if not params.get("revisit", false) and not params.get("reloaded", false):
 		_celebrate(color)
 		Profile.notify_unlocked(mode.unlocked)
 
 
 func _tile(title: String, value: int, fmt: String, icon_name: String, color: Color) -> PanelContainer:
 	var card := UI.panel("CardPanel")
-	card.custom_minimum_size = Vector2(190, 0)
+	card.custom_minimum_size = Vector2(pick(190, 150, 0), 0)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var col := UI.vbox(2)
 	var r := UI.hbox(8, [UI.icon(icon_name, 18, color), UI.label(title, "SmallLabel")])
 	col.add_child(r)
@@ -158,7 +164,8 @@ func _domain_card() -> PanelContainer:
 		var row := UI.hbox(10)
 		row.add_child(UI.icon(Palette.domain_icon(d.id), 18, c))
 		var name := UI.label(d.name, "MutedLabel")
-		name.custom_minimum_size = Vector2(270, 0)
+		name.custom_minimum_size = Vector2(pick(270, 220, 150), 0)
+		name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		row.add_child(name)
 		var bar := UI.progress(0.0, c, 10)
 		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -169,7 +176,10 @@ func _domain_card() -> PanelContainer:
 		v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(v)
 		list.add_child(row)
-	col.add_child(UI.scroll(list))
+	if compact():
+		col.add_child(list)
+	else:
+		col.add_child(UI.scroll(list))
 	if not weakest.is_empty() and weakest_rate < 0.75:
 		col.add_child(UI.hbox(8, [UI.icon("target", 18, Palette.INFO), UI.wrap_label("Focus next: %s — try a Practice round there." % weakest, "SmallLabel")]))
 	card.add_child(col)

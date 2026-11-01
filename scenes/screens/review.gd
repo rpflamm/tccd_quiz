@@ -18,7 +18,7 @@ func build() -> void:
 	toggle.toggled.connect(func(v: bool):
 		only_wrong = v
 		_fill())
-	root.add_child(UI.header("Review answers", on_back, toggle))
+	root.add_child(UI.header("Review" if portrait() else "Review answers", on_back, toggle))
 	_list = UI.vbox(14)
 	root.add_child(UI.scroll(_list))
 	_fill()

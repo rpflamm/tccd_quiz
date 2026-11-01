@@ -70,12 +70,14 @@ The Web build is a plain static site. It needs no PHP, no database and no server
    |---|---|
    | `index.html` | Entry page |
    | `index.js` | Engine loader |
-   | `index.wasm` | Engine (~40 MB, compresses well) |
+   | `index.wasm` | Engine (~38 MB, compresses to ~11 MB) |
    | `index.pck` | Game data incl. all questions |
    | `index.audio.worklet.js`, `index.audio.position.worklet.js` | Audio |
    | `index.png`, `index.icon.png`, `index.apple-touch-icon.png` | Splash/icons |
+   | `index.manifest.json`, `index.service.worker.js`, `index.offline.html`, `index.144x144.png`, `index.180x180.png`, `index.512x512.png` | Installable web app (PWA) |
 
 2. **Check the MIME types.** This is the most common source of problems:
+   - `.json` (manifest) must be served as `application/json` or `application/manifest+json`
    - `.wasm` must be served as `application/wasm`
    - `.js` must be served as `text/javascript`
    - `.pck` must be served as `application/octet-stream`
@@ -138,6 +140,26 @@ python3 tools/serve_web.py          # serves export/web at http://localhost:8060
 The script sets the correct MIME types. The plain `python -m http.server` often serves `.js` as `text/plain` on Windows, which breaks the audio.
 
 **Updates:** export again and replace all files. If the browser still shows the old version, reload with Ctrl+F5. The player's progress is kept.
+
+### Smartphones & tablets
+
+The Web version is responsive and adapts to the screen:
+
+| Screen | Layout |
+|---|---|
+| Desktop / tablet landscape | Original 3-column layout (logical canvas 1280×720) |
+| Phone landscape (height < 640 CSS px) | Compact layout, scaled so the text stays readable |
+| Phone portrait | Single-column layout, two-line HUD, icon buttons in the exam, full-width answers |
+
+- **Rotating the device:** the layout rebuilds immediately. Progress, timer, the answer you picked and an open explanation are all kept.
+- **Touch:** you tap the answer cards. Keyboard hints are hidden on touch devices.
+- **Install as an app (PWA):** the Web export contains a manifest, a service worker and icons.
+  - Android/Chrome: menu → *Add to Home screen* / *Install app*
+  - iOS/Safari: share button → *Add to Home Screen*
+
+  The quiz then starts full screen like an app, works offline after the first load, and the browser keeps its saved progress. On iOS, Safari may otherwise delete website data after 7 days without use.
+- **HTTPS is required** for installing and for the service worker (except on `localhost`).
+- **First load:** about 12 MB with gzip compression (about 40 MB uncompressed). After that it is cached.
 
 ### Web version on itch.io
 

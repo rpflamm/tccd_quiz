@@ -32,17 +32,40 @@ func _ready() -> void:
 	_layer.add_child(_wipe)
 
 	_toasts = VBoxContainer.new()
-	_toasts.theme = ThemeBuilder.build()
-	_toasts.anchor_left = 1.0
-	_toasts.anchor_right = 1.0
-	_toasts.offset_left = -400.0
-	_toasts.offset_right = -24.0
-	_toasts.offset_top = 104.0
 	_toasts.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_toasts.add_theme_constant_override("separation", 10)
 	_toasts.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_layer.add_child(_toasts)
+	apply_layout()
 	Profile.achievement_unlocked.connect(_on_achievement)
+
+
+## Position toasts for the current layout: top-right card on desktop, full width on phones.
+func apply_layout() -> void:
+	_toasts.theme = ThemeBuilder.build()
+	_toasts.anchor_top = 0.0
+	if Layout.is_portrait():
+		_toasts.anchor_left = 0.0
+		_toasts.anchor_right = 1.0
+		_toasts.offset_left = 12.0
+		_toasts.offset_right = -12.0
+		_toasts.offset_top = 12.0
+	else:
+		_toasts.anchor_left = 1.0
+		_toasts.anchor_right = 1.0
+		_toasts.offset_left = -400.0
+		_toasts.offset_right = -24.0
+		_toasts.offset_top = 104.0 if not Layout.is_compact() else 12.0
+
+
+## Rebuild the current screen with the same parameters (e.g. after rotating the phone).
+func reload() -> void:
+	if current_name.is_empty() or _busy:
+		return
+	var params: Dictionary = current.params if is_instance_valid(current) and "params" in current else {}
+	params = params.duplicate()
+	params["reloaded"] = true
+	go(current_name, params, false)
 
 
 func go(screen_name: String, params: Dictionary = {}, animate: bool = true) -> void:
@@ -95,7 +118,7 @@ func toast(title: String, text: String = "", icon_name: String = "star", color: 
 	col.add_child(t)
 	if not text.is_empty():
 		var d := UI.wrap_label(text, "SmallLabel")
-		d.custom_minimum_size = Vector2(260, 0)
+		d.custom_minimum_size = Vector2(0 if Layout.is_portrait() else 260, 0)
 		col.add_child(d)
 	row.add_child(col)
 	card.add_child(row)
