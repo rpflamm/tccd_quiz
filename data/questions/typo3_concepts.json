@@ -89,7 +89,7 @@
       "correct": [
         0
       ],
-      "explanation": "The TYPO3 CGL and its php-cs-fixer configuration are based on PER-CS 1.0 (PSR-12), transitioning towards PER-CS 2.0. PSR-2 is the deprecated predecessor of PSR-12.",
+      "explanation": "The TYPO3 CGL build on the PHP-FIG PER Coding Style (the successor of PSR-12); the Core php-cs-fixer configuration uses the @PER-CS3x0 rule set plus TYPO3-specific rules. PSR-2 is the deprecated predecessor of PSR-12.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/CodingGuidelines/CglPhp/GeneralRequirementsForPhpFiles.html",
       "tags": [
         "cgl"
@@ -206,7 +206,7 @@
         "'ctrl' contains table-wide properties such as label, tstamp and delete",
         "'types' defines which fields are shown (showitem) for each record type",
         "'palettes' groups several fields so they can be displayed together",
-        "A mandatory field is configured with 'eval' => 'required' in v14",
+        "A mandatory field must be configured with 'eval' => 'required' in v14",
         "'columns' is only needed for fields that are shown in the frontend"
       ],
       "correct": [
@@ -214,7 +214,7 @@
         1,
         2
       ],
-      "explanation": "ctrl, types, palettes and columns are the main TCA sections. Mandatory fields use 'required' => true (since v12, 'eval' => 'required' is migrated away), and columns defines all editable fields regardless of the frontend.",
+      "explanation": "ctrl, types, palettes and columns are the main TCA sections. Mandatory fields use 'required' => true since v12 ('eval' => 'required' is only migrated automatically), and columns defines all editable fields regardless of the frontend.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/Index.html",
       "tags": [
         "tca"
@@ -575,7 +575,7 @@
       "correct": [
         0
       ],
-      "explanation": "With $escapeOutput = false Fluid does not escape the ViewHelper result, and argument values are passed raw. The ViewHelper is then responsible for escaping untrusted data.",
+      "explanation": "With $escapeOutput = false Fluid does not escape the ViewHelper result, and arguments registered without the escape flag are passed raw. The ViewHelper is then responsible for escaping untrusted data.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Fluid/DevelopCustomViewhelper.html",
       "tags": [
         "security",
@@ -791,7 +791,7 @@
       "correct": [
         0
       ],
-      "explanation": "Event listeners are identified by their identifier; registering a listener with the same identifier (via attribute or Services.yaml) overrides the existing one.",
+      "explanation": "Event listeners are collected per event keyed by their identifier; registering a listener with the same identifier (via #[AsEventListener] or Services.yaml) in an extension loaded after the original one replaces it.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/EventDispatcher/Index.html",
       "tags": [
         "events"
@@ -991,7 +991,7 @@
       "difficulty": 2,
       "question": "In Production context, a frontend plugin throws an exception during rendering. What happens by default?",
       "answers": [
-        "The content object exception handler catches it, logs it and renders an error message with a reference code instead of the plugin",
+        "The content object exception handler catches it, logs it and renders an error message with a request ID instead of the plugin",
         "The whole page responds with HTTP 500 and the stack trace",
         "The exception is silently ignored and the plugin output is empty",
         "TYPO3 redirects to the site's 404 error page"
@@ -999,7 +999,7 @@
       "correct": [
         0
       ],
-      "explanation": "config.contentObjectExceptionHandler is active in production: the plugin output is replaced by \"Oops, an error occurred! Code: ...\" and the details are logged under that code, so the rest of the page still renders.",
+      "explanation": "In Production context the ProductionExceptionHandler is active unless config.contentObjectExceptionHandler is set otherwise: the plugin output is replaced by 'Oops, an error occurred! Request: <requestId>' and the exception is logged with that ID, so the rest of the page still renders.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Configuration/Index.html",
       "tags": [
         "error-handling"
@@ -1190,7 +1190,7 @@
         0
       ],
       "explanation": "The Admin Panel (EXT:adminpanel) Debug section has an Events tab listing all events dispatched during the current request, including their data.",
-      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Inspecting/Debug/Index.html",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/14.3/en-us/Inspecting/Debug/Index.html",
       "tags": [
         "events",
         "debugging"
@@ -1527,7 +1527,7 @@
         0
       ],
       "explanation": "Debug > Query Information shows the executed SQL queries (except some early boot queries) with timing and placeholder values.",
-      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Inspecting/Debug/Index.html",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/14.3/en-us/Inspecting/Debug/Index.html",
       "tags": [
         "performance"
       ]
@@ -1541,7 +1541,7 @@
       "question": "Which are suitable means to analyze the performance of custom code in TYPO3?",
       "answers": [
         "Admin Panel TypoScript section with 'Display all times'",
-        "Admin Panel Info section (total parse time, number of USER_INT objects)",
+        "Admin Panel Info section (total parse time, USER_INT objects on the page)",
         "A PHP profiler such as Xdebug profiler, XHProf or Blackfire",
         "Setting config.no_cache = 1 on production to speed up rendering",
         "Disabling OPcache on production"
@@ -1552,7 +1552,7 @@
         2
       ],
       "explanation": "The Admin Panel shows rendering times and uncached objects, PHP profilers show hotspots. Disabling caching or OPcache makes the site slower, not faster.",
-      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Inspecting/Info/Index.html",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/14.3/en-us/Inspecting/Info/Index.html",
       "tags": [
         "performance"
       ]
@@ -1668,7 +1668,7 @@
         0
       ],
       "explanation": "The Scheduler needs a cron job (e.g. every 15 minutes) that calls scheduler:run; the command executes all tasks that are due.",
-      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/main/en-us/Index.html",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/14.3/en-us/Installation/CronJob/Index.html",
       "tags": [
         "scheduler"
       ]
@@ -1690,7 +1690,7 @@
         0
       ],
       "explanation": "Since v14 scheduler tasks are a native TCA table edited via FormEngine; task types are registered as record types of tx_scheduler_task. Registration via SC_OPTIONS is deprecated (#98453).",
-      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/main/en-us/DevelopersGuide/CreatingTasks/Index.html",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-scheduler/14.3/en-us/DevelopersGuide/CreatingTasks/Index.html",
       "since": "14.0",
       "tags": [
         "breaking-change",
@@ -2060,12 +2060,12 @@
       "skill": "frontend_plugins",
       "type": "multi",
       "difficulty": 3,
-      "question": "Which statements about ExtensionUtility::configurePlugin() are correct in TYPO3 v14?",
+      "question": "Which statements about ExtensionUtility::configurePlugin('MyExtension', 'ConferenceList', ...) are correct in TYPO3 v14?",
       "answers": [
         "The third argument lists the allowed controller actions; the first one is the default action",
         "The fourth argument lists actions whose output must not be cached",
-        "It creates the TypoScript object plugin.tx_myextension_conferencelist",
-        "The fifth argument $pluginType must be set to ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT",
+        "It adds TypoScript tt_content.myextension_conferencelist that renders the plugin via EXTBASEPLUGIN",
+        "The fifth argument $pluginType must be set to ExtensionUtility::PLUGIN_TYPE_PLUGIN",
         "Non-cacheable actions must not be listed in the third argument"
       ],
       "correct": [
@@ -2073,7 +2073,7 @@
         1,
         2
       ],
-      "explanation": "Non-cacheable actions are a subset of the allowed actions. The $pluginType parameter was removed in v14 because all plugins are CType content elements.",
+      "explanation": "configurePlugin() registers the controller actions and adds tt_content.<signature> TypoScript (lib.contentElement + EXTBASEPLUGIN). Non-cacheable actions are a subset of the allowed actions, and PLUGIN_TYPE_PLUGIN was removed in v14: the optional $pluginType must be omitted or 'CType'.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Registration/FrontendPlugin.html",
       "tags": [
         "breaking-change",
@@ -2547,7 +2547,7 @@
       "correct": [
         0
       ],
-      "explanation": "v14 renamed the top-level modules (#107628): Web became Content ('content'), File became Media ('media'); the main modules are content, site, media, admin and system.",
+      "explanation": "v14 renamed the top-level modules (#107628): Web became Content ('content') and File became Media ('media'); 'site' is kept for Sites, and admin/system modules were regrouped.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107628-ImprovedBackendModuleNamingAndStructure.html",
       "since": "14.0",
       "tags": [
@@ -2597,7 +2597,7 @@
         0
       ],
       "explanation": "Without cHash an attacker could flood the page cache with variants by adding random parameters (cache flooding). Only signed parameter sets are cached.",
-      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Index.html#chash",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Index.html",
       "tags": [
         "chash",
         "caching"
@@ -2830,7 +2830,7 @@
         "If validation fails, errorAction() is called, which by default forwards to the referring action",
         "#[IgnoreValidation] on a parameter lets the action receive an invalid object (e.g. to redisplay a form)",
         "Symfony constraints such as #[Assert\\NotBlank] can be used on model properties",
-        "Symfony constraints are supported on controller action parameters",
+        "Validators for model properties are configured in TypoScript under plugin.tx_myext.validation",
         "Validation only runs for POST form submissions"
       ],
       "correct": [
@@ -2838,7 +2838,7 @@
         1,
         2
       ],
-      "explanation": "Validation runs for every action with typed arguments. Symfony constraints (new in v14) only work on model properties, not on action parameters.",
+      "explanation": "errorAction() forwards to the referring request with status 400, #[IgnoreValidation] skips validation of an argument, and v14 added Symfony constraint attributes on model properties (#106945). Validation is configured with PHP attributes, not TypoScript, and runs for every action with object arguments regardless of the HTTP method.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html",
       "tags": [
         "validation"

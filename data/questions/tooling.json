@@ -136,9 +136,9 @@
       "skill": "system_and_typo3_error_logs",
       "type": "single",
       "difficulty": 2,
-      "question": "A production site shows \"Oops, an error occurred! Code: 20261101123456ab12cd34\". Where do you find the details of this exception?",
+      "question": "On a production site, a content element is replaced by the text \"Oops, an error occurred! Request: 6f1c2e8a9b3d4\". Where do you find the details of this exception?",
       "answers": [
-        "In the TYPO3 log file in var/log/, searching for the shown code",
+        "In the TYPO3 log file in var/log/, searching for the shown request ID",
         "In the browser's JavaScript console",
         "In the HTML source of the page, as a comment",
         "Nowhere; the production exception handler discards the exception"
@@ -146,7 +146,7 @@
       "correct": [
         0
       ],
-      "explanation": "The production exception handler hides details from visitors but logs the exception together with the shown code, so it can be found in the TYPO3 log. If TYPO3 cannot even boot, check the web server and PHP error logs.",
+      "explanation": "The frontend production exception handler hides details from visitors but logs the exception (level alert) together with the request ID shown in the message, so it can be found in the TYPO3 log. If TYPO3 cannot even boot, check the web server and PHP error logs.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Configuration/Index.html"
     },
     {
@@ -276,7 +276,7 @@
       "correct": [
         0
       ],
-      "explanation": "Admin Panel modules (extending AbstractModule and implementing e.g. ShortInfoProviderInterface) are registered in EXTCONF in ext_localconf.php; submodules go below ['modules'][parent]['submodules']. Backend modules and TSconfig are unrelated.",
+      "explanation": "Admin Panel modules (extending AbstractModule and implementing e.g. ShortInfoProviderInterface) are registered in EXTCONF in ext_localconf.php, also in v14; submodules go below ['modules'][parent]['submodules'] and the module class must be public in Services.yaml. Backend modules and TSconfig are unrelated.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/main/en-us/Extending/Index.html"
     },
     {
@@ -318,7 +318,7 @@
       "correct": [
         0
       ],
-      "explanation": "--dry-run prevents writing changes and makes the command exit with a non-zero code if files need fixing; --diff shows the changes. The other options do not exist.",
+      "explanation": "--dry-run prevents writing changes and makes the command exit with a non-zero code (exit status bit 8: files need fixing) if violations are found; --diff shows the changes. The other options/commands do not exist (the dedicated alias is 'php-cs-fixer check').",
       "doc_url": "https://cs.symfony.com/doc/usage.html"
     },
     {

@@ -91,7 +91,7 @@
         2,
         3
       ],
-      "explanation": "TYPO3 uses Doctrine DBAL and supports the relational systems MySQL, MariaDB, PostgreSQL and SQLite. Document stores such as MongoDB or wide-column stores such as Cassandra are not supported as the main TYPO3 database.",
+      "explanation": "TYPO3 v14 uses Doctrine DBAL and the install requirements check exactly these relational systems: MySQL (>= 8.0.17), MariaDB (>= 10.4.3), PostgreSQL and SQLite. Document stores such as MongoDB or wide-column stores such as Cassandra are not supported as the TYPO3 database.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/Index.html",
       "tags": [
         "database"
@@ -420,7 +420,7 @@
         "src": "$uid = $_GET['uid'];\n$rows = $queryBuilder\n    ->select('*')\n    ->from('tt_content')\n    ->where('uid = ' . $uid)\n    ->executeQuery()\n    ->fetchAllAssociative();"
       },
       "answers": [
-        "The value is concatenated into the SQL; use ->where($qb->expr()->eq('uid', $qb->createNamedParameter($uid, Connection::PARAM_INT)))",
+        "The value is concatenated into the SQL; use ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)))",
         "The query is not vulnerable because where() escapes its arguments automatically",
         "It is vulnerable only on PostgreSQL; on MySQL it is safe",
         "Wrapping $_GET['uid'] in htmlspecialchars() is the correct fix"
@@ -1162,8 +1162,8 @@
       "difficulty": 2,
       "question": "Which statements about recurring tasks in TYPO3 are correct?",
       "answers": [
-        "Symfony console commands registered in TYPO3 can be scheduled via the 'Execute console commands' scheduler task",
-        "A console command can be excluded from the scheduler with schedulable: false in its console.command tag",
+        "Symfony console commands registered in TYPO3 can be scheduled in the Scheduler module (each schedulable command is offered as a task type)",
+        "A console command can be excluded from the scheduler with schedulable: false in its console.command tag or with the #[AsNonSchedulableCommand] attribute",
         "Tasks can be configured with a frequency in cron syntax",
         "The scheduler requires a Redis server",
         "Recurring tasks must be implemented as PSR-15 middlewares"
@@ -1173,7 +1173,7 @@
         1,
         2
       ],
-      "explanation": "Console commands (registered via #[AsCommand] or the console.command tag) are schedulable by default unless schedulable: false is set, and task frequencies accept intervals or cron expressions. No Redis is needed; middlewares handle HTTP requests only.",
+      "explanation": "Console commands are schedulable by default; since v14 each one is offered directly as a Scheduler task type (executed via ExecuteSchedulableCommandTask). They are excluded with the tag option schedulable: false or, since v14.0, the #[AsNonSchedulableCommand] attribute. Task frequencies accept intervals or cron expressions; no Redis is needed and middlewares handle HTTP requests only.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Index.html",
       "tags": [
         "scheduler"
@@ -1209,9 +1209,9 @@
       "difficulty": 2,
       "question": "Which tools help to migrate extension code from TYPO3 v13 to v14?",
       "answers": [
-        "Extension Scanner in the Install Tool / Admin Tools",
+        "Extension Scanner (System > Upgrade, formerly Admin Tools)",
         "Rector with TYPO3-specific rules (typo3-rector)",
-        "Upgrade wizards ('Upgrade Wizard' in Admin Tools or 'vendor/bin/typo3 upgrade:run')",
+        "Upgrade wizards (System > Upgrade or 'vendor/bin/typo3 upgrade:run')",
         "The Scheduler task 'Optimize MySQL database tables'",
         "The page module's 'Translate' wizard"
       ],
@@ -1264,11 +1264,12 @@
       "correct": [
         0
       ],
-      "explanation": "Upgrade wizards implement TYPO3\\CMS\\Install\\Updates\\UpgradeWizardInterface (optionally ChattyInterface, RepeatableInterface) and are registered via the #[UpgradeWizard] attribute. The legacy SC_OPTIONS registration is no longer supported.",
+      "explanation": "Since v14 upgrade wizards implement TYPO3\\CMS\\Core\\Upgrades\\UpgradeWizardInterface (optionally ChattyInterface, RepeatableInterface) and are registered with the TYPO3\\CMS\\Core\\Attribute\\UpgradeWizard attribute; the former EXT:install namespaces are deprecated aliases. Registration via SC_OPTIONS['ext/install']['update'] was deprecated in v12.2 and removed in v13.0.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html",
       "tags": [
         "upgrade"
-      ]
+      ],
+      "since": "14.0"
     },
     {
       "id": "SDC-PHPEXT-001",
@@ -1323,7 +1324,7 @@
       "skill": "php_extensions",
       "type": "single",
       "difficulty": 2,
-      "question": "Which PHP extension is used by TYPO3 for image processing as an alternative to ImageMagick/GraphicsMagick, e.g. for GIFBUILDER?",
+      "question": "Which PHP extension does TYPO3's GIFBUILDER rely on to create images (e.g. rendering text into graphics)?",
       "answers": [
         "gd",
         "intl",
@@ -1333,7 +1334,7 @@
       "correct": [
         0
       ],
-      "explanation": "GD provides image creation and manipulation functions used e.g. by GIFBUILDER. intl handles internationalization, pdo_mysql is a database driver and opcache caches compiled bytecode.",
+      "explanation": "TYPO3 suggests ext-gd ('GDlib/Freetype is required for building images with text (GIFBUILDER)'), and GD can also be used to scale images. intl handles internationalization, pdo_mysql is a database driver and opcache caches compiled bytecode.",
       "doc_url": "https://www.php.net/manual/en/book.image.php",
       "tags": [
         "php"
@@ -1893,7 +1894,7 @@
         "The MM table contains the columns uid_local and uid_foreign",
         "Sorting of the relation can be stored in the MM table (sorting, sorting_foreign)",
         "In Extbase, such a relation is typically represented by an ObjectStorage property",
-        "The MM table must contain a 'pid' column and is shown in the list module",
+        "The MM table must contain a 'pid' column and is shown in the Records (formerly List) module",
         "m:n relations require the TCA type 'inline' without foreign_table"
       ],
       "correct": [
@@ -2075,7 +2076,7 @@
         0
       ],
       "explanation": "PHP handles exceptions with try/catch (and optionally finally). The other constructs do not exist in PHP.",
-      "doc_url": "https://www.php.net/manual/en/language.exceptions.php",
+      "doc_url": "https://www.php.net/manual/en/control-structures.try-catch.php",
       "tags": [
         "php"
       ]
@@ -2160,7 +2161,7 @@
       "answers": [
         "Using Xdebug with step debugging in the IDE",
         "\\TYPO3\\CMS\\Extbase\\Utility\\DebuggerUtility::var_dump($object)",
-        "Activating the 'Debug' configuration preset in Admin Tools > Settings",
+        "Activating the 'Debug' configuration preset in System > Settings (formerly Admin Tools)",
         "Setting the application context TYPO3_CONTEXT=Development",
         "Enabling 'Optimize database tables' in the Scheduler"
       ],
@@ -2614,7 +2615,7 @@
       "question": "Which statements about autoloading in a Composer-based TYPO3 v14 project are correct?",
       "answers": [
         "Composer generates vendor/autoload.php, which registers the autoloader via spl_autoload_register()",
-        "After adding a new PSR-4 namespace to composer.json, 'composer dump-autoload' must be run",
+        "After adding a new PSR-4 namespace to composer.json, the autoloader must be regenerated, e.g. with 'composer dump-autoload'",
         "Test classes should be mapped in 'autoload-dev' rather than 'autoload'",
         "Every class must be loaded manually with require_once in ext_localconf.php",
         "Autoloading loads all classes of all extensions eagerly at the start of each request"

@@ -75,7 +75,7 @@
       "correct": [
         0
       ],
-      "explanation": "Every sheet of a T3DataStructure starts with a <ROOT> element that has <type>array</type> and nests its fields inside <el>. The <TCEforms> wrapper was removed (TYPO3 v12) and must no longer be used.",
+      "explanation": "Every sheet of a T3DataStructure starts with a <ROOT> element that has <type>array</type> and nests its fields inside <el>. The <TCEforms> wrapper was deprecated in TYPO3 v12 and its compatibility layer was removed in v13, so it must no longer be used.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlexForms/T3datastructure/Elements/Index.html",
       "tags": [
         "flexform"
@@ -97,7 +97,7 @@
       "correct": [
         0
       ],
-      "explanation": "Only FlexForm fields prefixed with 'settings.' are merged into $this->settings, without the prefix. Non-empty FlexForm values override TypoScript settings of the same name.",
+      "explanation": "Only FlexForm fields prefixed with 'settings.' are merged into $this->settings, without the prefix. FlexForm values override TypoScript settings of the same name (empty values too, unless the field is listed in ignoreFlexFormSettingsIfEmpty).",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlexForms/Reading/Index.html",
       "tags": [
         "flexform",
@@ -136,7 +136,7 @@
       "difficulty": 2,
       "question": "Which of the following give you access to the value of the FlexForm field 'settings.categories' stored in tt_content.pi_flexform without writing PHP code?",
       "answers": [
-        "TypoScript getText: data = flexform: pi_flexform:settings.categories",
+        "TypoScript getText: data = flexform:pi_flexform:settings.categories",
         "The 'flex-form' data processor (fieldName = pi_flexform) in a FLUIDTEMPLATE / PAGEVIEW",
         "TypoScript: field = pi_flexform.settings.categories",
         "Fluid: {data.pi_flexform.settings.categories} without any data processor",
@@ -616,7 +616,7 @@
       "question": "Scheduler tasks are stored as records of the TCA table tx_scheduler_task since TYPO3 v14. How should a custom task type be registered?",
       "code": {
         "lang": "php",
-        "src": "// Configuration/TCA/Overrides/scheduler_my_task_type.php\nif (isset($GLOBALS['TCA']['tx_scheduler_task'])) {\n    ExtensionManagementUtility::???(\n        [\n            'label' => 'my_extension.messages:my_task.title',\n            'value' => MyTask::class,\n            'group' => 'my_extension',\n        ],\n        '--div--;core.tabs:general, tasktype, task_group, description, my_field',\n        [],\n        '',\n        'tx_scheduler_task'\n    );\n}"
+        "src": "// Configuration/TCA/Overrides/scheduler_my_task_type.php\nif (isset($GLOBALS['TCA']['tx_scheduler_task'])) {\n    ExtensionManagementUtility::???(\n        [\n            'label' => 'my_extension.messages:my_task.title',\n            'value' => MyTask::class,\n            'group' => 'my_extension',\n        ],\n        '--div--;core.form.tabs:general, tasktype, task_group, description, my_field',\n        [],\n        '',\n        'tx_scheduler_task'\n    );\n}"
       },
       "answers": [
         "In a TCA override file, by adding a record type for tx_scheduler_task with ExtensionManagementUtility::addRecordType() whose value is the task class",
@@ -808,7 +808,7 @@
         2,
         3
       ],
-      "explanation": "TYPO3 supports smtp, sendmail, mbox (writes mails to a file) and a custom transport class name. Spooling is configured separately via transport_spool_type (memory or file); IMAP is not a sending transport.",
+      "explanation": "TransportFactory handles smtp, sendmail, mbox (writes mails to a file), dsn, null and otherwise treats the value as a custom TransportInterface class name. 'spool' is explicitly rejected with an exception - spooling is configured via transport_spool_type (memory or file); IMAP is not a sending transport.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
       "tags": [
         "mail",
@@ -830,12 +830,12 @@
         "In the paths of $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']",
         "In plugin.tx_myextension.view.templateRootPaths of the current plugin",
         "Always in EXT:my_extension/Resources/Private/Templates/Email/ of the calling extension",
-        "In the templateRootPaths of the site set 'typo3/mail'"
+        "Only in the email.templateRootPaths site settings of the current site"
       ],
       "correct": [
         0
       ],
-      "explanation": "FluidEmail uses the global MAIL template/layout/partial root paths. Since 14.2 TemplatedEmailFactory->createFromRequest() can additionally add the paths configured for the site of a frontend request.",
+      "explanation": "new FluidEmail() and TemplatedEmailFactory->create() use only the global MAIL template/layout/partial root paths. Site settings (email.templateRootPaths of the site set typo3/email) are merged in only by createFromRequest() or createWithOverrides() with a request (since 14.2).",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
       "tags": [
         "mail",
@@ -937,7 +937,7 @@
       "correct": [
         0
       ],
-      "explanation": "Feature #107519 introduced the 'discard' command, which must receive the uid of the versioned record (t3ver_wsid > 0, t3ver_oid pointing to live). The old 'version' actions like clearWSID/flush still work but are deprecated.",
+      "explanation": "Feature #107519 introduced the 'discard' command, which must receive the uid of the versioned record (t3ver_wsid > 0, t3ver_oid pointing to live). The old 'version' actions like clearWSID/flush are still supported but discouraged (not formally deprecated).",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107519-AddDiscardCommandToDataHandler.html",
       "since": "14.0",
       "tags": [
@@ -1470,14 +1470,14 @@
         "page.meta.og:site_name.replace = 1 lets the TypoScript value override a value set by a plugin.",
         "A custom MetaTagManager implements MetaTagManagerInterface and is registered via MetaTagManagerRegistry->registerManager() in ext_localconf.php.",
         "Without 'replace', a TypoScript meta tag always overwrites a tag set by a plugin.",
-        "By default the same meta property can be added any number of times."
+        "Meta tags are never de-duplicated: every addProperty() call for the same property renders an additional tag."
       ],
       "correct": [
         0,
         1,
         2
       ],
-      "explanation": "TypoScript meta tags are only created if not already set, unless replace = 1. Duplicate tags are prevented unless a custom manager allows them; managers are registered with before/after ordering in ext_localconf.php in v14.",
+      "explanation": "TypoScript meta tags are only created if not already set, unless replace = 1. Duplicates are only allowed for properties flagged with allowMultipleOccurrences (e.g. og:image); managers are registered with before/after ordering in ext_localconf.php in v14.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Seo/MetaTagApi.html",
       "tags": [
         "seo",

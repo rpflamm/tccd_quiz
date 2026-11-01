@@ -17,7 +17,7 @@
       "correct": [
         0
       ],
-      "explanation": "The TYPO3 coding guidelines state that the CS Fixer configuration is based on PER-CS 1.0 (PSR-12) and is transitioning towards PER-CS 2.0. PSR-2 is deprecated, and PSR-1 only covers basic rules, not detailed formatting.",
+      "explanation": "The TYPO3 Core's PHP-CS-Fixer configuration (Build/php-cs-fixer/config.php) is based on PER Coding Style, the successor of PSR-12; in v14.3 it uses the '@PER-CS3x0' rule set (the coding guidelines still mention PER-CS 1.0/2.0). PSR-2 is deprecated, and PSR-1 only covers basic rules, not detailed formatting.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/CodingGuidelines/CglPhp/GeneralRequirementsForPhpFiles.html",
       "tags": [
         "coding-guidelines"
@@ -402,7 +402,7 @@
       "correct": [
         0
       ],
-      "explanation": "A DocBlock is a multi-line comment that starts with exactly /** . Normal /* */ comments and line comments are not DocBlocks and are not available via Reflection; #[...] is PHP attribute syntax, not a comment.",
+      "explanation": "A DocBlock is a comment that starts with exactly /** (it may span one or several lines). Normal /* */ comments and line comments are not DocBlocks and are not available via Reflection; #[...] is PHP attribute syntax, not a comment.",
       "doc_url": "https://docs.phpdoc.org/guide/guides/docblocks.html"
     },
     {
@@ -422,7 +422,7 @@
       "correct": [
         0
       ],
-      "explanation": "TYPO3 v14 removed support for DocBlock annotations in Extbase (Breaking #107229); Validate, Lazy, Cascade, Transient etc. must be used as PHP attributes. Leftover annotations are silently ignored.",
+      "explanation": "TYPO3 v14 removed support for DocBlock annotations in Extbase (Breaking #107229); Validate, Lazy, Cascade, Transient etc. must be used as PHP attributes (new namespace TYPO3\\CMS\\Extbase\\Attribute; the old Annotation namespace is deprecated). Annotations in DocBlocks are no longer evaluated by Extbase.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107229-RemovedSupportOfAnnotationsInExtbase.html",
       "since": "14.0",
       "tags": [
@@ -605,7 +605,7 @@
       "correct": [
         0
       ],
-      "explanation": "PSR-18 defines a single method, sendRequest(), which takes a PSR-7 request and returns a PSR-7 response. request() with options is Guzzle's (and TYPO3 RequestFactory's) own API.",
+      "explanation": "PSR-18 defines a single method, sendRequest(), which takes a PSR-7 request and returns a PSR-7 response. request($method, $uri, $options) is Guzzle's own API (TYPO3's RequestFactory::request($uri, $method, $options) is a similar convenience wrapper around Guzzle).",
       "doc_url": "https://www.php-fig.org/psr/psr-18/"
     },
     {
@@ -850,7 +850,7 @@
       "correct": [
         0
       ],
-      "explanation": "makeInstance() can only retrieve services from the container that are public. Private services that are not injected anywhere are removed from the compiled container, so makeInstance() would create the object without its dependencies.",
+      "explanation": "makeInstance() only fetches a class from the DI container if $container->has() is true, which is the case for public services only. Private services that are not injected anywhere are removed from the compiled container, so makeInstance() falls back to 'new' without constructor arguments and the dependencies are missing. Instead of public: true in Services.yaml, the attribute #[Autoconfigure(public: true)] can be used.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html",
       "tags": [
         "dependency-injection"
@@ -917,7 +917,7 @@
         "TYPO3 supports XLIFF 1.2 and 2.x and detects the version automatically",
         "In XLIFF 2.x, a <unit> contains a <segment> with <source> and an optional <target>",
         "A label can be referenced as LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:button.save",
-        "One XLIFF file may contain several <file> elements, one per target language",
+        "A single XLIFF file can hold the translations for several target languages",
         "English labels must be stored in a file prefixed with en., e.g. en.locallang.xlf",
         "Every <trans-unit> must carry an approved attribute, otherwise the file is not loaded"
       ],
@@ -926,7 +926,7 @@
         1,
         2
       ],
-      "explanation": "TYPO3 reads XLIFF 1.2 (<trans-unit>) and 2.x (<unit>/<segment>). TYPO3 supports only one <file> element per document, the English source has no prefix, and a missing approved attribute is treated as approved.",
+      "explanation": "Since v14 TYPO3 reads XLIFF 1.2 (<trans-unit>) and 2.x (<unit>/<segment>) and detects the version (Feature #107710). Each translation file holds one target language, identified by its file name prefix (de.locallang.xlf); the English source has no prefix, and a missing approved attribute is treated as approved.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Localization/XliffFormat.html",
       "tags": [
         "localization"
@@ -949,7 +949,7 @@
       "correct": [
         0
       ],
-      "explanation": "In reST, double backquotes create an inline literal. Single backquotes are interpreted text (a role), ** is strong emphasis and * is emphasis; raw HTML is not interpreted.",
+      "explanation": "In reST, double backquotes create an inline literal. Single backquotes are interpreted text, rendered via the default role (some renderers, including TYPO3's, map that role to code, but it is not an inline literal); ** is strong emphasis and * is emphasis; raw HTML is not interpreted.",
       "doc_url": "https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#inline-literals"
     },
     {
@@ -998,8 +998,8 @@
       "correct": [
         0
       ],
-      "explanation": "Explicit target labels referenced with the :ref: role are independent of file paths and also give a link text from the section title. Markdown and raw HTML link syntax are not reST.",
-      "doc_url": "https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingReST/Hyperlinks.html",
+      "explanation": "Explicit target labels (.. _label:) referenced with the :ref: role are independent of file paths and also take the link text from the section title; TYPO3 permalinks are built from these labels too. Markdown and raw HTML link syntax are not reST.",
+      "doc_url": "https://www.sphinx-doc.org/en/master/usage/referencing.html#ref-role",
       "tags": [
         "documentation"
       ]

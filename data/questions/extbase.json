@@ -45,7 +45,7 @@
       "correct": [
         0
       ],
-      "explanation": "ForwardResponse transfers control to another action inside the same request, with no browser round-trip, keeping arguments (and flash messages). A redirect with HTTP 303 is what redirect() does.",
+      "explanation": "ForwardResponse transfers control to another action inside the same request (the Dispatcher builds a new Extbase request from it), so there is no browser round-trip and the URL stays the same; arguments are passed via withArguments(). A redirect with HTTP 303 is what redirect() does.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
     },
     {
@@ -287,7 +287,7 @@
       "correct": [
         0
       ],
-      "explanation": "The table name is derived from the class name: tx_ + lowercased extension name without underscores + _domain_model_ + lowercased model name. The vendor is not part of it. Other names require a mapping in Configuration/Extbase/Persistence/Classes.php.",
+      "explanation": "The table name is derived from the class name: tx_ + the lowercased namespace segments after the vendor, joined with underscores (myextension_domain_model_conference). The vendor is not part of it. Other names require a mapping in Configuration/Extbase/Persistence/Classes.php.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Concepts/Persistence.html"
     },
     {
@@ -624,7 +624,7 @@
         1,
         2
       ],
-      "explanation": "Constraints reference properties that Extbase maps to columns; like() takes SQL wildcards; contains() resolves relations. An empty in() never matches, and matching() takes one constraint, so a second call replaces the first.",
+      "explanation": "Constraints reference properties that Extbase maps to columns; like() takes SQL wildcards; contains() resolves relations. in() with an empty array does not match everything: the query parser throws a BadConstraintException ('The IN operator needs a non-empty value list'). matching() takes one constraint, so a second call replaces the first.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
     },
     {
@@ -684,7 +684,7 @@
       "answers": [
         "Symfony constraint attributes such as #[Assert\\NotBlank] can be placed on Extbase model properties",
         "A constraint message starting with LLL: is translated by TYPO3",
-        "Symfony constraints can also be placed on controller action parameters",
+        "Symfony constraint classes must first be registered as validators in Configuration/Services.yaml",
         "symfony/validator must be installed additionally via Composer",
         "Framework-dependent constraints such as #[Assert\\File] and #[Assert\\Image] are fully supported"
       ],
@@ -692,7 +692,7 @@
         0,
         1
       ],
-      "explanation": "Feature #106945 wraps Symfony constraints in a decorating Extbase validator for model properties; LLL: messages are translated. They do not work on action parameters, symfony/validator is already a dependency, and File/Image constraints are not yet compatible.",
+      "explanation": "Feature #106945: Symfony constraint attributes on model/DTO properties are detected by the ClassSchema and wrapped in a ConstraintDecoratingValidator; LLL: messages are translated. No registration is needed, symfony/validator is already a dependency of typo3/cms-extbase, and complex constraints like File/Image are not yet compatible.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-106945-AllowUsageOfSymfonyValidatorsInExtbase.html",
       "since": "14.0",
       "tags": [
@@ -825,7 +825,7 @@
       "correct": [
         0
       ],
-      "explanation": "The default errorAction() forwards to the referring request, so the form can be re-rendered with the submitted values and errors, and adds a flash message from getErrorFlashMessage(). Without a referring request a plain error message is returned.",
+      "explanation": "The default errorAction() forwards to the referring request (ForwardResponse with HTTP status 400), so the form can be re-rendered with the submitted values and errors, and adds a flash message from getErrorFlashMessage(). Without a referring request a plain validation error message is returned.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
     },
     {
@@ -858,15 +858,14 @@
         "If newAction(?Conference $conference = null) lacks #[IgnoreValidation] on the parameter, an invalid object returned to it would trigger errorAction() again in a loop",
         "errorAction() is also called when a required action argument without default value is missing in the request",
         "An overridden errorAction() must return a ResponseInterface",
-        "#[IgnoreValidation] skips all validators so that no validation result is created",
+        "#[IgnoreValidation] must be placed on errorAction() to stop the loop",
         "errorAction() must be listed as allowed action in configurePlugin()"
       ],
       "correct": [
         0,
-        1,
         2
       ],
-      "explanation": "#[IgnoreValidation] does not skip validation; it lets the action be called although the argument is invalid, which breaks the error loop. Missing required arguments also lead to errorAction(), which is called internally and need not be registered.",
+      "explanation": "Without #[IgnoreValidation] on the parameter, the forwarded newAction() receives the invalid object, validation fails again and errorAction() forwards again. Overridden errorAction() must return a ResponseInterface. A missing required argument does not call errorAction(): a RequiredArgumentMissingException is thrown (or a 404 when mvc.showPageNotFoundIfRequiredArgumentIsMissingException is set). errorAction() is called internally and need not be registered.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html"
     },
     {
@@ -1066,7 +1065,7 @@
       "answers": [
         "listAction() of ConferenceController is the default action of the plugin",
         "createAction() is non-cacheable, so its output is not stored in the page cache",
-        "registerPlugin() must use the same extension name and plugin name for the plugin to work",
+        "registerPlugin() must be called with the same extension name and plugin name so that editors can select this plugin as a content element",
         "A request with tx_myextension_conferencelist[action]=delete can call deleteAction() although it is not listed",
         "Non-cacheable actions do not need to be listed in the third argument"
       ],
@@ -1075,7 +1074,7 @@
         1,
         2
       ],
-      "explanation": "The first action of the first controller is the default. The fourth argument is a subset of the allowed actions that are rendered uncached. Only the listed actions are callable; a mismatch with registerPlugin() breaks the plugin.",
+      "explanation": "The first action of the first controller is the default. The fourth argument is a subset of the allowed actions that are rendered uncached. Only the listed actions are callable. registerPlugin() must use the same names, otherwise the CType offered in the backend does not match the TypoScript created by configurePlugin().",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Registration/FrontendPlugin.html"
     },
     {
@@ -1238,8 +1237,8 @@
       "correct": [
         0
       ],
-      "explanation": "PropagateResponseException carries a PSR-7 response that is passed up through the middleware stack and sent as is, so the 404 response created by ErrorController reaches the client. ForwardResponse is a response, not an exception, and only dispatches another action.",
-      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Index.html"
+      "explanation": "PropagateResponseException (TYPO3\\CMS\\Core\\Http) carries a PSR-7 response that is passed up through the middleware stack and sent as is, so the 404 response created by ErrorController reaches the client. Extbase itself uses this pattern in ActionController::handleArgumentMappingExceptions(). ForwardResponse is a response, not an exception, and only dispatches another action.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104321-AllowHandlingOfArgumentMappingExceptionsInActionController.html"
     },
     {
       "id": "EXT-EXC-002",
@@ -1389,7 +1388,7 @@
       "correct": [
         0
       ],
-      "explanation": "Typed action arguments are converted by the property mapper: for a domain object type, the uid is resolved to the persisted object (respecting enable fields). If it cannot be found, errorAction() is called.",
+      "explanation": "Typed action arguments are converted by the property mapper: for a domain object type, the uid is resolved to the persisted object (respecting enable fields). If no record is found for a required argument, a TargetNotFoundException is thrown (or a 404 page if mvc.showPageNotFoundIfTargetNotFoundException is enabled).",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
     }
   ]

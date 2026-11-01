@@ -181,6 +181,11 @@ func _show_question() -> void:
 	meta.add_child(skill)
 	if q.tags.has("breaking-change"):
 		meta.add_child(UI.chip("v14 change", Palette.PINK, "bolt"))
+	if q.review:
+		var rv := UI.chip("unverified", Palette.WARNING, "flag")
+		rv.tooltip_text = "Fact-check note: " + q.review_note
+		rv.mouse_filter = Control.MOUSE_FILTER_PASS
+		meta.add_child(rv)
 	meta.add_child(_difficulty_dots(q.difficulty))
 	_card_box.add_child(meta)
 
