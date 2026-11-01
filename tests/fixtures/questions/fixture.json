@@ -1,0 +1,352 @@
+{
+  "questions": [
+    {
+      "id": "CON-FIX-001",
+      "domain": "typo3_concepts",
+      "skill": "extension_file_and_folder_structure",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 1 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "CON-FIX-002",
+      "domain": "typo3_concepts",
+      "skill": "coding_standards_in_typo3",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 2 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "CON-FIX-003",
+      "domain": "typo3_concepts",
+      "skill": "table_configuration_array_tca",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Fixture question number 3 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        1,
+        3
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "CON-FIX-004",
+      "domain": "typo3_concepts",
+      "skill": "flexform_concepts",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 4 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "CON-FIX-005",
+      "domain": "typo3_concepts",
+      "skill": "database_schema_definition",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 5 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "CON-FIX-006",
+      "domain": "typo3_concepts",
+      "skill": "implementing_mvc_in_typo3",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Fixture question number 6 for domain typo3_concepts?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        1,
+        3
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "API-FIX-001",
+      "domain": "typo3_apis",
+      "skill": "flexform_configuration_data_structure",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 7 for domain typo3_apis?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-FIX-002",
+      "domain": "typo3_apis",
+      "skill": "accessing_flexform_data",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 8 for domain typo3_apis?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "API-FIX-003",
+      "domain": "typo3_apis",
+      "skill": "implementing_viewhelpers",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Fixture question number 9 for domain typo3_apis?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        1,
+        3
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "API-FIX-004",
+      "domain": "typo3_apis",
+      "skill": "using_the_querybuilder",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 10 for domain typo3_apis?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "API-FIX-005",
+      "domain": "typo3_apis",
+      "skill": "using_query_restrictions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 11 for domain typo3_apis?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "EXT-FIX-001",
+      "domain": "extbase",
+      "skill": "extbase_request_response",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 12 for domain extbase?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "EXT-FIX-002",
+      "domain": "extbase",
+      "skill": "extbase_view",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 13 for domain extbase?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "EXT-FIX-003",
+      "domain": "extbase",
+      "skill": "extbase_fluid_view",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Fixture question number 14 for domain extbase?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        1,
+        3
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    },
+    {
+      "id": "SEC-FIX-001",
+      "domain": "security",
+      "skill": "handling_user_input",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Fixture question number 15 for domain security?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "SEC-FIX-002",
+      "domain": "security",
+      "skill": "web_vulnerability_types",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Fixture question number 16 for domain security?",
+      "answers": [
+        "Answer A",
+        "Answer B",
+        "Answer C",
+        "Answer D",
+        "Answer E"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Fixture explanation that is long enough to pass validation.",
+      "doc_url": "https://docs.typo3.org/",
+      "tags": []
+    }
+  ]
+}
