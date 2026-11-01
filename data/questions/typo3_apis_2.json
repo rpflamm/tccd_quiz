@@ -1,0 +1,1727 @@
+{
+  "questions": [
+    {
+      "id": "API-XNOTI-001",
+      "domain": "typo3_apis",
+      "skill": "backend_notifications",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which type is used to pass the severity when creating a FlashMessage in TYPO3 v14?",
+      "answers": [
+        "The enum \\TYPO3\\CMS\\Core\\Type\\ContextualFeedbackSeverity",
+        "Integer class constants such as FlashMessage::ERROR",
+        "The string constants of \\Psr\\Log\\LogLevel",
+        "The enum \\TYPO3\\CMS\\Core\\Messaging\\Severity"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since TYPO3 v12 the severity is expressed with the ContextualFeedbackSeverity enum (NOTICE, INFO, OK, WARNING, ERROR). The old integer constants on AbstractMessage/FlashMessage were removed; PSR-3 log levels are for logging, not for flash messages.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/FlashMessagesApi.html",
+      "tags": [
+        "flash-messages"
+      ]
+    },
+    {
+      "id": "API-XNOTI-002",
+      "domain": "typo3_apis",
+      "skill": "backend_notifications",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A backend controller adds a flash message and then redirects. After the redirect the message is not displayed. What is the most likely cause?",
+      "code": {
+        "lang": "php",
+        "src": "$message = GeneralUtility::makeInstance(\n    FlashMessage::class,\n    'The record was saved.',\n    'Saved',\n    ContextualFeedbackSeverity::OK,\n    false\n);\n$this->flashMessageService\n    ->getMessageQueueByIdentifier()\n    ->enqueue($message);\n\nreturn new RedirectResponse($listUri);"
+      },
+      "answers": [
+        "The last constructor argument ($storeInSession) is false, so the message only lives in the current request",
+        "Flash messages can only be enqueued from Extbase controllers",
+        "The default queue identifier must be passed explicitly to getMessageQueueByIdentifier()",
+        "ContextualFeedbackSeverity::OK messages are never rendered, only warnings and errors"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A FlashMessage is kept in memory unless $storeInSession is true. Because a redirect starts a new request, the message must be stored in the session to survive it. getMessageQueueByIdentifier() falls back to the default core queue, and all severities are rendered.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/FlashMessagesApi.html",
+      "tags": [
+        "flash-messages"
+      ]
+    },
+    {
+      "id": "API-XNOTI-003",
+      "domain": "typo3_apis",
+      "skill": "backend_notifications",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the JavaScript Notification API of the TYPO3 backend are correct? (choose 3)",
+      "answers": [
+        "It is imported as an ES module, e.g. import Notification from '@typo3/backend/notification.js'",
+        "Methods like Notification.success(title, message, duration) show a notification in the bottom right corner of the backend",
+        "A duration of 0 disables the timer, so the notification stays until the user closes it",
+        "The duration argument is given in milliseconds",
+        "The API is only available inside Extbase-based backend modules"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The Notification module is an ES6 module of EXT:backend and can be used in any backend context. The duration is given in seconds; 0 keeps the notification visible until it is dismissed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/NotificationApi.html",
+      "tags": [
+        "javascript"
+      ]
+    },
+    {
+      "id": "API-XPAG-001",
+      "domain": "typo3_apis",
+      "skill": "pagination_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which Core class paginates a plain PHP array?",
+      "answers": [
+        "\\TYPO3\\CMS\\Core\\Pagination\\ArrayPaginator",
+        "\\TYPO3\\CMS\\Extbase\\Pagination\\QueryResultPaginator",
+        "\\TYPO3\\CMS\\Core\\Pagination\\SimplePagination",
+        "\\TYPO3\\CMS\\Core\\Pagination\\ArrayPagination"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "ArrayPaginator implements PaginatorInterface for arrays. QueryResultPaginator handles Extbase QueryResultInterface objects, and SimplePagination only calculates page numbers from a paginator; it does not slice items.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Pagination/Index.html"
+    },
+    {
+      "id": "API-XPAG-002",
+      "domain": "typo3_apis",
+      "skill": "pagination_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the paginator and pagination objects of the Pagination API are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "$paginator = new ArrayPaginator($items, $currentPage, 10);\n$pagination = new SlidingWindowPagination($paginator, 5);\n\n$view->assignMultiple([\n    'paginator' => $paginator,\n    'pagination' => $pagination,\n]);"
+      },
+      "answers": [
+        "A paginator (PaginatorInterface) reduces the full item set to the items of the current page",
+        "A pagination (e.g. SimplePagination) is built from a paginator and provides page numbers such as previous, next and all page numbers",
+        "SlidingWindowPagination takes a maximum number of links to limit the page links shown around the current page",
+        "SimplePagination executes the database query and returns the paginated items",
+        "ArrayPaginator can only be used inside Extbase controllers"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The API separates slicing items (paginator: getPaginatedItems(), getNumberOfPages()) from building navigation (pagination: getAllPageNumbers(), getPreviousPageNumber()). Core paginators live in EXT:core and work outside Extbase as well.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Pagination/Index.html"
+    },
+    {
+      "id": "API-XPAG-003",
+      "domain": "typo3_apis",
+      "skill": "pagination_api",
+      "type": "single",
+      "difficulty": 3,
+      "question": "TYPO3 v14.2 introduced QueryBuilderPaginator. Which limitation is documented for it?",
+      "code": {
+        "lang": "php",
+        "src": "$paginator = new QueryBuilderPaginator(\n    queryBuilder: $queryBuilder,\n    currentPageNumber: $currentPage,\n    itemsPerPage: 20,\n);\n$pagination = new SlidingWindowPagination($paginator, 5);"
+      },
+      "answers": [
+        "It does not apply language overlays, so for translated records QueryResultPaginator or ArrayPaginator should be used",
+        "It executes the SELECT query twice for every page request",
+        "It cannot be combined with SlidingWindowPagination",
+        "It only works with QueryBuilder instances created by Extbase repositories"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "QueryBuilderPaginator fetches the items of the current page once and counts the total with a CTE around the query. Because it works on raw rows, no language overlays are applied; for overlaid records the docs recommend QueryResultPaginator or ArrayPaginator.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Pagination/Index.html",
+      "since": "14.2",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XRTE-001",
+      "domain": "typo3_apis",
+      "skill": "rich_text_editor_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "An extension ships a CKEditor preset in Configuration/RTE/MyPreset.yaml. How is the preset made known to TYPO3?",
+      "answers": [
+        "$GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['myPreset'] = 'EXT:my_ext/Configuration/RTE/MyPreset.yaml'; in ext_localconf.php",
+        "By tagging the YAML file with 'rte.preset' in Configuration/Services.yaml",
+        "Every YAML file in Configuration/RTE/ is registered automatically",
+        "$GLOBALS['TYPO3_CONF_VARS']['BE']['RTE_presets'][] = 'EXT:my_ext/Configuration/RTE/MyPreset.yaml'; in ext_tables.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Presets are registered in $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets'], usually in ext_localconf.php or additional.php. There is no automatic discovery of YAML files and no service tag for presets.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-rte-ckeditor/14.3/en-us/Configuration/ConfigureTypo3.html"
+    },
+    {
+      "id": "API-XRTE-002",
+      "domain": "typo3_apis",
+      "skill": "rich_text_editor_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which of the following select which CKEditor preset is used for a field? (choose 3)",
+      "code": {
+        "lang": "tsconfig",
+        "src": "RTE.default.preset = full\nRTE.config.tt_content.bodytext.preset = myPreset\nRTE.config.tt_content.bodytext.types.textmedia.preset = minimal"
+      },
+      "answers": [
+        "The TCA option 'richtextConfiguration' => 'myPreset' together with 'enableRichtext' => true",
+        "Page TSconfig RTE.config.tt_content.bodytext.preset = myPreset",
+        "Page TSconfig RTE.default.preset = myPreset",
+        "TypoScript setup lib.parseFunc_RTE.preset = myPreset",
+        "User TSconfig options.rte.preset = myPreset"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The preset is chosen by TCA (richtextConfiguration) and can be set or overridden by page TSconfig, either globally (RTE.default.preset) or per table/field/type (RTE.config...). lib.parseFunc_RTE controls frontend output, not the editor.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-rte-ckeditor/14.3/en-us/Configuration/ConfigureTypo3.html"
+    },
+    {
+      "id": "API-XRTE-003",
+      "domain": "typo3_apis",
+      "skill": "rich_text_editor_api",
+      "type": "single",
+      "difficulty": 3,
+      "question": "TYPO3 v14.0 added the PSR-14 event used below. Which statement about it is correct?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsEventListener('my-ext/rte-config')]\nfinal class AddSourceEditing\n{\n    public function __invoke(AfterRichtextConfigurationPreparedEvent $event): void\n    {\n        $config = $event->getConfiguration();\n        $config['editor']['config']['toolbar']['items'][] = 'sourceEditing';\n        $event->setConfiguration($config);\n    }\n}"
+      },
+      "answers": [
+        "It is dispatched by \\TYPO3\\CMS\\Core\\Configuration\\Richtext::getConfiguration(), and changes must be written back with setConfiguration()",
+        "The array returned by __invoke() replaces the configuration automatically",
+        "It is part of EXT:rte_ckeditor and is only dispatched for the 'full' preset",
+        "It is dispatched in the frontend before lib.parseFunc_RTE is executed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "AfterRichtextConfigurationPreparedEvent (namespace TYPO3\\CMS\\Core\\Configuration\\Event) is dispatched by Richtext::getConfiguration() for every resolved rich text configuration. Listeners return void and must call setConfiguration() with the modified array.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Events/Events/Core/Configuration/AfterRichtextConfigurationPreparedEvent.html",
+      "since": "14.0",
+      "tags": [
+        "v14",
+        "events"
+      ]
+    },
+    {
+      "id": "API-XDASH-001",
+      "domain": "typo3_apis",
+      "skill": "building_custom_dashboard_widgets",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Where does an extension register its own dashboard widget group?",
+      "answers": [
+        "In Configuration/Backend/DashboardWidgetGroups.php, which returns an array of groups with a 'title'",
+        "In Configuration/Services.yaml with the tag 'dashboard.widgetgroup'",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['dashboard']['groups']",
+        "In Configuration/Backend/DashboardPresets.php under the key 'groups'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Widget groups are defined in Configuration/Backend/DashboardWidgetGroups.php, keyed by group identifier with a (translatable) title. Widgets are assigned to groups through the groupNames tag attribute; DashboardPresets.php defines default dashboards, not groups.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-dashboard/14.3/en-us/Configuration/WidgetGroupCreation.html"
+    },
+    {
+      "id": "API-XDASH-002",
+      "domain": "typo3_apis",
+      "skill": "building_custom_dashboard_widgets",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "A widget is registered as shown. Which of the listed tag attributes are mandatory? (choose 3)",
+      "code": {
+        "lang": "yaml",
+        "src": "dashboard.widget.myvendor.myext.news:\n  class: 'TYPO3\\CMS\\Dashboard\\Widgets\\RssWidget'\n  arguments:\n    $options:\n      rssFile: 'https://typo3.org/rss'\n      refreshAvailable: true\n  tags:\n    - name: dashboard.widget\n      identifier: 'myextNews'\n      groupNames: 'news'\n      title: 'LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:widget.title'\n      description: 'LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:widget.description'\n      iconIdentifier: 'content-widget-rss'\n      height: 'large'"
+      },
+      "answers": [
+        "identifier",
+        "groupNames",
+        "iconIdentifier",
+        "height",
+        "width",
+        "refreshAvailable"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The dashboard.widget tag requires identifier, groupNames, title, description and iconIdentifier. height and width are optional (small, medium, large), and refreshAvailable is an entry of the widget's options argument, not a tag attribute.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-dashboard/14.3/en-us/Configuration/WidgetRegistration.html"
+    },
+    {
+      "id": "API-XDASH-003",
+      "domain": "typo3_apis",
+      "skill": "building_custom_dashboard_widgets",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Since TYPO3 v14.0, widgets can offer per-instance settings. Inside renderWidget(), how does the widget read the configured value of the setting 'limit'?",
+      "code": {
+        "lang": "php",
+        "src": "final class LatestItemsWidget implements WidgetRendererInterface\n{\n    public function getSettingsDefinitions(): array\n    {\n        return [new SettingDefinition(key: 'limit', type: 'int', default: 5,\n            label: 'my_ext.widget:limit', description: 'my_ext.widget:limit.description')];\n    }\n\n    public function renderWidget(WidgetContext $context): WidgetResult\n    {\n        $limit = ???;\n        // ...\n    }\n}"
+      },
+      "answers": [
+        "$context->settings->get('limit')",
+        "$this->options['limit']",
+        "$context->request->getAttribute('widgetSettings')['limit']",
+        "$this->configuration->getSettings()['limit']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Configurable widgets implement WidgetRendererInterface. They declare SettingDefinition objects in getSettingsDefinitions() and receive a WidgetContext whose settings object holds the validated per-instance values. $options holds the static options from Services.yaml.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-dashboard/14.3/en-us/Developer/ConfigurableWidgets.html",
+      "since": "14.0",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XROUT-001",
+      "domain": "typo3_apis",
+      "skill": "custom_route_enhancers",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How is a custom route enhancer class registered so that it can be used as 'type: MyEnhancer' in the site configuration?",
+      "answers": [
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['MyEnhancer'] = MyEnhancer::class; in ext_localconf.php",
+        "With the attribute #[AsRouteEnhancer('MyEnhancer')] on the class",
+        "$GLOBALS['TYPO3_CONF_VARS']['FE']['routeEnhancers'][] = MyEnhancer::class; in ext_tables.php",
+        "By adding the class name as 'class' option to the routeEnhancers entry in config.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Custom enhancers are registered in ext_localconf.php under $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']; the array key is the name used as 'type' in the YAML. Custom aspects use ['SYS']['routing']['aspects'] the same way.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/Extending/Index.html"
+    },
+    {
+      "id": "API-XROUT-002",
+      "domain": "typo3_apis",
+      "skill": "custom_route_enhancers",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "A custom enhancer should resolve and generate complete routes, like the Plugin enhancer does (it is not a decorator). Which interfaces should it implement? (choose 2)",
+      "answers": [
+        "\\TYPO3\\CMS\\Core\\Routing\\Enhancer\\RoutingEnhancerInterface",
+        "\\TYPO3\\CMS\\Core\\Routing\\Enhancer\\ResultingInterface",
+        "\\TYPO3\\CMS\\Core\\Routing\\Enhancer\\DecoratingEnhancerInterface",
+        "\\TYPO3\\CMS\\Core\\Routing\\Aspect\\StaticMappableAspectInterface",
+        "\\Psr\\Http\\Server\\MiddlewareInterface"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Route enhancers implement RoutingEnhancerInterface and ResultingInterface. DecoratingEnhancerInterface is for decorators such as PageType that only add to existing routes, and mappable aspect interfaces are for aspects that map single parameters.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/Extending/Index.html"
+    },
+    {
+      "id": "API-XROUT-003",
+      "domain": "typo3_apis",
+      "skill": "custom_route_enhancers",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Since TYPO3 v14.1 an extension can ship route enhancers with a site set. Where are they defined?",
+      "code": {
+        "lang": "text",
+        "src": "EXT:my_extension/Configuration/Sets/MySet/\n├── config.yaml\n└── ???"
+      },
+      "answers": [
+        "In a route-enhancers.yaml file with a top-level routeEnhancers key, next to the set's config.yaml",
+        "In the set's settings.yaml under the key routing.enhancers",
+        "In Configuration/Routing/Enhancers.php, which is loaded for every site",
+        "In the set's config.yaml under a routeEnhancers key"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Sets can contain a route-enhancers.yaml (which may import further files). Its enhancers are merged into every site that depends on the set; enhancers defined in the site's own config.yaml take precedence.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-107837-RouteEnhancersInSiteSets.html",
+      "since": "14.1",
+      "tags": [
+        "v14",
+        "site-sets"
+      ]
+    },
+    {
+      "id": "API-XASSET-001",
+      "domain": "typo3_apis",
+      "skill": "assetcollector_class_and_viewhelpers",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which Fluid markup registers a JavaScript file through the AssetCollector?",
+      "answers": [
+        "<f:asset.script identifier=\"myScript\" src=\"EXT:my_ext/Resources/Public/JavaScript/main.js\" />",
+        "<f:script src=\"EXT:my_ext/Resources/Public/JavaScript/main.js\" />",
+        "<f:page.javaScript file=\"EXT:my_ext/Resources/Public/JavaScript/main.js\" />",
+        "<f:asset.js file=\"EXT:my_ext/Resources/Public/JavaScript/main.js\" />"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The ViewHelpers f:asset.script and f:asset.css use the AssetCollector API. They require a unique identifier, which also ensures that an asset is rendered only once.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Assets/Index.html"
+    },
+    {
+      "id": "API-XASSET-002",
+      "domain": "typo3_apis",
+      "skill": "assetcollector_class_and_viewhelpers",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about where AssetCollector assets are rendered are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "$this->assetCollector->addJavaScript(\n    'my-ext-main',\n    'EXT:my_ext/Resources/Public/JavaScript/main.js',\n    ['type' => 'module'],\n    ['priority' => true],\n);"
+      },
+      "answers": [
+        "JavaScript added with the option 'priority' => true is rendered in the <head>",
+        "JavaScript added without priority is rendered at the end of the <body>",
+        "Stylesheets are always rendered in the <head>, grouped by priority",
+        "Stylesheets with 'priority' => true are moved to the end of the <body>",
+        "In TYPO3 v14 the AssetCollector concatenates all registered CSS files into one file"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The priority option (default false) decides about placement and order: priority JavaScript goes into the head, other JavaScript to the bottom of the body, CSS always into the head. Core asset concatenation and compression was removed in v14.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Assets/Index.html"
+    },
+    {
+      "id": "API-XASSET-003",
+      "domain": "typo3_apis",
+      "skill": "assetcollector_class_and_viewhelpers",
+      "type": "single",
+      "difficulty": 3,
+      "question": "This code worked in TYPO3 v13. What is the correct migration for TYPO3 v14?",
+      "code": {
+        "lang": "php",
+        "src": "$assetCollector->addStyleSheet(\n    'myCssFile',\n    '/styles/main.css',\n    [],\n    ['external' => true]\n);"
+      },
+      "answers": [
+        "Remove the 'external' option and prefix the relative URI: addStyleSheet('myCssFile', 'URI:/styles/main.css')",
+        "Replace 'external' => true with 'remote' => true",
+        "Use addInlineStyleSheet() with the file path, because external files are no longer supported",
+        "Nothing, 'external' is still supported but deprecated"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 v14 removed the 'external' option from the AssetCollector and the TypoScript include properties. Absolute URLs work as before; relative URIs that do not point to a file must be prefixed with 'URI:'. Unresolvable resources passed to the AssetCollector throw an exception.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107927-ExternalAttributesRemoved.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XVER-001",
+      "domain": "typo3_apis",
+      "skill": "typo3_version_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "On a TYPO3 14.3.2 installation, what does this code return?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Core\\Information\\Typo3Version;\n\nreturn (new Typo3Version())->getMajorVersion();"
+      },
+      "answers": [
+        "14 (int)",
+        "'14.3' (string)",
+        "'14.3.2' (string)",
+        "'v14' (string)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Typo3Version::getMajorVersion() returns the major version as integer. getBranch() returns '14.3' and getVersion() returns the full version '14.3.2'.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Typo3Information/Index.html"
+    },
+    {
+      "id": "API-XVER-002",
+      "domain": "typo3_apis",
+      "skill": "typo3_version_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "On a TYPO3 14.3.2 installation, which statements about \\TYPO3\\CMS\\Core\\Information\\Typo3Version are correct? (choose 2)",
+      "answers": [
+        "getBranch() returns '14.3'",
+        "Casting the object to string returns the same value as getVersion()",
+        "getMajorVersion() returns the string '14'",
+        "The global constant TYPO3_version can be used as an alternative",
+        "The class must be fetched via GeneralUtility::makeInstance() because it needs the DI container"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Typo3Version offers getVersion() ('14.3.2'), getBranch() ('14.3'), getMajorVersion() (int 14) and __toString() (same as getVersion()). The TYPO3_version constants were removed long ago, and the class is a plain object that can simply be instantiated or injected.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Typo3Information/Index.html"
+    },
+    {
+      "id": "API-XVER-003",
+      "domain": "typo3_apis",
+      "skill": "typo3_version_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which TypoScript condition is true only on the TYPO3 14.3 branch?",
+      "answers": [
+        "[typo3.branch == \"14.3\"]",
+        "[compatVersion(\"14.3\")]",
+        "[TYPO3_BRANCH == \"14.3\"]",
+        "[version.branch == \"14.3\"]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The expression language provides the typo3 variable with version, branch and devIpMask. compatVersion() checks for a minimum version, so it would also be true on later branches; the other variables do not exist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/Conditions/Index.html"
+    },
+    {
+      "id": "API-XLOW-001",
+      "domain": "typo3_apis",
+      "skill": "extension_lowlevel",
+      "type": "single",
+      "difficulty": 1,
+      "question": "An integrator wants to check the final, merged $GLOBALS['TCA'], the registered PSR-15 middlewares and the PSR-14 event listeners in the backend. Which module provides this?",
+      "answers": [
+        "System > Configuration (EXT:lowlevel)",
+        "Admin Tools > Settings (EXT:install)",
+        "Sites > Setup (EXT:backend)",
+        "Content > Status (EXT:info)"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The Configuration module of EXT:lowlevel shows read-only trees of TYPO3_CONF_VARS, TCA, TSconfig, middlewares, event listeners, CSP mutations and more. The Install Tool settings edit system configuration but do not show these runtime trees.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-lowlevel/14.3/en-us/BackendModules/Configuration.html"
+    },
+    {
+      "id": "API-XLOW-002",
+      "domain": "typo3_apis",
+      "skill": "extension_lowlevel",
+      "type": "single",
+      "difficulty": 3,
+      "question": "An extension wants to show its own global variable $GLOBALS['MY_EXT_REGISTRY'] in the Configuration module. Which service tag is used?",
+      "code": {
+        "lang": "yaml",
+        "src": "myext.configuration.module.provider.registry:\n  class: 'TYPO3\\CMS\\Lowlevel\\ConfigurationModuleProvider\\GlobalVariableProvider'\n  tags:\n    - name: ???\n      identifier: 'myExtRegistry'\n      label: 'My extension registry'\n      globalVariableKey: 'MY_EXT_REGISTRY'"
+      },
+      "answers": [
+        "lowlevel.configuration.module.provider",
+        "lowlevel.configuration.provider",
+        "backend.configuration.tree",
+        "lowlevel.module.configuration"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Configuration module entries are services tagged with lowlevel.configuration.module.provider. For $GLOBALS values the existing GlobalVariableProvider can be reused with the globalVariableKey tag attribute; custom providers implement ProviderInterface.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-lowlevel/14.3/en-us/BackendModules/Configuration.html"
+    },
+    {
+      "id": "API-XLOW-003",
+      "domain": "typo3_apis",
+      "skill": "extension_lowlevel",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about EXT:lowlevel in TYPO3 v14 are correct? (choose 3)",
+      "answers": [
+        "It provides CLI commands such as cleanup:orphanrecords and cleanup:deletedrecords, which support --dry-run",
+        "Sensitive values in the Configuration module can be hidden with the PSR-14 event ModifyBlindedConfigurationOptionsEvent",
+        "The separate 'Database Relations' backend module was removed in v14",
+        "The Configuration module can be used to edit values and save them to settings.php",
+        "EXT:lowlevel provides the Install Tool and its upgrade wizards"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "EXT:lowlevel ships cleanup commands and the read-only Configuration and Database modules. Breaking change #97151 removed the Database Relations module in v14. Editing system configuration is done in the Install Tool (EXT:install).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-97151-RemoveDatabaseRelationsBackendModule.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XTUSER-001",
+      "domain": "typo3_apis",
+      "skill": "user_defined_tca_type",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What is needed for a TCA field with 'type' => 'user' to render a custom form element?",
+      "answers": [
+        "A 'renderType' that is registered as a FormEngine node in the nodeRegistry",
+        "A 'userFunc' that returns the HTML of the field",
+        "A Fluid template in Resources/Private/Backend/UserFields/",
+        "Nothing, TYPO3 renders a text input for type user automatically"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Without a custom renderType, type user only renders a dummy element. The renderType points to a node registered in $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'], usually a class extending AbstractFormElement.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html"
+    },
+    {
+      "id": "API-XTUSER-002",
+      "domain": "typo3_apis",
+      "skill": "user_defined_tca_type",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about implementing a custom element for a type 'user' field are correct? (choose 3)",
+      "answers": [
+        "The database column must be defined in ext_tables.sql, because it is not created automatically for type user",
+        "The class typically extends AbstractFormElement and render() returns the array from initializeResultArray() with the markup in 'html'",
+        "Values configured in the field's config['parameters'] are available to the element",
+        "The HTML returned in 'html' is escaped by FormEngine, so user input needs no escaping",
+        "The element must be registered with the Services.yaml tag 'form.element'"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "For type user TYPO3 does not generate the column. The element returns a result array; its HTML is output unchanged, so the developer must escape values to prevent XSS. Registration happens via the FormEngine nodeRegistry.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html"
+    },
+    {
+      "id": "API-XTUSER-003",
+      "domain": "typo3_apis",
+      "skill": "user_defined_tca_type",
+      "type": "single",
+      "difficulty": 3,
+      "question": "The element below is registered in ext_localconf.php. Which TCA configuration uses it?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1735000001] = [\n    'nodeName' => 'badgeName',\n    'priority' => 40,\n    'class' => \\MyVendor\\MyExt\\Form\\Element\\BadgeNameElement::class,\n];"
+      },
+      "answers": [
+        "'config' => ['type' => 'user', 'renderType' => 'badgeName']",
+        "'config' => ['type' => 'badgeName']",
+        "'config' => ['type' => 'user', 'userFunc' => BadgeNameElement::class . '->render']",
+        "'config' => ['type' => 'input', 'nodeName' => 'badgeName']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The nodeName of the nodeRegistry entry must match the renderType of the field. The old 'userFunc' variant for type user was removed in v12, and custom names are not valid TCA types.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html"
+    },
+    {
+      "id": "API-XTREL-001",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_record_relations",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Child records (e.g. 'sessions' of an 'event') should be created and edited directly inside the parent form, and each child stores the uid of its parent. Which configuration fits?",
+      "answers": [
+        "'type' => 'inline' with 'foreign_table' and 'foreign_field'",
+        "'type' => 'group' with 'allowed'",
+        "'type' => 'select' with 'renderType' => 'selectMultipleSideBySide'",
+        "'type' => 'passthrough' with 'foreign_table'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Inline (IRRE) relations edit child records within the parent form; foreign_field names the column in the child table that points to the parent. group and select only reference existing records.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Inline/Index.html"
+    },
+    {
+      "id": "API-XTREL-002",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_record_relations",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about relation fields in TCA are correct? (choose 3)",
+      "answers": [
+        "A 'group' field can reference records of several tables by listing them in 'allowed'",
+        "A 'select' field with 'foreign_table' and 'MM' stores an m:n relation in an intermediate table",
+        "'foreign_table_where' restricts which records of the foreign table are offered in a select field",
+        "A 'group' field can only reference records of the pages table",
+        "'type' => 'category' requires the MM table to be defined manually in ext_tables.sql"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "group supports one or more tables in allowed, select relations use foreign_table plus optional MM and foreign_table_where. The category type uses the Core sys_category_record_mm table and does not need a manual table definition.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Select/Index.html"
+    },
+    {
+      "id": "API-XTREL-003",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_record_relations",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A select field has both itemsProcFunc and the itemsProcessors option introduced in TYPO3 v14.0. In which order are they executed?",
+      "code": {
+        "lang": "php",
+        "src": "'config' => [\n    'type' => 'select',\n    'renderType' => 'selectSingle',\n    'foreign_table' => 'tx_myext_domain_model_tag',\n    'itemsProcFunc' => LegacyProcessor::class . '->process',\n    'itemsProcessors' => [\n        100 => ['class' => SortProcessor::class],\n        50 => ['class' => FilterProcessor::class],\n    ],\n],"
+      },
+      "answers": [
+        "itemsProcFunc, then the processor with key 50, then the processor with key 100",
+        "The processor with key 100, then key 50, then itemsProcFunc",
+        "Only itemsProcessors run, itemsProcFunc is ignored when both are set",
+        "The processor with key 50, then key 100, then itemsProcFunc"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "itemsProcessors replaces itemsProcFunc but both still work. Processors (implementing ItemsProcessorInterface) run in ascending key order, and if both options are defined, itemsProcFunc runs first.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107889-IntroduceTCAOptionItemsProcessors.html",
+      "since": "14.0",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XTFILE-001",
+      "domain": "typo3_apis",
+      "skill": "tca_types_file_and_folder",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which table are the relations of a TCA field with 'type' => 'file' stored?",
+      "answers": [
+        "sys_file_reference",
+        "sys_file",
+        "sys_file_metadata",
+        "sys_file_collection"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "type file creates file references: each attached file is a record in sys_file_reference pointing to sys_file and to the parent record. The database column of the parent field is created automatically.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html"
+    },
+    {
+      "id": "API-XTFILE-002",
+      "domain": "typo3_apis",
+      "skill": "tca_types_file_and_folder",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which placeholders can be used in the 'allowed' option of a 'file' field? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "'logo' => [\n    'config' => [\n        'type' => 'file',\n        'maxitems' => 1,\n        'allowed' => ['common-image-types', 'svg'],\n    ],\n],"
+      },
+      "answers": [
+        "common-image-types",
+        "common-text-types",
+        "common-media-types",
+        "common-video-types",
+        "common-document-types"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "common-image-types, common-text-types and common-media-types are replaced by GFX/imagefile_ext, SYS/textfile_ext and SYS/mediafile_ext. Other placeholders do not exist; plain file extensions can be listed in addition.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/File/Index.html"
+    },
+    {
+      "id": "API-XTFILE-003",
+      "domain": "typo3_apis",
+      "skill": "tca_types_file_and_folder",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which statement about the field configured below is correct?",
+      "code": {
+        "lang": "php",
+        "src": "'materials' => [\n    'config' => [\n        'type' => 'folder',\n        'relationship' => 'manyToOne',\n        'elementBrowserEntryPoints' => [\n            '_default' => '1:/workshops/',\n        ],\n    ],\n],"
+      },
+      "answers": [
+        "The value is stored as combined identifier (e.g. 1:/workshops/), and with 'relationship' => 'manyToOne' the Record API provides a single Folder object or null",
+        "The selected folder is stored as a relation in sys_file_reference",
+        "elementBrowserEntryPoints restricts the selection so that only folders below 1:/workshops/ can be chosen",
+        "The column must be added to ext_tables.sql as an int field"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "type folder stores combined identifiers as a comma-separated list and its column is generated automatically. With oneToOne/manyToOne relationship the record exposes one Folder (maxitems forced to 1), otherwise a LazyFolderCollection. elementBrowserEntryPoints only defines where the element browser opens.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Folder/Index.html"
+    },
+    {
+      "id": "API-XTSLUG-001",
+      "domain": "typo3_apis",
+      "skill": "tca_type_slug",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does 'eval' => 'uniqueInSite' mean for a slug field?",
+      "answers": [
+        "The slug must be unique per site and language; the same slug may exist in another site",
+        "The slug must be unique across the whole installation",
+        "The slug must be unique only among records on the same page (pid)",
+        "The slug is checked against the site's static routes only"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "uniqueInSite checks uniqueness within one site and language. unique checks the whole installation, uniqueInPid only records on the same page.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Slug/Index.html"
+    },
+    {
+      "id": "API-XTSLUG-002",
+      "domain": "typo3_apis",
+      "skill": "tca_type_slug",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A record has nav_title = '' and title = 'Our Products'. What does the nested array in 'fields' mean for slug generation?",
+      "code": {
+        "lang": "php",
+        "src": "'slug' => [\n    'config' => [\n        'type' => 'slug',\n        'generatorOptions' => [\n            'fields' => [['nav_title', 'title']],\n        ],\n        'fallbackCharacter' => '-',\n        'eval' => 'uniqueInSite',\n    ],\n],"
+      },
+      "answers": [
+        "The first non-empty field of the inner array is used, so the slug is generated from title: 'our-products'",
+        "Both fields are concatenated with the fieldSeparator",
+        "Slug generation fails because nav_title is empty",
+        "The slug becomes 'nav-title-our-products'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In generatorOptions.fields a nested array is a list of alternatives: the first field with a value is used. A flat list such as ['title', 'subtitle'] would concatenate the values instead.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Slug/Index.html"
+    },
+    {
+      "id": "API-XTSLUG-003",
+      "domain": "typo3_apis",
+      "skill": "tca_type_slug",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about 'replacements' and 'regexReplacements' in generatorOptions of a slug field are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "'generatorOptions' => [\n    'fields' => ['title'],\n    'fieldSeparator' => '/',\n    'replacements' => ['&' => 'and'],\n],"
+      },
+      "answers": [
+        "regexReplacements was introduced in TYPO3 v14.0",
+        "Replacements are applied to each field value separately, before the parts are joined with the fieldSeparator",
+        "Replacements only apply when the slug is generated from fields, not to a slug typed in manually",
+        "Replacements are applied after the value was lowercased and sanitized",
+        "Replacements are configured as postModifiers in Services.yaml"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Both options work on the original, unsanitized field values per field and only during generation. postModifiers are a separate hook configured in TCA (class->method) that modifies the final slug.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Slug/Index.html",
+      "since": "14.0",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XTINP-001",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_basic_input",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which TCA type is intended for integer or decimal values, for example a price with two decimals?",
+      "answers": [
+        "'type' => 'number' (with 'format' => 'decimal' for decimals)",
+        "'type' => 'input' with 'eval' => 'int'",
+        "'type' => 'text' with 'eval' => 'double2'",
+        "'type' => 'decimal'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v12 numbers use the dedicated type number; format integer (default) or decimal. The eval-based int/double2 configuration of type input was migrated to type number, and there is no type decimal.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Number/Index.html"
+    },
+    {
+      "id": "API-XTINP-002",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_basic_input",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "TYPO3 v14 changed how fields are included in the backend record search. Which statements are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "'notes' => [\n    'config' => [\n        'type' => 'text',\n        'searchable' => false,\n    ],\n],"
+      },
+      "answers": [
+        "The ctrl option 'searchFields' was removed",
+        "Fields of suitable types such as input, text, email or link are searchable by default",
+        "A single field can be excluded with 'searchable' => false in its config",
+        "Fields of type file and inline become searchable when 'searchable' => true is set",
+        "Search fields must now be listed in ctrl['searchable']"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Feature/Breaking #106972 replaced ctrl searchFields by the per-column option searchable (default true) for suitable types. Types like file, inline, group and password are always excluded and do not support the option.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-106972-ConfigureSearchableFields.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XTINP-003",
+      "domain": "typo3_apis",
+      "skill": "tca_types_for_basic_input",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A 'check' field should be displayed as a toggle switch with custom labels for the on and off state. Which renderType is used?",
+      "answers": [
+        "checkboxLabeledToggle",
+        "checkboxToggle",
+        "selectCheckBox",
+        "toggleLabel"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "type check offers the default checkbox, checkboxToggle (a plain toggle) and checkboxLabeledToggle (a toggle with labelChecked/labelUnchecked). selectCheckBox is a renderType of type select.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Check/Index.html"
+    },
+    {
+      "id": "API-XTSPEC-001",
+      "domain": "typo3_apis",
+      "skill": "special_input_tca_types",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How is a field for an e-mail address configured in current TCA?",
+      "answers": [
+        "'config' => ['type' => 'email']",
+        "'config' => ['type' => 'input', 'eval' => 'email']",
+        "'config' => ['type' => 'input', 'renderType' => 'email']",
+        "'config' => ['type' => 'link', 'allowedTypes' => ['email']]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v12 the dedicated type email validates the address and creates the database column automatically. eval=email on type input is the old, migrated configuration; type link stores links, which may be mailto links, not plain addresses.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Email/Index.html"
+    },
+    {
+      "id": "API-XTSPEC-002",
+      "domain": "typo3_apis",
+      "skill": "special_input_tca_types",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which of these are valid TCA column types in TYPO3 v14? (choose 4)",
+      "answers": [
+        "link",
+        "color",
+        "uuid",
+        "country",
+        "url",
+        "phone"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "link, color and uuid were introduced as dedicated types in v12; country was added in v14.0 and uses the Country API. url and phone are not TCA types (URLs are handled by type link).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/Country/Index.html",
+      "since": "14.0",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XTSPEC-003",
+      "domain": "typo3_apis",
+      "skill": "special_input_tca_types",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the types 'uuid' and 'password' in TYPO3 v14 are correct? (choose 2)",
+      "answers": [
+        "A type uuid column now uses the Doctrine GUID type: native UUID on PostgreSQL, CHAR(36) on other databases",
+        "Type password hashes the value by default; 'hashed' => false stores it in plain text",
+        "Type uuid fields must be filled manually by the editor",
+        "Type password always shows the stored value in clear text in the backend form",
+        "Type uuid stores the value as VARCHAR(255)"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Breaking #103141 switched uuid columns to the Doctrine GUID type, so invalid values must be cleaned up before the database migration. uuid values are generated automatically; password fields are hashed unless hashed is set to false.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-103141-UseDoctrineGUIDTypeForTCATypeuuid.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XMSG-001",
+      "domain": "typo3_apis",
+      "skill": "typo3_message_bus",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How are messages dispatched to the TYPO3 message bus handled in a default installation?",
+      "answers": [
+        "Synchronously: the handler is executed immediately during dispatch()",
+        "Asynchronously via the Doctrine transport, processed by the scheduler",
+        "Asynchronously via Redis, which must be installed",
+        "They are queued until 'typo3 messenger:consume' is executed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The default routing uses the synchronous transport, so the bus behaves like a direct call. Asynchronous processing needs routing to a transport such as doctrine and a running consumer.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html"
+    },
+    {
+      "id": "API-XMSG-002",
+      "domain": "typo3_apis",
+      "skill": "typo3_message_bus",
+      "type": "single",
+      "difficulty": 2,
+      "question": "All messages should be processed asynchronously with the pre-configured Doctrine transport. Which configuration and command are needed?",
+      "answers": [
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['messenger']['routing']['*'] = 'doctrine'; and run 'vendor/bin/typo3 messenger:consume doctrine'",
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['messenger']['transport'] = 'async'; and run 'vendor/bin/typo3 scheduler:run'",
+        "$GLOBALS['TYPO3_CONF_VARS']['SYS']['messenger']['async'] = true; and run 'vendor/bin/typo3 queue:work'",
+        "Tag every handler with messenger.async in Services.yaml; no command is needed"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Routing maps message classes (or '*' for all) to transports. Messages routed to doctrine are stored in the database and only handled when a worker runs messenger:consume doctrine.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html"
+    },
+    {
+      "id": "API-XMSG-003",
+      "domain": "typo3_apis",
+      "skill": "typo3_message_bus",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about message handlers are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "use Symfony\\Component\\Messenger\\Attribute\\AsMessageHandler;\n\n#[AsMessageHandler]\nfinal class DemoHandler\n{\n    public function __invoke(DemoMessage $message): void\n    {\n        // do something with $message->content\n    }\n}"
+      },
+      "answers": [
+        "The attribute #[AsMessageHandler] registers the class; the message type is taken from the __invoke() parameter",
+        "The order of several handlers for one message can be set with the 'before' key of the messenger.message_handler tag",
+        "With #[AsMessageHandler(fromTransport: 'async')] the handler only handles messages received by a worker from that transport",
+        "Message classes must implement a TYPO3 MessageInterface",
+        "Handlers must return the message to the bus after processing"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Messages are plain PHP objects; handlers are invokable services with Symfony's AsMessageHandler attribute and return void. Ordering is done with the service tag, and fromTransport restricts a handler to a transport.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html"
+    },
+    {
+      "id": "API-XDPROC-001",
+      "domain": "typo3_apis",
+      "skill": "building_data_processors",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which interface does a custom data processor implement?",
+      "answers": [
+        "\\TYPO3\\CMS\\Frontend\\ContentObject\\DataProcessorInterface",
+        "\\TYPO3\\CMS\\Core\\DataHandling\\ItemsProcessorInterface",
+        "\\TYPO3\\CMS\\Frontend\\DataProcessing\\ProcessorInterface",
+        "\\TYPO3\\CMS\\Fluid\\View\\DataProviderInterface"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Data processors implement DataProcessorInterface with process(ContentObjectRenderer $cObj, array $contentObjectConfiguration, array $processorConfiguration, array $processedData): array. ItemsProcessorInterface is for TCA items.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentElements/CustomDataProcessing.html"
+    },
+    {
+      "id": "API-XDPROC-002",
+      "domain": "typo3_apis",
+      "skill": "building_data_processors",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The data processor should be usable as 'dataProcessing.10 = custom-category' in TypoScript. What completes the service definition?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  MyVendor\\MyExt\\DataProcessing\\CustomCategoryProcessor:\n    tags:\n      - ???"
+      },
+      "answers": [
+        "name: 'data.processor' with identifier: 'custom-category'",
+        "name: 'typoscript.dataprocessor' with alias: 'custom-category'",
+        "name: 'frontend.data_processor' with key: 'custom-category'",
+        "name: 'event.listener' with identifier: 'custom-category'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Services tagged data.processor are added to the DataProcessorRegistry under the given identifier, so TypoScript can reference the alias instead of the class name and the processor gets dependency injection.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentElements/CustomDataProcessing.html"
+    },
+    {
+      "id": "API-XDPROC-003",
+      "domain": "typo3_apis",
+      "skill": "building_data_processors",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the process() method of a data processor are correct? (choose 3)",
+      "code": {
+        "lang": "php",
+        "src": "public function process(\n    ContentObjectRenderer $cObj,\n    array $contentObjectConfiguration,\n    array $processorConfiguration,\n    array $processedData\n): array {\n    $targetVariable = $cObj->stdWrapValue('as', $processorConfiguration, 'categories');\n    $processedData[$targetVariable] = $this->fetch($processedData['data']['uid']);\n    return $processedData;\n}"
+      },
+      "answers": [
+        "It must return the (extended) $processedData array",
+        "$processedData['data'] contains the record of the current content object",
+        "Options such as 'as' can be read with stdWrap support via $cObj->stdWrapValue('as', $processorConfiguration, 'default')",
+        "It returns rendered HTML, which replaces the Fluid template output",
+        "It receives the Fluid view and assigns variables to it directly"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Processors receive the data processed so far, add their result under the variable name from 'as' and return the array, which FLUIDTEMPLATE/PAGEVIEW then assigns to the view. They neither render HTML nor access the view.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentElements/CustomDataProcessing.html"
+    },
+    {
+      "id": "API-XCSP-001",
+      "domain": "typo3_apis",
+      "skill": "content_security_policy_in_extensions",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which file does an extension use to add CSP mutations for frontend and/or backend?",
+      "answers": [
+        "Configuration/ContentSecurityPolicies.php",
+        "Configuration/Csp.yaml",
+        "Configuration/Security/Policies.php",
+        "ext_csp.php"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extensions return a Map of Scope => MutationCollection from Configuration/ContentSecurityPolicies.php. Site-specific settings use csp.yaml in the site configuration folder, not in extensions.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentSecurityPolicy/Index.html"
+    },
+    {
+      "id": "API-XCSP-002",
+      "domain": "typo3_apis",
+      "skill": "content_security_policy_in_extensions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What does MutationMode::Extend do in this configuration?",
+      "code": {
+        "lang": "php",
+        "src": "return Map::fromEntries([\n    Scope::frontend(),\n    new MutationCollection(\n        new Mutation(\n            MutationMode::Extend,\n            Directive::ImgSrc,\n            new UriValue('https://cdn.example.com'),\n        ),\n    ),\n]);"
+      },
+      "answers": [
+        "It inherits the sources of default-src once and appends https://cdn.example.com to img-src",
+        "It replaces all existing img-src sources with https://cdn.example.com",
+        "It removes https://cdn.example.com from img-src",
+        "It adds https://cdn.example.com to every directive of the policy"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extend is a shortcut for InheritOnce followed by Append: the directive first inherits from default-src (if not yet set) and then gets the new source. Set replaces, Remove removes sources.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentSecurityPolicy/Index.html"
+    },
+    {
+      "id": "API-XCSP-003",
+      "domain": "typo3_apis",
+      "skill": "content_security_policy_in_extensions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about CSP handling in TYPO3 v14 are correct? (choose 3)",
+      "answers": [
+        "In Fluid, {f:security.nonce()} provides the nonce for a custom inline <script nonce=\"...\">",
+        "Since v14.2 the 'csp' argument of f:asset.script / f:asset.css replaces the deprecated 'useNonce' argument",
+        "A site's csp.yaml can disable CSP for that site with active: false",
+        "Frontend CSP is always enforced, even without feature flags or a csp.yaml",
+        "Mutations are registered in $GLOBALS['TYPO3_CONF_VARS']['SYS']['csp']['mutations']"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Frontend CSP needs the feature flag security.frontend.enforceContentSecurityPolicy (or reportContentSecurityPolicy) or a site csp.yaml disposition. Deprecation #100887 renamed useNonce to csp in v14.2. Extension mutations come from ContentSecurityPolicies.php.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Deprecation-100887-UseNonceArgumentInFAssetViewHelpers.html",
+      "since": "14.2",
+      "tags": [
+        "v14",
+        "security"
+      ]
+    },
+    {
+      "id": "API-XADMP-001",
+      "domain": "typo3_apis",
+      "skill": "extending_the_admin_panel",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How is a custom main module added to the Admin Panel?",
+      "answers": [
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['adminpanel']['modules']['myext'] = ['module' => MyModule::class]",
+        "In Configuration/Backend/Modules.php with 'parent' => 'adminpanel'",
+        "With the Services.yaml tag 'adminpanel.module'",
+        "In TypoScript via config.admPanel.modules.myext = MyModule"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Admin Panel modules are registered in EXTCONF/adminpanel/modules with the class under 'module' and optional before/after positioning; submodules go into the 'submodules' array of a main module. Modules.php is for backend modules.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/14.3/en-us/Extending/Index.html"
+    },
+    {
+      "id": "API-XADMP-002",
+      "domain": "typo3_apis",
+      "skill": "extending_the_admin_panel",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A custom Admin Panel module implements DataProviderInterface. Which method signature is required in TYPO3 v14?",
+      "answers": [
+        "public function getDataToStore(ServerRequestInterface $request, ResponseInterface $response): ModuleData",
+        "public function getDataToStore(ServerRequestInterface $request): ModuleData",
+        "public function getDataToStore(ResponseInterface $response): array",
+        "public function getDataToStore(ModuleData $data, ServerRequestInterface $request): void"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In v14 getDataToStore() is called after the response was created and receives the response as second argument. Extensions supporting v13 and v14 can declare it as ?ResponseInterface $response = null.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107578-PrepareExtadminpanelDataProviderInterfaceChange.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XADMP-003",
+      "domain": "typo3_apis",
+      "skill": "extending_the_admin_panel",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about extending the Admin Panel are correct? (choose 3)",
+      "answers": [
+        "A main module must implement ShortInfoProviderInterface to appear in the module menu",
+        "PageSettingsProviderInterface lets a module add form elements to the Admin Panel settings",
+        "Submodules can also be attached to existing main modules via the 'submodules' key",
+        "Admin Panel modules are rendered in the TYPO3 backend, not in the frontend",
+        "AbstractSubModule requires getIconIdentifier() and getShortInfo()"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Main modules usually extend AbstractModule and need ShortInfoProviderInterface; submodules extend AbstractSubModule and implement getIdentifier(), getLabel() and getContent(). The Admin Panel is shown in the frontend for logged-in backend users.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-adminpanel/14.3/en-us/Extending/Index.html"
+    },
+    {
+      "id": "API-XBEMOD-001",
+      "domain": "typo3_apis",
+      "skill": "creating_backend_modules",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which file are backend modules of an extension registered in TYPO3 v14?",
+      "answers": [
+        "Configuration/Backend/Modules.php",
+        "ext_tables.php",
+        "Configuration/Backend/Routes.php",
+        "Configuration/Services.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v12 modules are registered in Configuration/Backend/Modules.php. The ext_tables.php registration API was removed; Routes.php registers plain backend routes, not modules.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendModules/ModuleConfiguration/Index.html"
+    },
+    {
+      "id": "API-XBEMOD-002",
+      "domain": "typo3_apis",
+      "skill": "creating_backend_modules",
+      "type": "single",
+      "difficulty": 2,
+      "question": "TYPO3 v14 renamed main modules: 'Web' became 'Content'. What is the identifier of this main module in v14?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    'my_module' => [\n        'parent' => ???,\n        'access' => 'user',\n        'labels' => 'my_ext.module',\n        'routes' => [\n            '_default' => ['target' => MyController::class . '::handleRequest'],\n        ],\n    ],\n];"
+      },
+      "answers": [
+        "content",
+        "page",
+        "records",
+        "layout"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107628 renamed main modules: web -> content, file -> media, and admin tools became 'admin' (Administration). Old identifiers stay available as aliases, but new code should use the new ones, e.g. 'parent' => 'content'.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107628-ImprovedBackendModuleNamingAndStructure.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XBEMOD-003",
+      "domain": "typo3_apis",
+      "skill": "creating_backend_modules",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about creating a backend module are correct? (choose 3)",
+      "answers": [
+        "A non-Extbase module defines 'routes' with a '_default' target such as MyController::class . '::handleRequest'",
+        "The controller gets a ModuleTemplate via ModuleTemplateFactory::create($request) and can return $moduleTemplate->renderResponse('Template')",
+        "Extbase modules use 'extensionName' and 'controllerActions' instead of 'routes'",
+        "Every backend module controller must extend the Extbase ActionController",
+        "Modules are registered with ExtensionUtility::registerModule() in ext_tables.php"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Modules can be plain PSR-7 controllers (routes) or Extbase modules (extensionName, controllerActions). ModuleTemplate provides the docheader and rendering. registerModule() was removed with the switch to Modules.php.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendModules/ModuleConfiguration/Index.html"
+    },
+    {
+      "id": "API-XCACHE-001",
+      "domain": "typo3_apis",
+      "skill": "using_caches_and_the_cachemanager",
+      "type": "single",
+      "difficulty": 1,
+      "question": "An extension declares its cache only as shown. Which frontend and backend are used?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['myext_mycache'] ??= [];"
+      },
+      "answers": [
+        "VariableFrontend with Typo3DatabaseBackend",
+        "PhpFrontend with SimpleFileBackend",
+        "VariableFrontend with TransientMemoryBackend",
+        "No cache is created until frontend and backend are configured"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Without explicit settings the CacheManager uses the variable frontend and the database backend. The ??= operator lets administrators override the configuration in settings.php/additional.php.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Developer/Index.html"
+    },
+    {
+      "id": "API-XCACHE-002",
+      "domain": "typo3_apis",
+      "skill": "using_caches_and_the_cachemanager",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What completes this service definition so that the cache can be injected?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  cache.myext_mycache:\n    class: TYPO3\\CMS\\Core\\Cache\\Frontend\\FrontendInterface\n    ???\n    arguments: ['myext_mycache']\n\n  MyVendor\\MyExt\\Service\\MyService:\n    arguments:\n      $cache: '@cache.myext_mycache'"
+      },
+      "answers": [
+        "factory: ['@TYPO3\\CMS\\Core\\Cache\\CacheManager', 'getCache']",
+        "factory: ['@TYPO3\\CMS\\Core\\Cache\\CacheFactory', 'create']",
+        "tags: ['cache.frontend']",
+        "factory: ['@TYPO3\\CMS\\Core\\Cache\\CacheManager', 'createCache']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The cache service is created by calling CacheManager::getCache() with the cache identifier. The resulting service (cache.myext_mycache) is then injected as FrontendInterface argument.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CachingFramework/Developer/Index.html"
+    },
+    {
+      "id": "API-XCACHE-003",
+      "domain": "typo3_apis",
+      "skill": "using_caches_and_the_cachemanager",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about caching in TYPO3 v14 are correct? (choose 3)",
+      "answers": [
+        "'vendor/bin/typo3 cache:flushtags pageId_123' flushes cache entries by tag; -g limits it to a cache group",
+        "Custom backends extending AbstractBackend must use the constructor signature __construct(array $options = [])",
+        "$cache->get($identifier) returns false if no entry exists, so a has() check before is not needed",
+        "FrontendInterface::get() throws an exception when an entry is missing",
+        "Cache groups were removed in favour of tags"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "v14 added cache:flushtags (#104054) and strictly typed cache backends/frontends, dropping the $context argument of AbstractBackend (#107315). get() returns false for missing entries; groups such as pages and system still exist.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107315-CacheBackendAndFrontendRelatedChanges.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XERR-001",
+      "domain": "typo3_apis",
+      "skill": "customizing_error_and_exception_handling",
+      "type": "single",
+      "difficulty": 1,
+      "question": "A site should show the content of page 123 for 404 errors. Which site configuration is correct?",
+      "code": {
+        "lang": "yaml",
+        "src": "errorHandling:\n  - errorCode: 404\n    errorHandler: ???"
+      },
+      "answers": [
+        "errorHandling with errorCode: 404, errorHandler: Page and errorContentSource: 't3://page?uid=123'",
+        "errorHandling with errorCode: 404, errorHandler: Redirect and target: 123",
+        "pageNotFound_handling: 'REDIRECT:/index.php?id=123' in settings.php",
+        "errorHandling with errorCode: 404, errorHandler: Fluid and errorPageUid: 123"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Site error handling supports the handlers Page (content of a page or URL in errorContentSource), Fluid (errorFluidTemplate) and PHP (errorPhpClassFQCN). The old pageNotFound_handling option no longer exists.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/ErrorHandling/Index.html"
+    },
+    {
+      "id": "API-XERR-002",
+      "domain": "typo3_apis",
+      "skill": "customizing_error_and_exception_handling",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which method must a custom page error handler referenced via errorPhpClassFQCN implement?",
+      "answers": [
+        "handlePageError(ServerRequestInterface $request, string $message, array $reasons = []): ResponseInterface",
+        "handleException(\\Throwable $exception): void",
+        "__invoke(int $statusCode): string",
+        "process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Custom handlers implement PageErrorHandlerInterface with handlePageError() and must return a PSR-7 response, typically an HtmlResponse. process() is the PSR-15 middleware signature.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/ErrorHandling/WriteCustomErrorHandler.html"
+    },
+    {
+      "id": "API-XERR-003",
+      "domain": "typo3_apis",
+      "skill": "customizing_error_and_exception_handling",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the global error and exception handling configuration are correct? (choose 3)",
+      "answers": [
+        "With SYS/displayErrors = -1, the debug exception handler is used for clients matching devIPmask and the production handler for others",
+        "SYS/productionExceptionHandler and SYS/debugExceptionHandler define the exception handler classes",
+        "SYS/exceptionalErrors defines which PHP errors are turned into exceptions",
+        "Exception handlers are registered with the Services.yaml tag 'error.handler'",
+        "Site errorHandling with errorCode 500 also handles uncaught exceptions in the backend"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Global handlers are configured in TYPO3_CONF_VARS SYS (displayErrors, devIPmask, productionExceptionHandler, debugExceptionHandler, errorHandler, exceptionalErrors). Site error handling only applies to frontend page errors of that site.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ErrorAndExceptionHandling/Configuration/Index.html"
+    },
+    {
+      "id": "API-XSITE-001",
+      "domain": "typo3_apis",
+      "skill": "sites_api",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How does an Extbase controller or middleware get the site object of the current request?",
+      "answers": [
+        "$request->getAttribute('site')",
+        "$GLOBALS['TSFE']->getSite()",
+        "GeneralUtility::makeInstance(Site::class)",
+        "$request->getQueryParams()['site']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The site resolver middleware adds the Site and SiteLanguage objects as request attributes 'site' and 'language'. TSFE was removed in v14 and Site cannot be instantiated meaningfully without configuration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/AccessingSiteConfiguration.html"
+    },
+    {
+      "id": "API-XSITE-002",
+      "domain": "typo3_apis",
+      "skill": "sites_api",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What happens when the page 4711 is not located in any configured site?",
+      "code": {
+        "lang": "php",
+        "src": "$site = $this->siteFinder->getSiteByPageId(4711);\n$base = (string)$site->getBase();"
+      },
+      "answers": [
+        "SiteFinder throws a \\TYPO3\\CMS\\Core\\Exception\\SiteNotFoundException",
+        "getSiteByPageId() returns null",
+        "A NullSite object with identifier 'default' is returned",
+        "The first configured site is returned as fallback"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The finder methods getSiteByPageId() and getSiteByIdentifier() throw a SiteNotFoundException if no site matches, so callers should catch it.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/AccessingSiteConfiguration.html"
+    },
+    {
+      "id": "API-XSITE-003",
+      "domain": "typo3_apis",
+      "skill": "sites_api",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which methods exist on the \\TYPO3\\CMS\\Core\\Site\\Entity\\Site object? (choose 3)",
+      "answers": [
+        "getBase(), returning a PSR-7 UriInterface",
+        "getRootPageId()",
+        "getLanguageById(int $languageId)",
+        "getTwoLetterIsoCode()",
+        "getDomainName()"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Site provides getIdentifier(), getBase(), getRootPageId(), getLanguages(), getLanguageById(), getDefaultLanguage(), getSettings() and more. Language information comes from SiteLanguage (getLocale()); getTwoLetterIsoCode() was removed and getDomainName() never existed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SiteHandling/AccessingSiteConfiguration.html"
+    },
+    {
+      "id": "API-XSESS-001",
+      "domain": "typo3_apis",
+      "skill": "session_handling",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What must be called so that data set with setKey() on the frontend user is available in the next request?",
+      "code": {
+        "lang": "php",
+        "src": "$frontendUser = $this->request->getAttribute('frontend.user');\n$frontendUser->setKey('ses', 'myext_cart', $cart);\n$frontendUser->???;"
+      },
+      "answers": [
+        "$frontendUser->storeSessionData()",
+        "$frontendUser->writeUC()",
+        "$frontendUser->persist()",
+        "Nothing, setKey() writes the data immediately"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "setKey() only changes the in-memory session data. storeSessionData() writes it to the session backend; for anonymous visitors a session is created on the fly.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/Sessions/SessionData.html"
+    },
+    {
+      "id": "API-XSESS-002",
+      "domain": "typo3_apis",
+      "skill": "session_handling",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about session data are correct? (choose 3)",
+      "answers": [
+        "Data stored with type 'ses' is bound to the current session and also works for anonymous visitors",
+        "Data stored with type 'user' is stored with the logged-in frontend user record and persists across sessions",
+        "In the backend, $GLOBALS['BE_USER']->setAndSaveSessionData('key', $data) stores data in the backend user session",
+        "Data of type 'ses' survives a logout and is available after the next login",
+        "Frontend session data is stored in the fe_users table by default"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "'ses' data lives in the session (fe_sessions by default with the database backend) and is gone after logout; 'user' data is saved with the user record (uc) and therefore needs a logged-in user. Backend users have setAndSaveSessionData()/getSessionData().",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/Sessions/SessionData.html"
+    },
+    {
+      "id": "API-XSESS-003",
+      "domain": "typo3_apis",
+      "skill": "session_handling",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Frontend sessions should be stored in a Redis instance that requires a user and password. How are the credentials configured in TYPO3 v14.2+?",
+      "code": {
+        "lang": "php",
+        "src": "$GLOBALS['TYPO3_CONF_VARS']['SYS']['session']['FE'] = [\n    'backend' => \\TYPO3\\CMS\\Core\\Session\\Backend\\RedisSessionBackend::class,\n    'options' => [\n        'hostname' => 'redis',\n        'database' => 2,\n        // credentials?\n    ],\n];"
+      },
+      "answers": [
+        "Use the options 'username' and 'password'; passing an array with 'user' and 'pass' as password is deprecated",
+        "Use 'password' => ['user' => 'typo3', 'pass' => 'secret'], the only supported format",
+        "Use 'dsn' => 'redis://typo3:secret@redis:6379/2'",
+        "Redis authentication is not supported by the session backend"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Feature #107802 added the 'username' option (Redis 6+) to RedisSessionBackend and deprecated the array format for 'password'. Other options are hostname, port, database and keyPrefix.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/Sessions/SessionStorage.html",
+      "since": "14.2",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XAUTH-001",
+      "domain": "typo3_apis",
+      "skill": "authentication_implementation",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A custom authentication service is not responsible for a user and wants the next service in the chain to decide. What should authUser() return?",
+      "code": {
+        "lang": "php",
+        "src": "public function authUser(array $user): int\n{\n    if ($user['tx_myext_sso'] !== 1) {\n        return ???;\n    }\n    // ...\n}"
+      },
+      "answers": [
+        "100",
+        "200",
+        "0",
+        "-1"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Return values: <= 0 failed (stop), 1-99 success but continue, 100-199 not responsible (continue), >= 200 success and stop the chain.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/AuthenticationService/Index.html"
+    },
+    {
+      "id": "API-XAUTH-002",
+      "domain": "typo3_apis",
+      "skill": "authentication_implementation",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which are subtypes of authentication services called during the login process? (choose 3)",
+      "answers": [
+        "processLoginDataFE",
+        "getUserBE",
+        "authUserFE",
+        "validateSessionBE",
+        "loginUserFE"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The auth service chain calls processLoginData*, then getUser* and then authUser* for FE and BE. validateSession*/loginUser* are not service subtypes.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/AuthenticationService/Index.html"
+    },
+    {
+      "id": "API-XAUTH-003",
+      "domain": "typo3_apis",
+      "skill": "authentication_implementation",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A custom service extends the Core AuthenticationService and overrides processLoginData() as shown. What has to change for TYPO3 v14?",
+      "code": {
+        "lang": "php",
+        "src": "public function processLoginData(array &$loginData, $passwordTransmissionStrategy)\n{\n    // ...\n    return parent::processLoginData($loginData, $passwordTransmissionStrategy);\n}"
+      },
+      "answers": [
+        "Remove the $passwordTransmissionStrategy parameter and declare the return type bool|int",
+        "Rename the method to processLoginDataBE() and make it static",
+        "Nothing, the signature is unchanged in v14",
+        "Replace the method with a PSR-14 listener for BeforeLoginDataProcessedEvent"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #106869 removed the $passwordTransmissionStrategy parameter of processLoginData() and its subtype methods and added a strict return type, so overrides must be adjusted.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-106869-RemoveStaticFunctionParameterInAuthenticationService.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "API-XMODREG-001",
+      "domain": "typo3_apis",
+      "skill": "backend_module_registration",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which built-in 'access' value in Modules.php makes a module available only to system maintainers?",
+      "code": {
+        "lang": "php",
+        "src": "'my_maintenance_module' => [\n    'parent' => 'system',\n    'access' => ???,\n    // ...\n],"
+      },
+      "answers": [
+        "'systemMaintainer'",
+        "'admin'",
+        "'maintainer'",
+        "'user'"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The built-in access levels are 'user' (granted via user/group permissions), 'admin' and 'systemMaintainer'.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendModules/ModuleConfiguration/Index.html"
+    },
+    {
+      "id": "API-XMODREG-002",
+      "domain": "typo3_apis",
+      "skill": "backend_module_registration",
+      "type": "single",
+      "difficulty": 3,
+      "question": "TYPO3 v14.2 introduced module access gates. What should the gate below return for modules it is not responsible for?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsModuleAccessGate(identifier: 'myEditor')]\nfinal readonly class EditorGate implements ModuleAccessGateInterface\n{\n    public function decide(ModuleInterface $module, BackendUserAuthentication $user): ModuleAccessResult\n    {\n        if ($module->getAccess() !== 'myEditor') {\n            return ???;\n        }\n        return in_array(3, $user->userGroupsUID, true)\n            ? ModuleAccessResult::Granted\n            : ModuleAccessResult::Denied;\n    }\n}"
+      },
+      "answers": [
+        "ModuleAccessResult::Abstain",
+        "ModuleAccessResult::Denied",
+        "ModuleAccessResult::Granted",
+        "null"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Gates registered with #[AsModuleAccessGate] return Granted, Denied or Abstain. Abstain signals that the gate is not responsible, so other gates can decide; Denied would block the module.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendModules/AccessGates.html",
+      "since": "14.2",
+      "tags": [
+        "v14"
+      ]
+    },
+    {
+      "id": "API-XMODREG-003",
+      "domain": "typo3_apis",
+      "skill": "backend_module_registration",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which Modules.php options are configured correctly? (choose 3)",
+      "answers": [
+        "'workspaces' => 'live' to make the module available in the live workspace only",
+        "'position' => ['before' => '*'] to place the module first within its parent",
+        "'appearance' => ['dependsOnSubmodules' => true] to hide a parent module without accessible submodules",
+        "'access' => 'editor' as a built-in access level for editors",
+        "'workspaces' => 'all' to allow the module in every workspace"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "workspaces accepts '*', 'live' or 'offline'; position supports top, bottom, before and after; appearance.dependsOnSubmodules was added in v14.0. 'editor' is not a built-in access level (only via a custom access gate).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Backend/BackendModules/ModuleConfiguration/Index.html"
+    }
+  ]
+}
