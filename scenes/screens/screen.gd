@@ -24,7 +24,9 @@ func _ready() -> void:
 	add_child(m)
 	root = UI.vbox(12 if compact() else 18)
 	m.add_child(root)
+	get_tree().node_added.connect(_on_node_added)
 	build()
+	make_touch_friendly(self)
 
 
 func build() -> void:
@@ -69,6 +71,28 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		on_back()
+
+
+## Controls default to MOUSE_FILTER_STOP, which swallows touch drags before they reach a
+## ScrollContainer. Switch them to PASS (picking still hits the topmost control, so overlays keep
+## blocking what is behind them). Sliders and scroll bars keep STOP because they need the drag.
+static func make_touch_friendly(node: Node) -> void:
+	_fix_filter(node)
+	for c in node.get_children():
+		make_touch_friendly(c)
+
+
+static func _fix_filter(node: Node) -> void:
+	if node is Control and not (node is ScrollBar or node is Slider or node is LineEdit or node is TextEdit):
+		var c := node as Control
+		if c.mouse_filter == Control.MOUSE_FILTER_STOP:
+			c.mouse_filter = Control.MOUSE_FILTER_PASS
+
+
+func _on_node_added(node: Node) -> void:
+	# Content created later (next question, feedback panel, overlays) gets the same treatment.
+	if node is Control and is_ancestor_of(node):
+		_fix_filter(node)
 
 
 func main() -> Node:

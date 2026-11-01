@@ -45,6 +45,12 @@ func _init(src: String = "", lang: String = "text") -> void:
 	focus_mode = Control.FOCUS_NONE
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	syntax_highlighter = make_highlighter(lang)
+	if Layout.touch or Layout.is_compact():
+		# TextEdit consumes drags (selection); let the surrounding ScrollContainer scroll instead.
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		selecting_enabled = false
+	if Layout.is_portrait():
+		wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 
 
 static func make_highlighter(lang: String) -> CodeHighlighter:

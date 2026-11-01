@@ -9,11 +9,13 @@ var enabled := true
 var _hover := false
 var _base_style: StyleBoxFlat
 var _hover_style: StyleBoxFlat
+var _tap := TapDetector.new()
 
 
 func _init(p_accent: Color = Palette.ACCENT) -> void:
 	accent = p_accent
-	focus_mode = Control.FOCUS_ALL
+	mouse_filter = Control.MOUSE_FILTER_PASS      # let drags reach the ScrollContainer
+	focus_mode = Control.FOCUS_NONE if Layout.touch else Control.FOCUS_ALL   # no focus ring after taps
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_base_style = ThemeBuilder.box(Palette.SURFACE, 18, Palette.BORDER, 1, 22, 18)
 	_hover_style = ThemeBuilder.box(Palette.SURFACE_2, 18, accent, 2, 22, 18)
@@ -47,6 +49,12 @@ func _on_exit() -> void:
 	create_tween().tween_property(self, "scale", Vector2.ONE, 0.12)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCROLL_BEGIN:
+		_tap.cancel()
+		_on_exit()
+
+
 func set_enabled(value: bool) -> void:
 	enabled = value
 	modulate.a = 1.0 if value else 0.5
@@ -56,7 +64,7 @@ func set_enabled(value: bool) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if not enabled:
 		return
-	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or event.is_action_pressed("ui_accept"):
+	if _tap.handle(event) or event.is_action_pressed("ui_accept"):
 		accept_event()
 		Audio.play("select")
 		FX.pop(self, 0.04)
