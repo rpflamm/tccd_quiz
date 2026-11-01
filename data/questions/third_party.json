@@ -21,7 +21,7 @@
         0
       ],
       "explanation": "DBAL 3+ replaced the old fetch()/fetchAll() methods with explicit ones like fetchAssociative(), fetchAllAssociative() and fetchOne(). fetchAll() no longer exists in DBAL 4.",
-      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.2/reference/data-retrieval-and-manipulation.html",
+      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.4/reference/data-retrieval-and-manipulation.html",
       "tags": [
         "database"
       ]
@@ -71,8 +71,8 @@
       "correct": [
         0
       ],
-      "explanation": "List parameters for IN() need the ArrayParameterType enum (INTEGER or STRING) in DBAL 4. ParameterType::INTEGER only binds a single scalar value; ParameterType::ARRAY does not exist and PDO constants are no longer accepted.",
-      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.2/reference/query-builder.html",
+      "explanation": "List parameters for IN() need the ArrayParameterType enum (INTEGER, STRING, ASCII or BINARY) in DBAL 4; DBAL then expands the list into individual placeholders. ParameterType::INTEGER only binds a single scalar value, ParameterType::ARRAY does not exist and PDO constants are no longer accepted.",
+      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.4/reference/data-retrieval-and-manipulation.html",
       "tags": [
         "database"
       ]
@@ -396,7 +396,7 @@
         1,
         2
       ],
-      "explanation": "TYPO3 supports smtp, sendmail, mbox (writes mails to a file, useful for debugging) and a custom class implementing Symfony's TransportInterface. FTP and IMAP are not mail transports.",
+      "explanation": "TYPO3 supports smtp, sendmail, mbox (writes mails to a file, useful for debugging), null, dsn and a custom class implementing Symfony's TransportInterface (see TransportFactory). FTP and IMAP are not mail transports.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html"
     },
     {
@@ -460,7 +460,7 @@
         1,
         2
       ],
-      "explanation": "TYPO3 uses the Symfony DI container; constructor injection is preferred and makeInstance() can only fetch public services. The container is compiled and cached. The ObjectManager was removed in v12 and @inject property annotations are not recommended.",
+      "explanation": "TYPO3 uses the Symfony DI container; constructor injection is preferred and makeInstance() can only fetch public services. The container is compiled and cached. The ObjectManager was removed in v12, and DocBlock annotations like @inject are no longer evaluated at all in v14 (Breaking #107229).",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html"
     },
     {
