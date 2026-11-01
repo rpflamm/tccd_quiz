@@ -28,6 +28,8 @@ buses/default_bus_layout="res://ui/default_bus_layout.tres"
 Settings="*res://src/autoload/settings.gd"
 QuestionBank="*res://src/autoload/question_bank.gd"
 Profile="*res://src/autoload/profile.gd"
+Audio="*res://src/autoload/audio.gd"
+Router="*res://src/autoload/router.gd"
 
 [display]
 
