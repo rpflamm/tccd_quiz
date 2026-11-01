@@ -1,0 +1,621 @@
+{
+  "questions": [
+    {
+      "id": "TPA-DBAL-001",
+      "domain": "third_party",
+      "skill": "doctrine_dbal",
+      "type": "single",
+      "difficulty": 1,
+      "question": "TYPO3 v14 ships Doctrine DBAL 4. Which Result method returns all rows of a SELECT query as a list of associative arrays?",
+      "code": {
+        "lang": "php",
+        "src": "$rows = $queryBuilder\n    ->select('uid', 'title')\n    ->from('pages')\n    ->executeQuery()\n    ->???;"
+      },
+      "answers": [
+        "fetchAllAssociative()",
+        "fetchAll()",
+        "fetchAssoc()",
+        "getRows()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "DBAL 3+ replaced the old fetch()/fetchAll() methods with explicit ones like fetchAssociative(), fetchAllAssociative() and fetchOne(). fetchAll() no longer exists in DBAL 4.",
+      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.2/reference/data-retrieval-and-manipulation.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "TPA-DBAL-002",
+      "domain": "third_party",
+      "skill": "doctrine_dbal",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about Doctrine DBAL as used by TYPO3 are correct?",
+      "answers": [
+        "It abstracts access to different DBMS such as MySQL/MariaDB, PostgreSQL and SQLite behind one API.",
+        "Its QueryBuilder generates platform-specific SQL from a fluent PHP API.",
+        "It supports prepared statements with bound parameters to separate data from SQL.",
+        "It is an ORM that maps entity objects to tables via annotations.",
+        "It requires Doctrine ORM to be installed in every TYPO3 project."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "DBAL is a database abstraction layer (connections, QueryBuilder, schema, prepared statements). It is not an ORM; TYPO3 uses DBAL without Doctrine ORM (Extbase has its own persistence).",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Database/Index.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "TPA-DBAL-003",
+      "domain": "third_party",
+      "skill": "doctrine_dbal",
+      "type": "single",
+      "difficulty": 3,
+      "question": "With Doctrine DBAL 4, which parameter type must replace ??? so that the list of integers is bound safely for the IN() expression?",
+      "code": {
+        "lang": "php",
+        "src": "$queryBuilder->where(\n    $queryBuilder->expr()->in(\n        'uid',\n        $queryBuilder->createNamedParameter([1, 2, 3], ???)\n    )\n);"
+      },
+      "answers": [
+        "ArrayParameterType::INTEGER",
+        "ParameterType::INTEGER",
+        "\\PDO::PARAM_INT",
+        "ParameterType::ARRAY"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "List parameters for IN() need the ArrayParameterType enum (INTEGER or STRING) in DBAL 4. ParameterType::INTEGER only binds a single scalar value; ParameterType::ARRAY does not exist and PDO constants are no longer accepted.",
+      "doc_url": "https://www.doctrine-project.org/projects/doctrine-dbal/en/4.2/reference/query-builder.html",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "TPA-NOTIF-001",
+      "domain": "third_party",
+      "skill": "notification_actions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A backend JavaScript module triggers the following notification. How long is it displayed?",
+      "code": {
+        "lang": "js",
+        "src": "import Notification from '@typo3/backend/notification.js';\n\nNotification.error('Import failed', 'The CSV file is invalid.');"
+      },
+      "answers": [
+        "Until the editor closes it, because error() defaults to a duration of 0 (no auto-dismiss).",
+        "5 seconds, the default duration of all notification methods.",
+        "10 seconds, because errors are displayed twice as long.",
+        "Only until the next backend module is loaded."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "All Notification methods default to 5 seconds, except error(), whose default duration is 0. A duration of 0 disables the timer, so the notification stays until it is dismissed.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/NotificationApi.html"
+    },
+    {
+      "id": "TPA-NOTIF-002",
+      "domain": "third_party",
+      "skill": "notification_actions",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about actions in backend notifications (Notification API) are correct?",
+      "answers": [
+        "An ImmediateAction executes its callback on click and closes the notification.",
+        "A DeferredAction callback must return a Promise; a spinner is shown while it runs.",
+        "Actions must be optional; if the editor has to make a decision, a modal should be used instead.",
+        "Dismissing a notification cancels a running DeferredAction.",
+        "Actions can only be attached to error() notifications."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "ImmediateAction (@typo3/backend/action-button/immediate-action.js) runs directly; DeferredAction (deferred-action.js) expects a Promise and shows a spinner. Dismissing the notification does not stop a deferred task, and actions work with every severity.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/NotificationApi.html"
+    },
+    {
+      "id": "TPA-NOTIF-003",
+      "domain": "third_party",
+      "skill": "notification_actions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What is the effect of the last constructor argument (true) of the FlashMessage below?",
+      "code": {
+        "lang": "php",
+        "src": "$message = new FlashMessage(\n    'The record was saved.',\n    'Saved',\n    ContextualFeedbackSeverity::OK,\n    true\n);\n$this->flashMessageService\n    ->getMessageQueueByIdentifier()\n    ->addMessage($message);"
+      },
+      "answers": [
+        "The message is stored in the user session, so it is still shown after a redirect.",
+        "The message can be closed by the editor.",
+        "The message is rendered as a JavaScript notification instead of inline.",
+        "The message is additionally written to the sys_log table."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The fourth argument is $storeInSession. Session-stored messages survive a redirect and are rendered on the next request; without it, the message only lives for the current request.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/FlashMessagesApi.html"
+    },
+    {
+      "id": "TPA-ROUTE-001",
+      "domain": "third_party",
+      "skill": "symfony_routing",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Where does the TYPO3 Core rely on the Symfony Routing component?",
+      "answers": [
+        "Resolving and generating frontend page URLs, including route enhancers and aspects",
+        "Matching backend routes defined in Configuration/Backend/Routes.php and AjaxRoutes.php",
+        "Rendering Fluid ViewHelpers",
+        "Parsing TypoScript constants",
+        "Executing scheduler tasks"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "The frontend PageRouter builds Symfony route collections for pages and enhancers, and the backend router matches backend/AJAX routes with Symfony Routing. Fluid, TypoScript and the scheduler do not use it.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/Index.html"
+    },
+    {
+      "id": "TPA-ROUTE-002",
+      "domain": "third_party",
+      "skill": "symfony_routing",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In a Symfony 7 application, a request for /blog/my-first-post arrives. What happens with this route definition?",
+      "code": {
+        "lang": "php",
+        "src": "#[Route('/blog/{page}', name: 'blog_list', requirements: ['page' => '\\d+'])]\npublic function list(int $page): Response\n{\n    // ...\n}"
+      },
+      "answers": [
+        "The route does not match, because the requirement only allows digits for {page}.",
+        "The route matches and $page receives the string 'my-first-post'.",
+        "The route matches and $page is cast to 0.",
+        "Symfony throws an exception because routes must be defined in YAML."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "requirements restrict placeholders with regular expressions; 'my-first-post' does not match \\d+, so the router tries other routes (or returns 404). Routes can be defined with PHP attributes, YAML, XML or PHP.",
+      "doc_url": "https://symfony.com/doc/7.4/routing.html"
+    },
+    {
+      "id": "TPA-ROUTE-003",
+      "domain": "third_party",
+      "skill": "symfony_routing",
+      "type": "single",
+      "difficulty": 3,
+      "question": "In a site configuration route enhancer, the static path segment should read \"page\" in English and \"seite\" in German. Which aspect type does this?",
+      "code": {
+        "lang": "yaml",
+        "src": "routeEnhancers:\n  NewsList:\n    type: Extbase\n    extension: News\n    plugin: Pi1\n    routes:\n      - routePath: '/{localized_page}/{page}'\n        _controller: 'News::list'\n    aspects:\n      localized_page:\n        type: ???\n        default: 'page'\n        localeMap:\n          - locale: 'de_DE.*'\n            value: 'seite'"
+      },
+      "answers": [
+        "LocaleModifier",
+        "StaticValueMapper",
+        "PersistedAliasMapper",
+        "StaticRangeMapper"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "LocaleModifier changes a static route segment depending on the site language locale. StaticValueMapper maps parameter values, PersistedAliasMapper maps a record field (for example a slug) and StaticRangeMapper allows a numeric range.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Routing/EnhancementsAspects/Index.html"
+    },
+    {
+      "id": "TPA-FINDER-001",
+      "domain": "third_party",
+      "skill": "symfony_finder",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The Finder below searches recursively by default. Which call restricts the search to files directly inside the given directory?",
+      "code": {
+        "lang": "php",
+        "src": "$finder = new Finder();\n$finder->files()\n    ->in(__DIR__ . '/Resources/Private/Templates')\n    ->name('*.html');"
+      },
+      "answers": [
+        "->depth('== 0')",
+        "->recursive(false)",
+        "->maxDepth(0)",
+        "->notRecursive()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "depth() accepts comparison expressions such as '== 0' or '< 2'; level 0 is the directory passed to in(). The other methods do not exist on the Finder.",
+      "doc_url": "https://symfony.com/doc/7.4/components/finder.html"
+    },
+    {
+      "id": "TPA-FINDER-002",
+      "domain": "third_party",
+      "skill": "symfony_finder",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which of the following are valid Symfony Finder filter methods?",
+      "answers": [
+        "name('*.php')",
+        "size('< 100K')",
+        "date('since yesterday')",
+        "contains('lorem')",
+        "owner('www-data')",
+        "mimeType('image/png')"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Finder filters by name/path patterns, size, modification date, contents (contains/notContains), depth and more. It has no owner() or mimeType() filter.",
+      "doc_url": "https://symfony.com/doc/7.4/components/finder.html"
+    },
+    {
+      "id": "TPA-FINDER-003",
+      "domain": "third_party",
+      "skill": "symfony_finder",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What happens when the following code is executed?",
+      "code": {
+        "lang": "php",
+        "src": "$finder = new Finder();\n$finder->files()->name('*.yaml');\n\nforeach ($finder as $file) {\n    echo $file->getRealPath();\n}"
+      },
+      "answers": [
+        "A LogicException is thrown because neither in() nor append() was called.",
+        "The current working directory is searched.",
+        "The project root (composer.json location) is searched.",
+        "The loop runs zero times because the Finder is empty."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Finder needs at least one search location. Iterating without calling in() or append() throws a LogicException (\"You must call one of in() or append() methods before iterating\").",
+      "doc_url": "https://symfony.com/doc/7.4/components/finder.html"
+    },
+    {
+      "id": "TPA-CONSOLE-001",
+      "domain": "third_party",
+      "skill": "symfony_console",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How do you run the TYPO3 console command cache:flush in a Composer-based TYPO3 v14 installation?",
+      "answers": [
+        "vendor/bin/typo3 cache:flush",
+        "php bin/console cache:flush",
+        "php typo3/cli_dispatch.phpsh cache:flush",
+        "vendor/bin/typo3cms cache:flush"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The TYPO3 CLI entry point is vendor/bin/typo3 in Composer mode (typo3/sysext/core/bin/typo3 in classic mode). bin/console belongs to Symfony full-stack apps, cli_dispatch.phpsh is long gone and typo3cms was a third-party tool.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Index.html"
+    },
+    {
+      "id": "TPA-CONSOLE-002",
+      "domain": "third_party",
+      "skill": "symfony_console",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about this custom command in an extension with a default Configuration/Services.yaml (autowire, autoconfigure) are correct?",
+      "code": {
+        "lang": "php",
+        "src": "#[AsCommand(name: 'myext:import', description: 'Imports records')]\nfinal class ImportCommand extends Command\n{\n    public function __construct(private readonly ImportService $importService)\n    {\n        parent::__construct();\n    }\n\n    protected function execute(InputInterface $input, OutputInterface $output): int\n    {\n        $this->importService->run();\n        return Command::SUCCESS;\n    }\n}"
+      },
+      "answers": [
+        "The #[AsCommand] attribute registers the command; no additional registration in ext_localconf.php is needed.",
+        "execute() must return an integer exit code such as Command::SUCCESS or Command::FAILURE.",
+        "Dependencies can be injected through the constructor.",
+        "The command additionally has to be added to $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'].",
+        "execute() may return true or false instead of an integer."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "With autoconfigure, #[AsCommand] is enough to register the command, and commands are regular DI services. Symfony requires an int exit code from execute(); the cliKeys registration is a relic from very old TYPO3 versions.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/Tutorial.html"
+    },
+    {
+      "id": "TPA-CONSOLE-003",
+      "domain": "third_party",
+      "skill": "symfony_console",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A command registered via Services.yaml must not be selectable in the Scheduler's \"Execute console commands\" task. Which tag option achieves this?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  MyVendor\\MyExt\\Command\\CleanupCommand:\n    tags:\n      - name: console.command\n        command: 'myext:cleanup'\n        ???"
+      },
+      "answers": [
+        "schedulable: false",
+        "public: false",
+        "hidden: true",
+        "scheduler: disabled"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The console.command tag accepts schedulable: false to exclude a command from the scheduler. hidden: true only hides it from the command list; public has nothing to do with the scheduler. TYPO3 v14 also adds the #[AsNonSchedulableCommand] attribute for the same purpose.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/CommandControllers/CustomCommands.html"
+    },
+    {
+      "id": "TPA-MAILER-001",
+      "domain": "third_party",
+      "skill": "symfony_mailer",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In TYPO3 v14, how is a prepared MailMessage sent?",
+      "code": {
+        "lang": "php",
+        "src": "$mail = new MailMessage();\n$mail\n    ->from(new Address('noreply@example.org'))\n    ->to(new Address('editor@example.org'))\n    ->subject('Report')\n    ->text('The import finished.');\n// how to send?"
+      },
+      "answers": [
+        "Inject TYPO3\\CMS\\Core\\Mail\\MailerInterface and call $mailer->send($mail)",
+        "Call $mail->send() on the MailMessage",
+        "Call GeneralUtility::mail($mail)",
+        "Return the MailMessage from a PSR-15 middleware"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TYPO3 v14 removed MailMessage::send() and isSent(); messages are sent via the injected MailerInterface. GeneralUtility::mail() does not exist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "TPA-MAILER-002",
+      "domain": "third_party",
+      "skill": "symfony_mailer",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which values are supported by TYPO3 for $GLOBALS['TYPO3_CONF_VARS']['MAIL']['transport']?",
+      "answers": [
+        "smtp",
+        "sendmail",
+        "mbox",
+        "ftp",
+        "imap"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 supports smtp, sendmail, mbox (writes mails to a file, useful for debugging) and a custom class implementing Symfony's TransportInterface. FTP and IMAP are not mail transports.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html"
+    },
+    {
+      "id": "TPA-MAILER-003",
+      "domain": "third_party",
+      "skill": "symfony_mailer",
+      "type": "single",
+      "difficulty": 2,
+      "question": "With transport_spool_type set to 'file', mails are queued in transport_spool_filepath instead of being sent immediately. Which command sends the queued mails?",
+      "answers": [
+        "vendor/bin/typo3 mailer:spool:send",
+        "vendor/bin/typo3 mail:send",
+        "vendor/bin/typo3 scheduler:run --mails",
+        "vendor/bin/typo3 mailer:flush"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Spooled messages are delivered by the mailer:spool:send command, which is usually run regularly via cron or the Scheduler.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Mail/Index.html"
+    },
+    {
+      "id": "TPA-DI-001",
+      "domain": "third_party",
+      "skill": "symfony_dependency_injection",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does autowire: true in the _defaults section of Configuration/Services.yaml do?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  _defaults:\n    autowire: true\n    autoconfigure: true\n    public: false\n\n  MyVendor\\MyExt\\:\n    resource: '../Classes/*'"
+      },
+      "answers": [
+        "Constructor dependencies are injected automatically based on their type declarations.",
+        "All classes are automatically made public.",
+        "Services are tagged automatically based on implemented interfaces.",
+        "Services are created lazily as proxies."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Autowiring resolves constructor (and inject*) arguments by their type hints. Automatic tagging based on interfaces/attributes is autoconfigure; visibility is controlled by public.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html"
+    },
+    {
+      "id": "TPA-DI-002",
+      "domain": "third_party",
+      "skill": "symfony_dependency_injection",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about dependency injection in TYPO3 v14 are correct?",
+      "answers": [
+        "Constructor injection is the recommended way to receive dependencies.",
+        "A service that is instantiated via GeneralUtility::makeInstance() must be public.",
+        "The compiled container is cached, so caches must be flushed after changing Services.yaml.",
+        "Extbase's ObjectManager is the recommended way to retrieve services.",
+        "Properties annotated with @inject in a docblock are the recommended way to inject services."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "TYPO3 uses the Symfony DI container; constructor injection is preferred and makeInstance() can only fetch public services. The container is compiled and cached. The ObjectManager was removed in v12 and @inject property annotations are not recommended.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html"
+    },
+    {
+      "id": "TPA-DI-003",
+      "domain": "third_party",
+      "skill": "symfony_dependency_injection",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Two classes implement ExporterInterface. What does the marked line in Services.yaml achieve?",
+      "code": {
+        "lang": "yaml",
+        "src": "services:\n  _defaults:\n    autowire: true\n    autoconfigure: true\n\n  MyVendor\\MyExt\\:\n    resource: '../Classes/*'\n\n  # marked line\n  MyVendor\\MyExt\\Export\\ExporterInterface: '@MyVendor\\MyExt\\Export\\CsvExporter'"
+      },
+      "answers": [
+        "Wherever ExporterInterface is type-hinted, the CsvExporter service is injected.",
+        "CsvExporter is registered as a second, independent implementation and chosen randomly.",
+        "ExporterInterface is excluded from autowiring.",
+        "CsvExporter becomes a public service that can only be fetched via makeInstance()."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The line defines an alias from the interface to a concrete service. Without an alias the container cannot autowire an interface that has several implementations.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/DependencyInjection/Index.html"
+    },
+    {
+      "id": "TPA-EXPR-001",
+      "domain": "third_party",
+      "skill": "symfony_expression_language",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which TypoScript condition (Symfony Expression Language syntax) is true when a frontend user is logged in?",
+      "answers": [
+        "[frontend.user.isLoggedIn]",
+        "[loginUser('*')]",
+        "[usergroup = *]",
+        "[getTSFE().fe_user.user]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "TypoScript conditions use the Symfony Expression Language with variables like frontend.user. loginUser()/usergroup belong to the removed old condition syntax, and getTSFE() is no longer available in conditions in v14.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/Conditions/Index.html",
+      "tags": [
+        "typoscript"
+      ]
+    },
+    {
+      "id": "TPA-EXPR-002",
+      "domain": "third_party",
+      "skill": "symfony_expression_language",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which TypoScript conditions are valid in TYPO3 v14?",
+      "answers": [
+        "[traverse(request.getQueryParams(), 'tx_news_pi1/news') > 0]",
+        "[site(\"identifier\") == \"main\"]",
+        "[tree.level == 0]",
+        "[getTSFE().id == 42]",
+        "[globalVar = TSFE:id = 42]"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "traverse(), site() and tree are documented condition features. The getTSFE() function was removed from conditions in v14 (use e.g. request?.getPageArguments()?.getPageId()), and the globalVar syntax is the long-removed pre-Expression-Language syntax.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/Conditions/Index.html",
+      "tags": [
+        "typoscript",
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "TPA-EXPR-003",
+      "domain": "third_party",
+      "skill": "symfony_expression_language",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Where does an extension register additional variables or functions (expression function providers) for TypoScript conditions?",
+      "code": {
+        "lang": "php",
+        "src": "<?php\n\nreturn [\n    'typoscript' => [\n        \\MyVendor\\MyExt\\ExpressionLanguage\\CustomProvider::class,\n    ],\n];"
+      },
+      "answers": [
+        "In Configuration/ExpressionLanguage.php, returning providers per context such as 'typoscript'",
+        "In ext_localconf.php via $GLOBALS['TYPO3_CONF_VARS']['SYS']['expressionLanguage']",
+        "In Configuration/TypoScript/conditions.php",
+        "In the site configuration under conditions:"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Custom providers are registered in the extension's Configuration/ExpressionLanguage.php file, keyed by context (e.g. 'typoscript'), and can add variables and functions to the expression language.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/SymfonyExpressionLanguage/Index.html"
+    },
+    {
+      "id": "TPA-SYMF-001",
+      "domain": "third_party",
+      "skill": "about_symfony",
+      "type": "single",
+      "difficulty": 1,
+      "question": "How does TYPO3 make use of Symfony?",
+      "answers": [
+        "It requires selected decoupled Symfony components (e.g. Console, DependencyInjection, Mailer, Routing) via Composer.",
+        "TYPO3 is a Symfony full-stack application built from Symfony bundles.",
+        "TYPO3 copies Symfony source code into its own Core namespace.",
+        "TYPO3 only uses Symfony inside the Install Tool."
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Symfony is also a set of reusable, standalone PHP packages. TYPO3 has its own architecture and bootstrapping but requires many Symfony components as Composer dependencies.",
+      "doc_url": "https://symfony.com/components"
+    },
+    {
+      "id": "TPA-SYMF-002",
+      "domain": "third_party",
+      "skill": "about_symfony",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the Symfony release process are correct?",
+      "answers": [
+        "A new minor version is released every six months.",
+        "The last minor version of a major branch (x.4) is a long-term support (LTS) release.",
+        "Symfony follows semantic versioning and has a backward compatibility promise.",
+        "A new major version is released every six months.",
+        "Every Symfony release receives ten years of security support."
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Symfony uses a time-based release cycle: minors every six months (May/November), a new major every two years, and the x.4 release is LTS. Its backward compatibility promise is built on semantic versioning.",
+      "doc_url": "https://symfony.com/doc/current/contributing/community/releases.html"
+    },
+    {
+      "id": "TPA-SYMF-003",
+      "domain": "third_party",
+      "skill": "about_symfony",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which company created Symfony and still is its main sponsor?",
+      "answers": [
+        "SensioLabs",
+        "TYPO3 GmbH",
+        "Zend Technologies",
+        "Laravel Holdings"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Symfony was created by Fabien Potencier at SensioLabs, which still drives the project with a large open-source community.",
+      "doc_url": "https://symfony.com/what-is-symfony"
+    }
+  ]
+}

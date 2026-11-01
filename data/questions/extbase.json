@@ -1,0 +1,1396 @@
+{
+  "questions": [
+    {
+      "id": "EXT-REQ-001",
+      "domain": "extbase",
+      "skill": "extbase_request_response",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which of the following are valid ways for an Extbase action method to end in TYPO3 v14?",
+      "answers": [
+        "return $this->htmlResponse();",
+        "return $this->redirect('list');",
+        "return new ForwardResponse('list');",
+        "return; (the view is rendered automatically)",
+        "return $this->view->render(); (returning the rendered string)"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Every Extbase action must return a PSR-7 ResponseInterface. htmlResponse(), redirect() and ForwardResponse all return such a response; a void return or a plain string is no longer accepted.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html",
+      "tags": [
+        "controller"
+      ]
+    },
+    {
+      "id": "EXT-REQ-002",
+      "domain": "extbase",
+      "skill": "extbase_request_response",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What happens when the following action returns the ForwardResponse?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Extbase\\Http\\ForwardResponse;\n\npublic function createAction(Conference $conference): ResponseInterface\n{\n    if (!$this->isBookable($conference)) {\n        return (new ForwardResponse('new'))\n            ->withArguments(['conference' => $conference]);\n    }\n    $this->conferenceRepository->add($conference);\n    return $this->redirect('list');\n}"
+      },
+      "answers": [
+        "Extbase dispatches newAction() within the same request; the browser URL does not change",
+        "The browser receives an HTTP 303 redirect to the URL of newAction()",
+        "The New template is rendered directly without calling newAction()",
+        "A new sub-request is sent via HTTP to the same page with the given arguments"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "ForwardResponse transfers control to another action inside the same request, with no browser round-trip, keeping arguments (and flash messages). A redirect with HTTP 303 is what redirect() does.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    },
+    {
+      "id": "EXT-REQ-003",
+      "domain": "extbase",
+      "skill": "extbase_request_response",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about $this->request inside an Extbase ActionController are true in TYPO3 v14?",
+      "answers": [
+        "It implements the PSR-7 ServerRequestInterface (via the Extbase RequestInterface)",
+        "Plugin arguments can be read with $this->request->getArgument('name') and checked with hasArgument()",
+        "It is immutable; modified copies are created with with*() methods such as withArgument()",
+        "Arguments can be changed in place with $this->request->setArgument()",
+        "Extbase reads plugin arguments exclusively from the $_GET superglobal"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The Extbase request is a PSR-7 server request decorated with Extbase-specific methods like getArgument() and getControllerActionName(). It is immutable, so setter methods like setArgument() no longer exist; arguments come from query and parsed body of the PSR-7 request.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html",
+      "tags": [
+        "psr-7"
+      ]
+    },
+    {
+      "id": "EXT-REQ-004",
+      "domain": "extbase",
+      "skill": "extbase_request_response",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which HTTP status code does ActionController::redirect() send by default in TYPO3 v14?",
+      "answers": [
+        "303 See Other",
+        "301 Moved Permanently",
+        "302 Found",
+        "307 Temporary Redirect"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "redirect() returns a 303 response so that the browser follows with a GET request (Post/Redirect/Get). A 307 can be passed explicitly as $statusCode when the POST body must be resent.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    },
+    {
+      "id": "EXT-VIEW-001",
+      "domain": "extbase",
+      "skill": "extbase_view",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In TYPO3 v14, what is the declared type of the property ActionController::$view?",
+      "answers": [
+        "\\TYPO3\\CMS\\Core\\View\\ViewInterface",
+        "\\TYPO3\\CMS\\Fluid\\View\\TemplateView",
+        "\\TYPO3\\CMS\\Fluid\\View\\StandaloneView",
+        "\\TYPO3\\CMS\\Extbase\\Mvc\\View\\GenericViewResolver"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v14 ActionController::$view is typed as the generic Core ViewInterface. TemplateView, StandaloneView and GenericViewResolver were removed in v14 (Breaking #105377).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "view"
+      ]
+    },
+    {
+      "id": "EXT-VIEW-002",
+      "domain": "extbase",
+      "skill": "extbase_view",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The controller below should deliver JSON. Which line belongs in place of ??? ?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Extbase\\Mvc\\View\\JsonView;\n\nclass ConferenceApiController extends ActionController\n{\n    protected ?string $defaultViewObjectName = JsonView::class;\n\n    public function listAction(): ResponseInterface\n    {\n        $this->view->assign('conferences', $this->conferenceRepository->findAll());\n        $this->view->setVariablesToRender(['conferences']);\n        ???\n    }\n}"
+      },
+      "answers": [
+        "return $this->jsonResponse();",
+        "return $this->htmlResponse();",
+        "return $this->view->renderJson();",
+        "return json_encode($this->view->render());"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "With $defaultViewObjectName set to JsonView, jsonResponse() renders the view and returns a response with Content-Type application/json. htmlResponse() would send text/html.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/View/Index.html"
+    },
+    {
+      "id": "EXT-VIEW-003",
+      "domain": "extbase",
+      "skill": "extbase_view",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which methods of the view can a controller action use to pass data to the template?",
+      "answers": [
+        "$this->view->assign('conference', $conference)",
+        "$this->view->assignMultiple(['conference' => $conference, 'speakers' => $speakers])",
+        "$this->view->setVariable('conference', $conference)",
+        "$this->view->set('conference', $conference)",
+        "$this->view->addData(['conference' => $conference])"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "ViewInterface provides assign() for a single variable and assignMultiple() for an array of variables. The other method names do not exist on the view.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/View/Index.html"
+    },
+    {
+      "id": "EXT-VIEW-004",
+      "domain": "extbase",
+      "skill": "extbase_view",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A variable must be assigned to the view for every action of a controller. Which optional method can the controller implement that Extbase calls with the resolved view after argument mapping and right before the action runs?",
+      "answers": [
+        "initializeView(ViewInterface $view)",
+        "initializeAction()",
+        "processRequest(RequestInterface $request)",
+        "errorAction()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "If a controller defines initializeView(), ActionController calls it with the freshly resolved view right before the action method, so common variables can be assigned there. initializeAction() runs earlier, before arguments are mapped and before the view is resolved.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/View/Index.html"
+    },
+    {
+      "id": "EXT-FLUID-001",
+      "domain": "extbase",
+      "skill": "extbase_fluid_view",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Without any custom view configuration, where does Extbase look for the template of ConferenceController::listAction() in extension my_extension (TYPO3 v14, Fluid 5)?",
+      "answers": [
+        "EXT:my_extension/Resources/Private/Templates/Conference/List.fluid.html (or List.html)",
+        "EXT:my_extension/Resources/Private/Templates/ConferenceController/listAction.html",
+        "EXT:my_extension/Resources/Private/Templates/List.html",
+        "EXT:my_extension/Resources/Public/Templates/Conference/List.html"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The default template is Templates/<ControllerName without 'Controller'>/<ActionName>.<format> below Resources/Private. Fluid 5 additionally looks for the optional *.fluid.html extension, which takes priority over *.html in the same folder.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/View/Index.html"
+    },
+    {
+      "id": "EXT-FLUID-002",
+      "domain": "extbase",
+      "skill": "extbase_fluid_view",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about Fluid 5, shipped with TYPO3 v14, are correct?",
+      "answers": [
+        "Template variable names starting with an underscore, e.g. <f:variable name=\"_temp\" value=\"1\"/>, cause an exception",
+        "Within the same folder a template named List.fluid.html takes precedence over List.html",
+        "A tag-based ViewHelper omits an attribute whose value is null instead of rendering it empty",
+        "Custom ViewHelpers may omit the return type of initializeArguments()",
+        "The special variable {_all} can no longer be used"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Fluid 5 reserves the underscore prefix for variable names (except internals such as {_all}), resolves *.fluid.* files first, drops null attributes in tag-based ViewHelpers, and requires proper return types (initializeArguments(): void).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-FluidUnderscoreVariablePrefix.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "fluid"
+      ]
+    },
+    {
+      "id": "EXT-FLUID-003",
+      "domain": "extbase",
+      "skill": "extbase_fluid_view",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Both paths below contain Conference/List.html. Which template is rendered for listAction()?",
+      "code": {
+        "lang": "typoscript",
+        "src": "plugin.tx_myextension {\n    view {\n        templateRootPaths {\n            0 = EXT:my_extension/Resources/Private/Templates/\n            20 = EXT:my_sitepackage/Resources/Private/Extensions/MyExtension/Templates/\n        }\n    }\n}"
+      },
+      "answers": [
+        "The one from EXT:my_sitepackage, because the highest numeric key is checked first",
+        "The one from EXT:my_extension, because key 0 is the default and always wins",
+        "The one from the extension that is loaded last in the extension loading order",
+        "None; Extbase throws an exception because the template exists twice"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "templateRootPaths (and layout/partial root paths) are searched starting with the highest numeric key, so a site package can override extension templates with a higher key. Loading order is irrelevant.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/View/Index.html"
+    },
+    {
+      "id": "EXT-FLUID-004",
+      "domain": "extbase",
+      "skill": "extbase_fluid_view",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which ViewHelper renders the validation errors of the property title of the form object conference?",
+      "code": {
+        "lang": "html",
+        "src": "<f:form action=\"create\" name=\"conference\" object=\"{conference}\">\n    ???\n        <f:for each=\"{validationResults.errors}\" as=\"error\">\n            <p class=\"error\">{error.message}</p>\n        </f:for>\n    </...>\n    <f:form.textfield property=\"title\" />\n</f:form>"
+      },
+      "answers": [
+        "<f:form.validationResults for=\"conference.title\">",
+        "<f:form.errors property=\"title\">",
+        "<f:validation.errors for=\"conference.title\">",
+        "<f:flashMessages queueIdentifier=\"conference.title\">"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "f:form.validationResults exposes {validationResults} for the given dot-notation path, so you can loop over validationResults.errors. f:flashMessages only renders flash messages.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html"
+    },
+    {
+      "id": "EXT-PERS-001",
+      "domain": "extbase",
+      "skill": "extbase_persistence",
+      "type": "single",
+      "difficulty": 1,
+      "question": "By naming convention, which database table does Extbase use for the model MyVendor\\MyExtension\\Domain\\Model\\Conference?",
+      "answers": [
+        "tx_myextension_domain_model_conference",
+        "tx_my_extension_domain_model_conference",
+        "tx_myextension_conference",
+        "myvendor_myextension_domain_model_conference"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The table name is derived from the class name: tx_ + lowercased extension name without underscores + _domain_model_ + lowercased model name. The vendor is not part of it. Other names require a mapping in Configuration/Extbase/Persistence/Classes.php.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Concepts/Persistence.html"
+    },
+    {
+      "id": "EXT-PERS-002",
+      "domain": "extbase",
+      "skill": "extbase_persistence",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which keys can be used per class in Configuration/Extbase/Persistence/Classes.php?",
+      "answers": [
+        "tableName",
+        "properties (with fieldName per property)",
+        "recordType",
+        "subclasses",
+        "repositoryClassName",
+        "storagePid"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "Classes.php maps a class to a table (tableName), properties to columns (properties => [prop => ['fieldName' => ...]]) and configures single table inheritance via recordType and subclasses. The repository is found by naming convention, and storagePid is TypoScript configuration.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "classes-php"
+      ]
+    },
+    {
+      "id": "EXT-PERS-003",
+      "domain": "extbase",
+      "skill": "extbase_persistence",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about the Extbase object lifecycle are true?",
+      "answers": [
+        "Changes to objects that were loaded from a repository are written automatically when the persistence manager flushes at the end of the request",
+        "An object created with new is only persisted after it has been passed to a repository's add() method",
+        "A newly added object has no uid until the persistence manager has persisted it",
+        "Calling a setter on a loaded entity immediately triggers an UPDATE query",
+        "Repository::findByUid() is restricted to the configured storagePid"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Extbase tracks loaded objects and flushes all changes once via persistAll(), so there is no immediate UPDATE on setter calls. New objects need add() and receive a uid only after persisting. findByUid() ignores the storagePid restriction.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-PERS-004",
+      "domain": "extbase",
+      "skill": "extbase_persistence",
+      "type": "single",
+      "difficulty": 3,
+      "question": "What happens in TYPO3 v14 with the TypoScript setting config.tx_extbase.persistence.updateReferenceIndex = 0?",
+      "answers": [
+        "The setting was removed and is ignored; Extbase always updates the reference index when persisting",
+        "Extbase stops updating sys_refindex for all persisted records",
+        "The reference index is updated asynchronously via a scheduler task",
+        "An exception is thrown because the TypoScript setting is invalid"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #106041 removed the toggle: reference index updating is now always enabled, because more and more Core components rely on an up-to-date reference index. The obsolete setting is simply ignored.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-106041-TypoScriptExtbaseToggleConfigtx_extbasepersistenceupdateReferenceIndexRemoved.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "EXT-PM-001",
+      "domain": "extbase",
+      "skill": "extbase_persistencemanager",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which type should a controller or service declare in its constructor to get the Extbase persistence manager injected?",
+      "answers": [
+        "\\TYPO3\\CMS\\Extbase\\Persistence\\PersistenceManagerInterface",
+        "\\TYPO3\\CMS\\Core\\DataHandling\\DataHandler",
+        "\\TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Session",
+        "\\TYPO3\\CMS\\Core\\Database\\ConnectionPool"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The persistence manager is injected via its interface PersistenceManagerInterface; the DI container provides the generic implementation. DataHandler and ConnectionPool bypass Extbase persistence.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html",
+      "tags": [
+        "dependency-injection"
+      ]
+    },
+    {
+      "id": "EXT-PM-002",
+      "domain": "extbase",
+      "skill": "extbase_persistencemanager",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The action needs the uid of the newly created registration to log it. What must replace ??? so that getUid() returns an integer?",
+      "code": {
+        "lang": "php",
+        "src": "public function createAction(Registration $registration): ResponseInterface\n{\n    $this->registrationRepository->add($registration);\n    ???\n    $this->logger->info('Registration created', [\n        'uid' => $registration->getUid(),\n    ]);\n    return $this->redirect('thanks');\n}"
+      },
+      "answers": [
+        "$this->persistenceManager->persistAll();",
+        "$this->registrationRepository->update($registration);",
+        "$this->registrationRepository->flush();",
+        "$registration->_setProperty('uid', 0);"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "A freshly added object gets its uid only when the persistence manager writes it to the database. Calling persistAll() forces this flush earlier than the automatic flush at the end of the request.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-PM-003",
+      "domain": "extbase",
+      "skill": "extbase_persistencemanager",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which of the following methods are part of \\TYPO3\\CMS\\Extbase\\Persistence\\PersistenceManagerInterface?",
+      "answers": [
+        "persistAll()",
+        "clearState()",
+        "isNewObject(object $object)",
+        "getIdentifierByObject(object $object)",
+        "commit()",
+        "saveObject(object $object)"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The interface provides persistAll(), clearState(), isNewObject(), getIdentifierByObject(), getObjectByIdentifier(), add()/update()/remove() and createQueryForType(). There are no commit() or saveObject() methods.",
+      "doc_url": "https://api.typo3.org/14.3/classes/TYPO3-CMS-Extbase-Persistence-PersistenceManagerInterface.html"
+    },
+    {
+      "id": "EXT-PM-004",
+      "domain": "extbase",
+      "skill": "extbase_persistencemanager",
+      "type": "single",
+      "difficulty": 1,
+      "question": "When does Extbase call persistAll() automatically?",
+      "answers": [
+        "Once after the Extbase request has been dispatched, i.e. at the end of the plugin/module request",
+        "After every call of a repository's add(), update() or remove() method",
+        "Never; persistAll() always has to be called manually",
+        "Only in backend modules, never in frontend plugins"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extbase defers writes and flushes all accumulated changes once at the end of handling the Extbase request. Manual calls are only needed when changes must reach the database earlier, e.g. to obtain a new uid.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Concepts/Persistence.html"
+    },
+    {
+      "id": "EXT-REPO-001",
+      "domain": "extbase",
+      "skill": "standard_extbase_repository",
+      "type": "single",
+      "difficulty": 1,
+      "question": "An extension still calls $this->conferenceRepository->findByTitle($title). What is the correct replacement in TYPO3 v14?",
+      "answers": [
+        "$this->conferenceRepository->findBy(['title' => $title])",
+        "$this->conferenceRepository->findByProperty('title', $title)",
+        "$this->conferenceRepository->findAllBy('title', $title)",
+        "$this->conferenceRepository->findWhere(['title' => $title])"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The magic findByX(), findOneByX() and countByX() methods were deprecated in v12.3 and removed in v14. They are replaced by findBy(array $criteria), findOneBy(array $criteria) and count(array $criteria).",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "repository"
+      ]
+    },
+    {
+      "id": "EXT-REPO-002",
+      "domain": "extbase",
+      "skill": "standard_extbase_repository",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "A repository class extends \\TYPO3\\CMS\\Extbase\\Persistence\\Repository and contains no own methods. Which methods can be called on it in TYPO3 v14?",
+      "answers": [
+        "findAll()",
+        "findByUid(int $uid)",
+        "findOneBy(array $criteria)",
+        "count(array $criteria)",
+        "countByCategory($category)",
+        "save(object $object)"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "The base Repository provides findAll(), findByUid(), findByIdentifier(), findBy(), findOneBy(), count(), countAll(), add(), update(), remove() and removeAll(). Magic countByX() methods were removed in v14, and there is no save().",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html",
+      "tags": [
+        "repository"
+      ]
+    },
+    {
+      "id": "EXT-REPO-003",
+      "domain": "extbase",
+      "skill": "standard_extbase_repository",
+      "type": "single",
+      "difficulty": 3,
+      "question": "The plugin uses persistence.storagePid = 42. Conference record uid 7 is stored on page 99, is visible and not deleted. What does $this->conferenceRepository->findByUid(7) return?",
+      "answers": [
+        "The Conference object with uid 7, because findByUid() ignores the storagePid restriction",
+        "null, because the record is not stored on page 42",
+        "The object only if persistence.recursive is set to at least 1",
+        "An exception, because the record is outside the configured storage folder"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "findByUid() and findByIdentifier() are the only built-in methods that ignore the storagePid. Enable fields (hidden, start/end time, deleted) are still respected.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html"
+    },
+    {
+      "id": "EXT-REPO-004",
+      "domain": "extbase",
+      "skill": "standard_extbase_repository",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which repository property defines the sort order applied to all queries of the repository unless a query sets its own orderings?",
+      "answers": [
+        "protected $defaultOrderings = ['startDate' => QueryInterface::ORDER_DESCENDING];",
+        "protected $sortBy = 'start_date DESC';",
+        "protected $defaultSorting = ['start_date' => 'DESC'];",
+        "protected $orderings = ['startDate' => SORT_DESC];"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "$defaultOrderings takes property names (not column names) mapped to QueryInterface::ORDER_ASCENDING or ORDER_DESCENDING. TCA default_sortby is not applied to repository queries.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Domain/Repository.html"
+    },
+    {
+      "id": "EXT-CREPO-001",
+      "domain": "extbase",
+      "skill": "customizing_extbase_repositories",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which implementation of the ??? part is valid in TYPO3 v14 to find published conferences starting today or later?",
+      "code": {
+        "lang": "php",
+        "src": "public function findUpcomingPublished(): QueryResultInterface\n{\n    $today = new \\DateTimeImmutable('today');\n    $query = $this->createQuery();\n    $query->matching(\n        ???\n    );\n    return $query->execute();\n}"
+      },
+      "answers": [
+        "$query->logicalAnd($query->equals('published', true), $query->greaterThanOrEqual('startDate', $today))",
+        "$query->logicalAnd()->add($query->equals('published', true))->add($query->greaterThanOrEqual('startDate', $today))",
+        "$query->where('published = 1 AND start_date >= NOW()')",
+        "[$query->equals('published', true), $query->greaterThanOrEqual('startDate', $today)]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "matching() takes exactly one constraint. Multiple constraints are combined with logicalAnd()/logicalOr(), which take the constraints as variadic arguments. There is no where() or add() builder API, and a plain array is not a constraint.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-CREPO-002",
+      "domain": "extbase",
+      "skill": "customizing_extbase_repositories",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which methods exist on the Extbase query settings object ($query->getQuerySettings())?",
+      "answers": [
+        "setRespectStoragePage(bool $respectStoragePage)",
+        "setRespectSysLanguage(bool $respectSysLanguage)",
+        "setIgnoreEnableFields(bool $ignoreEnableFields)",
+        "setIncludeDeleted(bool $includeDeleted)",
+        "setIgnorePermissions(bool $ignorePermissions)",
+        "setRecursive(int $depth)"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "QuerySettingsInterface controls the implicit restrictions: storage page (setRespectStoragePage/setStoragePageIds), language, enable fields and deleted records. Recursion is configured via persistence.recursive in TypoScript, and there is no permission switch.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-CREPO-003",
+      "domain": "extbase",
+      "skill": "customizing_extbase_repositories",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does $query->execute(true) return in an Extbase repository method?",
+      "answers": [
+        "The raw database rows as a list of associative arrays, without object mapping",
+        "A QueryResultInterface of domain objects including hidden records",
+        "The number of matching records as integer",
+        "Only the first matching domain object or null"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Passing true as $returnRawQueryResult skips the data mapper and returns plain row arrays, which is lighter for read-only data. Without the argument a lazy QueryResultInterface of mapped objects is returned.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-CREPO-004",
+      "domain": "extbase",
+      "skill": "customizing_extbase_repositories",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about Extbase query constraints are correct?",
+      "answers": [
+        "The first argument of equals(), like() etc. is the model property name, not the database column name",
+        "like() uses % as wildcard character",
+        "contains() checks whether a multi-valued relation (ObjectStorage) contains a given object",
+        "in() with an empty array matches all records",
+        "Calling matching() twice combines both constraints with AND"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Constraints reference properties that Extbase maps to columns; like() takes SQL wildcards; contains() resolves relations. An empty in() never matches, and matching() takes one constraint, so a second call replaces the first.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Persistence/Queries.html"
+    },
+    {
+      "id": "EXT-VAL-001",
+      "domain": "extbase",
+      "skill": "validation_in_extbase",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What does Extbase do by default when an argument of an action fails validation?",
+      "answers": [
+        "It calls errorAction() instead of the requested action",
+        "It calls the requested action and passes the validation result as an additional argument",
+        "It throws a ValidationException that results in an HTTP 500 response",
+        "It silently removes the invalid argument and calls the action"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Arguments are mapped and validated before dispatch. If validation fails, the controller's errorAction() is called instead of the intended action; it typically re-displays the form of the referring action.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html"
+    },
+    {
+      "id": "EXT-VAL-002",
+      "domain": "extbase",
+      "skill": "validation_in_extbase",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which declaration validates the model property $title correctly in TYPO3 v14?",
+      "code": {
+        "lang": "php",
+        "src": "use TYPO3\\CMS\\Extbase\\Attribute\\Validate;\nuse TYPO3\\CMS\\Extbase\\DomainObject\\AbstractEntity;\n\nclass Conference extends AbstractEntity\n{\n    ???\n    protected string $title = '';\n}"
+      },
+      "answers": [
+        "#[Validate('StringLength', options: ['maximum' => 255])]",
+        "/** @Extbase\\Validate(\"StringLength\", options={\"maximum\": 255}) */",
+        "#[StringLength(maximum: 255)]",
+        "#[Validate(type: 'StringLength', max: 255)]"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In v14 Extbase supports only PHP attributes; doc-comment annotations were removed (Breaking #107229). TYPO3\\CMS\\Extbase\\Attribute\\Validate takes the validator name as first argument and an options array.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/BuiltIn.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "attributes"
+      ]
+    },
+    {
+      "id": "EXT-VAL-003",
+      "domain": "extbase",
+      "skill": "validation_in_extbase",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "TYPO3 v14 allows Symfony Validator constraints in Extbase. Which statements are correct?",
+      "answers": [
+        "Symfony constraint attributes such as #[Assert\\NotBlank] can be placed on Extbase model properties",
+        "A constraint message starting with LLL: is translated by TYPO3",
+        "Symfony constraints can also be placed on controller action parameters",
+        "symfony/validator must be installed additionally via Composer",
+        "Framework-dependent constraints such as #[Assert\\File] and #[Assert\\Image] are fully supported"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "Feature #106945 wraps Symfony constraints in a decorating Extbase validator for model properties; LLL: messages are translated. They do not work on action parameters, symfony/validator is already a dependency, and File/Image constraints are not yet compatible.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-106945-AllowUsageOfSymfonyValidatorsInExtbase.html",
+      "since": "14.0",
+      "tags": [
+        "symfony"
+      ]
+    },
+    {
+      "id": "EXT-VAL-004",
+      "domain": "extbase",
+      "skill": "validation_in_extbase",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A visitor submits the form with an empty email field. What is the validation result for $email?",
+      "code": {
+        "lang": "php",
+        "src": "class Registration extends AbstractEntity\n{\n    #[Validate('EmailAddress')]\n    protected string $email = '';\n}"
+      },
+      "answers": [
+        "Validation passes, because EmailAddress (like most built-in validators) accepts empty values",
+        "Validation fails with the EmailAddress error message",
+        "Validation fails with the NotEmpty error, because NotEmpty is added implicitly",
+        "Property mapping throws an exception for the empty string"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Most built-in validators skip null and empty strings (acceptsEmptyValues). Only NotEmpty rejects empty values, so it must be added explicitly to require the field.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/BuiltIn.html"
+    },
+    {
+      "id": "EXT-CVAL-001",
+      "domain": "extbase",
+      "skill": "implementing_custom_validators",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which class should a custom Extbase validator usually extend?",
+      "answers": [
+        "\\TYPO3\\CMS\\Extbase\\Validation\\Validator\\AbstractValidator",
+        "\\TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator",
+        "\\Symfony\\Component\\Validator\\ConstraintValidator",
+        "\\TYPO3\\CMS\\Core\\Validation\\AbstractValidator"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Custom validators extend Extbase's AbstractValidator and implement isValid(mixed $value): void. AbstractValidator already provides options handling, the result object and the request accessors required by ValidatorInterface.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Custom.html"
+    },
+    {
+      "id": "EXT-CVAL-002",
+      "domain": "extbase",
+      "skill": "implementing_custom_validators",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How does the validator below correctly report that the value is invalid (replace ???)?",
+      "code": {
+        "lang": "php",
+        "src": "final class DateRangeValidator extends AbstractValidator\n{\n    protected function isValid(mixed $value): void\n    {\n        if ($value->getEndDate() < $value->getStartDate()) {\n            ???\n        }\n    }\n}"
+      },
+      "answers": [
+        "$this->addError('The end date must be after the start date.', 1730450000);",
+        "return false;",
+        "throw new ValidationException('The end date must be after the start date.');",
+        "return new Error('The end date must be after the start date.', 1730450000);"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "isValid() returns void. Errors are added to the result with addError() (or addErrorForProperty()) using a message and a unique error code, e.g. a Unix timestamp; Extbase evaluates $this->result afterwards.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Custom.html"
+    },
+    {
+      "id": "EXT-CVAL-003",
+      "domain": "extbase",
+      "skill": "implementing_custom_validators",
+      "type": "single",
+      "difficulty": 2,
+      "question": "A custom validator implements \\TYPO3\\CMS\\Extbase\\Validation\\Validator\\ValidatorInterface directly instead of extending AbstractValidator. Which methods must be added for TYPO3 v14 to avoid a fatal error?",
+      "answers": [
+        "setRequest() and getRequest()",
+        "setTranslator() and getTranslator()",
+        "setContext() and getContext()",
+        "setLogger() and getLogger()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #106056 added setRequest(?ServerRequestInterface) and getRequest() to ValidatorInterface. AbstractValidator already implements both, so extending it is the easiest migration.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-106056-AddSetRequestAndGetRequestToExtbaseValidatorInterface.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change"
+      ]
+    },
+    {
+      "id": "EXT-CVAL-004",
+      "domain": "extbase",
+      "skill": "implementing_custom_validators",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about options of a custom validator are correct?",
+      "answers": [
+        "Supported options are declared in $supportedOptions as [default, description, type] entries",
+        "Options are passed with the attribute, e.g. #[Validate(MinimumAgeValidator::class, options: ['minimum' => 18])]",
+        "With the default $acceptsEmptyValues = true, isValid() is not called for null or empty strings",
+        "Attribute options can reference $this->settings to read TypoScript values",
+        "Custom validators can be referenced by their short name, e.g. #[Validate('MinimumAge')], just like built-in validators"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Options are declared in $supportedOptions and read from $this->options. Attribute arguments must be constant expressions, so settings cannot be used there, and only built-in validators have short names; custom ones need the fully qualified class name.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Custom.html"
+    },
+    {
+      "id": "EXT-ERR-001",
+      "domain": "extbase",
+      "skill": "error_actions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "What does the default ActionController::errorAction() do after a validation error in a form submitted from newAction()?",
+      "answers": [
+        "It adds an error flash message and forwards back to the referring action (newAction) with the validation results",
+        "It redirects with HTTP 303 to the default action of the plugin",
+        "It renders the template Error.html of the current controller",
+        "It throws an exception that is displayed by the content object exception handler"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The default errorAction() forwards to the referring request, so the form can be re-rendered with the submitted values and errors, and adds a flash message from getErrorFlashMessage(). Without a referring request a plain error message is returned.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    },
+    {
+      "id": "EXT-ERR-002",
+      "domain": "extbase",
+      "skill": "error_actions",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How do you change or suppress the generic flash message that errorAction() adds after a validation error?",
+      "answers": [
+        "Override getErrorFlashMessage() and return a string, or false to suppress the message",
+        "Set plugin.tx_myextension.mvc.errorFlashMessage in TypoScript",
+        "Call $this->setErrorFlashMessage() in initializeAction()",
+        "Add the #[IgnoreValidation] attribute to errorAction()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "getErrorFlashMessage() returns the message used by errorAction(); returning false disables it. For full control errorAction() itself can be overridden, but it must still return a ResponseInterface.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html"
+    },
+    {
+      "id": "EXT-ERR-003",
+      "domain": "extbase",
+      "skill": "error_actions",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Which statements about error actions in Extbase are correct?",
+      "answers": [
+        "If newAction(?Conference $conference = null) lacks #[IgnoreValidation] on the parameter, an invalid object returned to it would trigger errorAction() again in a loop",
+        "errorAction() is also called when a required action argument without default value is missing in the request",
+        "An overridden errorAction() must return a ResponseInterface",
+        "#[IgnoreValidation] skips all validators so that no validation result is created",
+        "errorAction() must be listed as allowed action in configurePlugin()"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "#[IgnoreValidation] does not skip validation; it lets the action be called although the argument is invalid, which breaks the error loop. Missing required arguments also lead to errorAction(), which is called internally and need not be registered.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Validation/Index.html"
+    },
+    {
+      "id": "EXT-ERR-004",
+      "domain": "extbase",
+      "skill": "error_actions",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Since TYPO3 14.2, how are the flash messages created by errorAction() transported to the forwarded action?",
+      "answers": [
+        "They travel with the ForwardResponse (withFlashMessages()/getFlashMessages()) instead of being stored in the user session",
+        "They are stored in the frontend user session, which is created if necessary",
+        "They are appended as query parameters to a 303 redirect URL",
+        "They are written to the cache_pages entry of the current page"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Important #102906: errorAction() no longer writes flash messages to the session (which created sessions and cookies, e.g. for crawlers). The messages are attached to the ForwardResponse and restored on the receiving side.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-102906-PreventExtbaseErrorActionFromWritingSessionData.html",
+      "since": "14.2"
+    },
+    {
+      "id": "EXT-ATTR-001",
+      "domain": "extbase",
+      "skill": "extbase_annotations_attributes",
+      "type": "single",
+      "difficulty": 1,
+      "question": "What happens in TYPO3 v14 with an Extbase doc-comment annotation such as /** @Extbase\\ORM\\Lazy */ on a model property?",
+      "answers": [
+        "It has no effect anymore; Extbase only evaluates PHP attributes such as #[Lazy]",
+        "It still works but triggers a deprecation notice until TYPO3 v15",
+        "It is converted automatically into a PHP attribute during cache warmup",
+        "It works as before, annotations and attributes are equivalent"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Breaking #107229 removed annotation support (and the doctrine/annotations dependency) from Extbase. Only PHP attributes are evaluated; plain PHPDoc tags like @var are unaffected.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107229-RemovedSupportOfAnnotationsInExtbase.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "attributes"
+      ]
+    },
+    {
+      "id": "EXT-ATTR-002",
+      "domain": "extbase",
+      "skill": "extbase_annotations_attributes",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which namespace should be imported for Extbase attributes such as Validate or IgnoreValidation in new TYPO3 v14 code?",
+      "answers": [
+        "TYPO3\\CMS\\Extbase\\Attribute",
+        "TYPO3\\CMS\\Extbase\\Annotation",
+        "TYPO3\\CMS\\Core\\Attribute\\Extbase",
+        "Doctrine\\Common\\Annotations"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v14 the attributes live in TYPO3\\CMS\\Extbase\\Attribute (ORM attributes in ...\\Attribute\\ORM). The old TYPO3\\CMS\\Extbase\\Annotation namespace remains as deprecated alias until v15.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107229-DeprecatePhpAnnotationNamespaceOfExtbaseAttributes.html",
+      "since": "14.0",
+      "tags": [
+        "deprecation",
+        "attributes"
+      ]
+    },
+    {
+      "id": "EXT-ATTR-003",
+      "domain": "extbase",
+      "skill": "extbase_annotations_attributes",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which descriptions of Extbase ORM attributes are correct?",
+      "answers": [
+        "#[Lazy] loads the related object(s) only when the property is accessed",
+        "#[Cascade('remove')] removes related child objects when the parent is removed via the repository",
+        "#[Transient] excludes the property from persistence",
+        "#[Lazy] stores the property value in the page cache",
+        "#[Transient] makes the property readable but not writable via property mapping"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The ORM attributes (namespace TYPO3\\CMS\\Extbase\\Attribute\\ORM) control loading and persistence: Lazy defers loading, Cascade('remove') cascades deletes through Extbase persistence (not DataHandler), Transient marks a property as not persisted.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Appendix/Attributes.html",
+      "tags": [
+        "attributes"
+      ]
+    },
+    {
+      "id": "EXT-ATTR-004",
+      "domain": "extbase",
+      "skill": "extbase_annotations_attributes",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which way of ignoring the validation result for $conference is the recommended, non-deprecated one in TYPO3 v14?",
+      "answers": [
+        "public function newAction(#[IgnoreValidation] ?Conference $conference = null): ResponseInterface",
+        "#[IgnoreValidation(argumentName: 'conference')] placed on the newAction() method",
+        "/** @Extbase\\IgnoreValidation(\"conference\") */ in the method doc comment",
+        "#[IgnoreValidation] placed on the controller class"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Since v14.0 #[IgnoreValidation] and #[Validate] can be placed directly on action parameters (Feature #108227); targeting a parameter from a method-level attribute is deprecated. Doc-comment annotations were removed.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html",
+      "since": "14.0",
+      "tags": [
+        "deprecation",
+        "attributes"
+      ]
+    },
+    {
+      "id": "EXT-PLUG-001",
+      "domain": "extbase",
+      "skill": "registering_frontend_plugins",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which files are ExtensionUtility::configurePlugin() and ExtensionUtility::registerPlugin() called?",
+      "answers": [
+        "configurePlugin() in ext_localconf.php, registerPlugin() in Configuration/TCA/Overrides/tt_content.php",
+        "configurePlugin() in Configuration/TCA/Overrides/tt_content.php, registerPlugin() in ext_localconf.php",
+        "Both in ext_tables.php",
+        "Both in Configuration/Services.yaml"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "configurePlugin() configures the dispatcher (allowed and non-cacheable actions, TypoScript rendering) in ext_localconf.php. registerPlugin() adds the plugin as selectable content element type to the TCA of tt_content.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Registration/FrontendPlugin.html"
+    },
+    {
+      "id": "EXT-PLUG-002",
+      "domain": "extbase",
+      "skill": "registering_frontend_plugins",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How are Extbase frontend plugins stored in tt_content in TYPO3 v14?",
+      "answers": [
+        "As their own content element type: the plugin signature is the CType value",
+        "As CType 'list' with the plugin signature in the field list_type",
+        "Depending on the fifth argument of configurePlugin(), either as CType or as list_type",
+        "In a separate table tx_extbase_plugin referenced from tt_content"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The generic 'Plugin' content element (CType list) and the field tt_content.list_type were removed in v14. All plugins are registered as CType content elements; the $pluginType argument of configurePlugin() is obsolete.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-105538-ListTypeAndSubTypes.html",
+      "since": "14.0",
+      "tags": [
+        "breaking-change",
+        "plugins"
+      ]
+    },
+    {
+      "id": "EXT-PLUG-003",
+      "domain": "extbase",
+      "skill": "registering_frontend_plugins",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which plugin signature (CType value and TypoScript key below plugin.tx_ / tt_content.) results from the call below?",
+      "code": {
+        "lang": "php",
+        "src": "ExtensionUtility::configurePlugin(\n    'MyExtension',\n    'ConferenceList',\n    [ConferenceController::class => 'list, show'],\n    [],\n);"
+      },
+      "answers": [
+        "myextension_conferencelist",
+        "my_extension_conferencelist",
+        "tx_myextension_conferencelist",
+        "myextension_conference_list"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The signature is the lowercased extension name without underscores plus underscore plus the lowercased plugin name. The TypoScript configuration path is plugin.tx_myextension_conferencelist.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Registration/FrontendPlugin.html"
+    },
+    {
+      "id": "EXT-PLUG-004",
+      "domain": "extbase",
+      "skill": "registering_frontend_plugins",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about the configurePlugin() call below are correct?",
+      "code": {
+        "lang": "php",
+        "src": "ExtensionUtility::configurePlugin(\n    'MyExtension',\n    'ConferenceList',\n    [ConferenceController::class => 'list, show, create'],\n    [ConferenceController::class => 'create'],\n);"
+      },
+      "answers": [
+        "listAction() of ConferenceController is the default action of the plugin",
+        "createAction() is non-cacheable, so its output is not stored in the page cache",
+        "registerPlugin() must use the same extension name and plugin name for the plugin to work",
+        "A request with tx_myextension_conferencelist[action]=delete can call deleteAction() although it is not listed",
+        "Non-cacheable actions do not need to be listed in the third argument"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The first action of the first controller is the default. The fourth argument is a subset of the allowed actions that are rendered uncached. Only the listed actions are callable; a mismatch with registerPlugin() breaks the plugin.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Registration/FrontendPlugin.html"
+    },
+    {
+      "id": "EXT-TSO-001",
+      "domain": "extbase",
+      "skill": "typoscript_object_extbaseplugin",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which properties identify the plugin to render in the TypoScript content object EXTBASEPLUGIN?",
+      "answers": [
+        "extensionName and pluginName",
+        "vendorName, controller and action",
+        "extensionKey and pluginSignature",
+        "userFunc and pluginName"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "EXTBASEPLUGIN renders an Extbase plugin configured with configurePlugin(), identified by extensionName and pluginName; it replaces the former USER object calling the Extbase bootstrap.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/ContentObjects/Extbaseplugin/Index.html"
+    },
+    {
+      "id": "EXT-TSO-002",
+      "domain": "extbase",
+      "skill": "typoscript_object_extbaseplugin",
+      "type": "single",
+      "difficulty": 2,
+      "question": "How can listAction() read the value someValue passed via data from the Fluid template?",
+      "code": {
+        "lang": "text",
+        "src": "# TypoScript\nlib.myPlugin = EXTBASEPLUGIN\nlib.myPlugin {\n    extensionName = MyExtension\n    pluginName = MyPlugin\n}\n\n<!-- Fluid -->\n<f:cObject typoscriptObjectPath=\"lib.myPlugin\" data=\"{someValue: 42}\" />"
+      },
+      "answers": [
+        "$this->request->getAttribute('currentContentObject')->data['someValue']",
+        "$this->settings['data']['someValue']",
+        "$this->request->getArgument('someValue')",
+        "$GLOBALS['TSFE']->cObj->data['someValue']"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "f:cObject passes data to the content object, which is available as the ContentObjectRenderer in the request attribute currentContentObject. Its data must be treated as potential user input.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/ContentObjects/Extbaseplugin/Index.html"
+    },
+    {
+      "id": "EXT-TSO-003",
+      "domain": "extbase",
+      "skill": "typoscript_object_extbaseplugin",
+      "type": "multi",
+      "difficulty": 2,
+      "question": "Which statements about EXTBASEPLUGIN are correct?",
+      "answers": [
+        "The TypoScript generated by configurePlugin() renders the plugin with an EXTBASEPLUGIN content object",
+        "settings defined inside the EXTBASEPLUGIN object (e.g. settings.detailPid = 42) are available in $this->settings",
+        "EXTBASEPLUGIN can only be used inside tt_content, not in lib objects or page.10",
+        "The plugin must be registered with registerPlugin() in the TCA before EXTBASEPLUGIN can render it",
+        "EXTBASEPLUGIN always renders uncached, regardless of the non-cacheable actions"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "explanation": "configurePlugin() creates tt_content.<signature> TypoScript based on EXTBASEPLUGIN, and the object can be used anywhere (page.10, lib.*). Configuration set inside it is merged into the plugin settings. registerPlugin() only affects backend selection; caching follows the non-cacheable action list.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/ContentObjects/Extbaseplugin/Index.html",
+      "tags": [
+        "typoscript"
+      ]
+    },
+    {
+      "id": "EXT-STI-001",
+      "domain": "extbase",
+      "skill": "single_table_inheritance_in_extbase",
+      "type": "single",
+      "difficulty": 2,
+      "question": "Which TCA configuration of the shared table is required so that Extbase can map each row to the right subclass in single table inheritance?",
+      "answers": [
+        "$GLOBALS['TCA'][table]['ctrl']['type'] pointing to the record type field",
+        "$GLOBALS['TCA'][table]['ctrl']['sti'] = true",
+        "$GLOBALS['TCA'][table]['ctrl']['subclasses'] listing all PHP classes",
+        "A separate table per subclass with a foreign key to the parent table"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "STI stores all classes of a hierarchy in one table. The column named in ctrl.type holds the record type, and Classes.php maps each recordType value to a class.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "sti"
+      ]
+    },
+    {
+      "id": "EXT-STI-002",
+      "domain": "extbase",
+      "skill": "single_table_inheritance_in_extbase",
+      "type": "single",
+      "difficulty": 3,
+      "question": "Which key must replace ??? (both occurrences) to bind the value of the TCA type field to each class?",
+      "code": {
+        "lang": "php",
+        "src": "return [\n    Person::class => [\n        'tableName' => 'tx_myextension_domain_model_person',\n        'subclasses' => [\n            'speaker' => Speaker::class,\n            'attendee' => Attendee::class,\n        ],\n    ],\n    Speaker::class => [\n        'tableName' => 'tx_myextension_domain_model_person',\n        ??? => 'speaker',\n    ],\n    Attendee::class => [\n        'tableName' => 'tx_myextension_domain_model_person',\n        ??? => 'attendee',\n    ],\n];"
+      },
+      "answers": [
+        "recordType",
+        "typeValue",
+        "recordTypeColumn",
+        "discriminator"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "In Classes.php, recordType defines the value of the ctrl.type column that identifies a class, while the parent's subclasses array lists all subclasses. Each subclass also needs tableName pointing to the shared table.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "sti",
+        "classes-php"
+      ]
+    },
+    {
+      "id": "EXT-STI-003",
+      "domain": "extbase",
+      "skill": "single_table_inheritance_in_extbase",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "Given a correct STI setup for Person with subclasses Speaker and Attendee, which statements are true?",
+      "answers": [
+        "PersonRepository::findAll() returns Speaker and Attendee objects according to the record type of each row",
+        "Without tableName in the Speaker mapping, Extbase would look for the table tx_myextension_domain_model_speaker",
+        "Queries of SpeakerRepository are restricted to rows with the Speaker record type",
+        "Each subclass requires its own database table containing only the additional columns",
+        "Extbase ignores the TCA ctrl.type field and reads the class name from a column tx_extbase_type only"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The data mapper chooses the class per row from the record type. Subclasses must explicitly map to the shared table, otherwise the naming convention applies. Extbase adds a record type constraint for classes with a recordType.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/FileStructure/Configuration/Extbase/Persistence/Index.html",
+      "tags": [
+        "sti"
+      ]
+    },
+    {
+      "id": "EXT-EXC-001",
+      "domain": "extbase",
+      "skill": "error_exception_handling_in_extbase",
+      "type": "single",
+      "difficulty": 2,
+      "question": "An action wants to stop processing and deliver the site's 404 page. Which exception is thrown with the response from ErrorController::pageNotFoundAction()?",
+      "code": {
+        "lang": "php",
+        "src": "public function showAction(?Conference $conference = null): ResponseInterface\n{\n    if ($conference === null) {\n        $response = GeneralUtility::makeInstance(ErrorController::class)\n            ->pageNotFoundAction($this->request, 'Conference not found');\n        throw new ???($response, 1730450001);\n    }\n    // ...\n}"
+      },
+      "answers": [
+        "\\TYPO3\\CMS\\Core\\Http\\PropagateResponseException",
+        "\\TYPO3\\CMS\\Extbase\\Mvc\\Exception\\InvalidActionNameException",
+        "\\RuntimeException with code 404",
+        "\\TYPO3\\CMS\\Extbase\\Http\\ForwardResponse"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "PropagateResponseException carries a PSR-7 response that is passed up through the middleware stack and sent as is, so the 404 response created by ErrorController reaches the client. ForwardResponse is a response, not an exception, and only dispatches another action.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/RequestLifeCycle/Index.html"
+    },
+    {
+      "id": "EXT-EXC-002",
+      "domain": "extbase",
+      "skill": "error_exception_handling_in_extbase",
+      "type": "single",
+      "difficulty": 3,
+      "question": "A URL requests an action that is not allowed for the plugin. Which TypoScript setting makes Extbase respond with a 'page not found' error instead of an exception?",
+      "answers": [
+        "plugin.tx_myextension.mvc.throwPageNotFoundExceptionIfActionCantBeResolved = 1",
+        "plugin.tx_myextension.mvc.callDefaultActionIfActionCantBeResolved = 1",
+        "plugin.tx_myextension.features.skipDefaultArguments = 1",
+        "config.contentObjectExceptionHandler = 404"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "throwPageNotFoundExceptionIfActionCantBeResolved triggers page-not-found handling for unresolvable actions. callDefaultActionIfActionCantBeResolved instead silently calls the plugin's default action.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/TopLevelObjects/Plugin.html"
+    },
+    {
+      "id": "EXT-EXC-003",
+      "domain": "extbase",
+      "skill": "error_exception_handling_in_extbase",
+      "type": "single",
+      "difficulty": 2,
+      "question": "In Production context an uncaught exception in an Extbase plugin does not break the whole page; only the plugin area shows 'Oops, an error occurred!' with a code. Which TypoScript option controls this behavior?",
+      "answers": [
+        "config.contentObjectExceptionHandler",
+        "plugin.tx_myextension.mvc.exceptionHandler",
+        "config.debug",
+        "config.tx_extbase.mvc.catchExceptions"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "The content object exception handler catches exceptions while rendering content objects (typically plugins), logs them and renders an error message with a reference code. Note that such a page can be cached.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-typoscript/14.3/en-us/TopLevelObjects/Config.html",
+      "tags": [
+        "typoscript"
+      ]
+    },
+    {
+      "id": "EXT-EXC-004",
+      "domain": "extbase",
+      "skill": "error_exception_handling_in_extbase",
+      "type": "multi",
+      "difficulty": 3,
+      "question": "TYPO3 14.2 introduced the #[Authorize] attribute for Extbase actions. Which statements are correct?",
+      "answers": [
+        "If the check fails, the action is not called and a 403 Forbidden response is produced via the ErrorController",
+        "Several #[Authorize] attributes can be stacked on one action; all of them must pass",
+        "A listener of BeforeActionAuthorizationDeniedEvent can provide a custom response",
+        "The checks run before argument mapping and validation",
+        "A failed check redirects the visitor to the felogin plugin by default"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Authorize supports requireLogin, requireGroups and callback; checks are evaluated after argument mapping and validation, before the action. Failure throws a PropagateResponseException with HTTP 403, which a PSR-14 listener may replace.",
+      "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-107826-IntroduceExtbaseActionAuthorizationLogic.html",
+      "since": "14.2",
+      "tags": [
+        "attributes",
+        "security"
+      ]
+    },
+    {
+      "id": "EXT-MVC-001",
+      "domain": "extbase",
+      "skill": "extbase_mvc_implementation",
+      "type": "single",
+      "difficulty": 1,
+      "question": "Which class does an Extbase frontend plugin controller extend?",
+      "answers": [
+        "\\TYPO3\\CMS\\Extbase\\Mvc\\Controller\\ActionController",
+        "\\TYPO3\\CMS\\Backend\\Controller\\AbstractController",
+        "\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController",
+        "\\Symfony\\Bundle\\FrameworkBundle\\Controller\\AbstractController"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Extbase controllers live in Classes/Controller/ and extend ActionController; public methods ending in Action are the actions that can be mapped to plugins or modules.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    },
+    {
+      "id": "EXT-MVC-002",
+      "domain": "extbase",
+      "skill": "extbase_mvc_implementation",
+      "type": "multi",
+      "difficulty": 1,
+      "question": "Which parts belong to the domain (model) layer of an Extbase extension in Classes/Domain/?",
+      "answers": [
+        "Entities extending \\TYPO3\\CMS\\Extbase\\DomainObject\\AbstractEntity",
+        "Value objects extending \\TYPO3\\CMS\\Extbase\\DomainObject\\AbstractValueObject",
+        "Repositories extending \\TYPO3\\CMS\\Extbase\\Persistence\\Repository",
+        "Fluid templates in Resources/Private/Templates/",
+        "Classes extending ActionController"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The model layer contains the domain objects (entities and value objects) and their repositories. Templates belong to the view, ActionController subclasses to the controller layer.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Concepts/Mvc.html"
+    },
+    {
+      "id": "EXT-MVC-003",
+      "domain": "extbase",
+      "skill": "extbase_mvc_implementation",
+      "type": "single",
+      "difficulty": 1,
+      "question": "In which order are these methods called by Extbase for a request to createAction()?",
+      "answers": [
+        "initializeAction() → initializeCreateAction() → createAction()",
+        "initializeCreateAction() → initializeAction() → createAction()",
+        "createAction() → initializeCreateAction() → initializeAction()",
+        "initializeAction() → createAction() → initializeCreateAction()"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "initializeAction() runs before every action, followed by the action-specific initialize<Name>Action(), the usual place to configure property mapping; then the action itself is dispatched.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    },
+    {
+      "id": "EXT-MVC-004",
+      "domain": "extbase",
+      "skill": "extbase_mvc_implementation",
+      "type": "single",
+      "difficulty": 2,
+      "question": "The request contains tx_myextension_conferencelist[conference]=5. What does Extbase pass to the action below?",
+      "code": {
+        "lang": "php",
+        "src": "public function showAction(Conference $conference): ResponseInterface\n{\n    $this->view->assign('conference', $conference);\n    return $this->htmlResponse();\n}"
+      },
+      "answers": [
+        "The Conference object with uid 5, loaded via the persistence layer by the property mapper",
+        "The integer 5; the action must call findByUid() itself",
+        "The string '5', because all request arguments are strings",
+        "null, because objects cannot be passed via URL"
+      ],
+      "correct": [
+        0
+      ],
+      "explanation": "Typed action arguments are converted by the property mapper: for a domain object type, the uid is resolved to the persisted object (respecting enable fields). If it cannot be found, errorAction() is called.",
+      "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ExtensionArchitecture/Extbase/Controller/ActionController.html"
+    }
+  ]
+}
