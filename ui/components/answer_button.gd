@@ -14,11 +14,13 @@ var _badge: Label
 var _badge_panel: PanelContainer
 var _text: RichTextLabel
 var _mark: TextureRect
+var _tap := TapDetector.new()
 
 
 func _init(text: String = "", key_number: int = 1, p_original_index: int = 0) -> void:
 	original_index = p_original_index
-	focus_mode = Control.FOCUS_ALL
+	mouse_filter = Control.MOUSE_FILTER_PASS      # let drags reach the ScrollContainer
+	focus_mode = Control.FOCUS_NONE if Layout.touch else Control.FOCUS_ALL   # no focus ring after taps
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -74,12 +76,17 @@ func _on_mouse_exited() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if not interactive:
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if _tap.handle(event):
 		accept_event()
 		pressed.emit(self)
 	elif event.is_action_pressed("ui_accept"):
 		accept_event()
 		pressed.emit(self)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCROLL_BEGIN:
+		_tap.cancel()
 
 
 func set_state(s: State) -> void:
