@@ -67,7 +67,7 @@
         1,
         2
       ],
-      "explanation": "The Notification module is an ES6 module of EXT:backend and can be used in any backend context. The duration is given in seconds; 0 keeps the notification visible until it is dismissed.",
+      "explanation": "The Notification module is an ES module of EXT:backend and can be used in any backend context. The duration is given in seconds (default 5, error() defaults to 0); 0 disables the timer so the notification stays until it is dismissed.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/FlashMessages/NotificationApi.html",
       "tags": [
         "javascript"
@@ -187,7 +187,7 @@
         1,
         2
       ],
-      "explanation": "The preset is chosen by TCA (richtextConfiguration) and can be set or overridden by page TSconfig, either globally (RTE.default.preset) or per table/field/type (RTE.config...). lib.parseFunc_RTE controls frontend output, not the editor.",
+      "explanation": "Resolution order in Richtext::getConfiguration(): page TSconfig RTE.config.<table>.<field>(.types.<type>).preset, then the TCA option richtextConfiguration, then RTE.default.preset as fallback, then 'default'. lib.parseFunc_RTE controls frontend output, not the editor.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-rte-ckeditor/14.3/en-us/Configuration/ConfigureTypo3.html"
     },
     {
@@ -243,7 +243,7 @@
       "skill": "building_custom_dashboard_widgets",
       "type": "multi",
       "difficulty": 2,
-      "question": "A widget is registered as shown. Which of the listed tag attributes are mandatory? (choose 3)",
+      "question": "A widget is registered as shown. Which of the listed tag attributes does the dashboard documentation list as mandatory? (choose 3)",
       "code": {
         "lang": "yaml",
         "src": "dashboard.widget.myvendor.myext.news:\n  class: 'TYPO3\\CMS\\Dashboard\\Widgets\\RssWidget'\n  arguments:\n    $options:\n      rssFile: 'https://typo3.org/rss'\n      refreshAvailable: true\n  tags:\n    - name: dashboard.widget\n      identifier: 'myextNews'\n      groupNames: 'news'\n      title: 'LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:widget.title'\n      description: 'LLL:EXT:my_ext/Resources/Private/Language/locallang.xlf:widget.description'\n      iconIdentifier: 'content-widget-rss'\n      height: 'large'"
@@ -261,7 +261,7 @@
         1,
         2
       ],
-      "explanation": "The dashboard.widget tag requires identifier, groupNames, title, description and iconIdentifier. height and width are optional (small, medium, large), and refreshAvailable is an entry of the widget's options argument, not a tag attribute.",
+      "explanation": "The documentation lists name, identifier, groupNames, title, description and iconIdentifier as mandatory tag attributes. height and width are optional (small, medium, large; default small), and refreshAvailable is an entry of the widget's $options argument, not a tag attribute.",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-dashboard/14.3/en-us/Configuration/WidgetRegistration.html"
     },
     {
@@ -392,7 +392,7 @@
       "answers": [
         "JavaScript added with the option 'priority' => true is rendered in the <head>",
         "JavaScript added without priority is rendered at the end of the <body>",
-        "Stylesheets are always rendered in the <head>, grouped by priority",
+        "Stylesheet files added with addStyleSheet() are always rendered in the <head>, grouped by priority",
         "Stylesheets with 'priority' => true are moved to the end of the <body>",
         "In TYPO3 v14 the AssetCollector concatenates all registered CSS files into one file"
       ],
@@ -401,7 +401,7 @@
         1,
         2
       ],
-      "explanation": "The priority option (default false) decides about placement and order: priority JavaScript goes into the head, other JavaScript to the bottom of the body, CSS always into the head. Core asset concatenation and compression was removed in v14.",
+      "explanation": "The priority option (default false) decides about placement and order: priority JavaScript goes into the head, other JavaScript to the bottom of the body; stylesheet files always go into the head (only non-priority inline CSS is appended to the footer). Core asset concatenation and compression was removed in v14.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Assets/Index.html"
     },
     {
@@ -546,7 +546,7 @@
       "answers": [
         "It provides CLI commands such as cleanup:orphanrecords and cleanup:deletedrecords, which support --dry-run",
         "Sensitive values in the Configuration module can be hidden with the PSR-14 event ModifyBlindedConfigurationOptionsEvent",
-        "The separate 'Database Relations' backend module was removed in v14",
+        "The 'Database Relations' submodule of the DB Check module was removed in v14",
         "The Configuration module can be used to edit values and save them to settings.php",
         "EXT:lowlevel provides the Install Tool and its upgrade wizards"
       ],
@@ -623,7 +623,7 @@
       "correct": [
         0
       ],
-      "explanation": "The nodeName of the nodeRegistry entry must match the renderType of the field. The old 'userFunc' variant for type user was removed in v12, and custom names are not valid TCA types.",
+      "explanation": "The nodeName of the nodeRegistry entry must match the renderType of the field. The old 'userFunc' option of type user was deprecated in v9.5 and replaced by custom renderType elements, and custom names are not valid TCA types.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-tca/14.3/en-us/ColumnsConfig/Type/User/Index.html"
     },
     {
@@ -793,7 +793,7 @@
         "src": "'slug' => [\n    'config' => [\n        'type' => 'slug',\n        'generatorOptions' => [\n            'fields' => [['nav_title', 'title']],\n        ],\n        'fallbackCharacter' => '-',\n        'eval' => 'uniqueInSite',\n    ],\n],"
       },
       "answers": [
-        "The first non-empty field of the inner array is used, so the slug is generated from title: 'our-products'",
+        "The first non-empty field of the inner array is used, so the slug is generated from title only ('our-products')",
         "Both fields are concatenated with the fieldSeparator",
         "Slug generation fails because nav_title is empty",
         "The slug becomes 'nav-title-our-products'"
@@ -958,7 +958,7 @@
       "question": "Which statements about the types 'uuid' and 'password' in TYPO3 v14 are correct? (choose 2)",
       "answers": [
         "A type uuid column now uses the Doctrine GUID type: native UUID on PostgreSQL, CHAR(36) on other databases",
-        "Type password hashes the value by default; 'hashed' => false stores it in plain text",
+        "Type password hashes the value by default; 'hashed' => false stores it in plain text (except for be_users/fe_users, which are always hashed)",
         "Type uuid fields must be filled manually by the editor",
         "Type password always shows the stored value in clear text in the backend form",
         "Type uuid stores the value as VARCHAR(255)"
@@ -967,7 +967,7 @@
         0,
         1
       ],
-      "explanation": "Breaking #103141 switched uuid columns to the Doctrine GUID type, so invalid values must be cleaned up before the database migration. uuid values are generated automatically; password fields are hashed unless hashed is set to false.",
+      "explanation": "Breaking #103141 switched uuid columns to the Doctrine GUID type, so invalid values must be cleaned up before the database migration. uuid values are generated automatically; password fields are hashed unless hashed is set to false (ignored for be_users and fe_users).",
       "doc_url": "https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-103141-UseDoctrineGUIDTypeForTCATypeuuid.html",
       "since": "14.0",
       "tags": [
@@ -1026,7 +1026,7 @@
       "answers": [
         "The attribute #[AsMessageHandler] registers the class; the message type is taken from the __invoke() parameter",
         "The order of several handlers for one message can be set with the 'before' key of the messenger.message_handler tag",
-        "With #[AsMessageHandler(fromTransport: 'async')] the handler only handles messages received by a worker from that transport",
+        "Instead of relying on the __invoke() parameter type, the handled message class can be set with the 'message' attribute of the messenger.message_handler service tag",
         "Message classes must implement a TYPO3 MessageInterface",
         "Handlers must return the message to the bus after processing"
       ],
@@ -1035,7 +1035,7 @@
         1,
         2
       ],
-      "explanation": "Messages are plain PHP objects; handlers are invokable services with Symfony's AsMessageHandler attribute and return void. Ordering is done with the service tag, and fromTransport restricts a handler to a transport.",
+      "explanation": "Messages are plain PHP objects; handlers are invokable services with Symfony's AsMessageHandler attribute (or the messenger.message_handler tag with an optional 'message' attribute) and return void. The order of several handlers is set with before/after on the service tag.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/MessageBus/Index.html"
     },
     {
@@ -1145,7 +1145,7 @@
       "correct": [
         0
       ],
-      "explanation": "Extend is a shortcut for InheritOnce followed by Append: the directive first inherits from default-src (if not yet set) and then gets the new source. Set replaces, Remove removes sources.",
+      "explanation": "Extend is a shortcut for InheritOnce followed by Append: the directive first inherits from default-src (if not yet set) and then gets the new source. Set replaces a directive, Reduce removes sources and Remove removes the whole directive.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/ContentSecurityPolicy/Index.html"
     },
     {
@@ -1362,7 +1362,7 @@
       "question": "Which statements about caching in TYPO3 v14 are correct? (choose 3)",
       "answers": [
         "'vendor/bin/typo3 cache:flushtags pageId_123' flushes cache entries by tag; -g limits it to a cache group",
-        "Custom backends extending AbstractBackend must use the constructor signature __construct(array $options = [])",
+        "AbstractBackend no longer supports the former $context constructor argument; its constructor is __construct(array $options = [])",
         "$cache->get($identifier) returns false if no entry exists, so a has() check before is not needed",
         "FrontendInterface::get() throws an exception when an entry is missing",
         "Cache groups were removed in favour of tags"
@@ -1513,7 +1513,7 @@
       "skill": "session_handling",
       "type": "single",
       "difficulty": 1,
-      "question": "What must be called so that data set with setKey() on the frontend user is available in the next request?",
+      "question": "Which method of the frontend user object writes the data set with setKey() to the session storage?",
       "code": {
         "lang": "php",
         "src": "$frontendUser = $this->request->getAttribute('frontend.user');\n$frontendUser->setKey('ses', 'myext_cart', $cart);\n$frontendUser->???;"
@@ -1522,12 +1522,12 @@
         "$frontendUser->storeSessionData()",
         "$frontendUser->writeUC()",
         "$frontendUser->persist()",
-        "Nothing, setKey() writes the data immediately"
+        "None, setKey() writes the data to the session storage immediately"
       ],
       "correct": [
         0
       ],
-      "explanation": "setKey() only changes the in-memory session data. storeSessionData() writes it to the session backend; for anonymous visitors a session is created on the fly.",
+      "explanation": "setKey() only changes the in-memory session data (or uc for type 'user'). storeSessionData() writes it to the session backend and fixates an anonymous session if needed; the FrontendUserAuthenticator middleware also calls it automatically at the end of each frontend request.",
       "doc_url": "https://docs.typo3.org/m/typo3/reference-coreapi/14.3/en-us/ApiOverview/Authentication/Sessions/SessionData.html"
     },
     {
