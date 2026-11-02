@@ -39,6 +39,8 @@ func build() -> void:
 		top.add_child(brand)
 		top.add_child(_profile_card(p))
 		content.add_child(top)
+	if WebUpdate.available:
+		content.add_child(_update_banner())
 
 	# ---- mode cards
 	_cards = GridContainer.new()
@@ -114,6 +116,24 @@ func _profile_card(p: ProfileData) -> PanelContainer:
 	info.add_child(UI.label("%d day streak" % int(p.daily.streak), "SmallLabel"))
 	col.add_child(info)
 	card.add_child(col)
+	return card
+
+
+## Shown on Web when a new build is waiting in the service worker (see WebUpdate).
+func _update_banner() -> PanelContainer:
+	var card := UI.panel("CardPanel")
+	card.add_theme_stylebox_override("panel", ThemeBuilder.box(Palette.SURFACE, 16, Color(Palette.INFO, 0.6), 1, 16, 12))
+	var row := UI.hbox(12)
+	row.add_child(UI.icon("refresh", 26, Palette.INFO))
+	var col := UI.vbox(2)
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_child(UI.label("Update available", "SubtitleLabel"))
+	col.add_child(UI.wrap_label("A new version is ready. Reload to use it — your progress is kept.", "SmallLabel"))
+	row.add_child(col)
+	var reload := UI.button("Reload", "refresh", "", func(): WebUpdate.apply())
+	reload.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(reload)
+	card.add_child(row)
 	return card
 
 

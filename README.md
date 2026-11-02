@@ -139,7 +139,11 @@ python3 tools/serve_web.py          # serves export/web at http://localhost:8060
 
 The script sets the correct MIME types. The plain `python -m http.server` often serves `.js` as `text/plain` on Windows, which breaks the audio.
 
-**Updates:** export again and replace all files. If the browser still shows the old version, reload with Ctrl+F5. The player's progress is kept.
+**Updates:** export again and replace all files. The player's progress is kept.
+
+The service worker serves the game cache-first, so a plain reload (or Ctrl+F5) keeps showing the old version. When the page starts, the browser checks for a new service worker and downloads the new build in the background. As soon as it is ready, the main menu shows an *Update available* banner, and *Reload* switches to the new version. A player who ignores the banner gets the new version once every tab and the installed app have been closed.
+
+Builds exported before November 2026 do not have this banner yet. To switch them over once, close every tab and the installed app and open the game again, or clear the site data. Clearing the site data also deletes the progress.
 
 ### Smartphones & tablets
 

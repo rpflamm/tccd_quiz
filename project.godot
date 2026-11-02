@@ -31,6 +31,7 @@ QuestionBank="*res://src/autoload/question_bank.gd"
 Profile="*res://src/autoload/profile.gd"
 Audio="*res://src/autoload/audio.gd"
 Router="*res://src/autoload/router.gd"
+WebUpdate="*res://src/autoload/web_update.gd"
 
 [display]
 
