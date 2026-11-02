@@ -5,4 +5,4 @@ GODOT="${GODOT:-godot}"
 cd "$(dirname "$0")/.."
 "$GODOT" --headless --path . --import >/dev/null 2>&1 || true
 "$GODOT" --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig.json
-python tools/validate_questions.py
+python3 tools/validate_questions.py
