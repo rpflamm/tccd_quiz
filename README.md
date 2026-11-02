@@ -117,6 +117,7 @@ location ^~ /tccd-quiz/ {
         text/javascript          js;
         application/wasm         wasm;
         application/octet-stream pck;
+        application/json         json;
         image/png                png;
     }
     gzip on;
