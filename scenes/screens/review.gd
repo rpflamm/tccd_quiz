@@ -47,16 +47,34 @@ func _card(i: int, ok: bool) -> PanelContainer:
 	var color := Palette.SUCCESS if ok else Palette.ERROR
 	card.add_theme_stylebox_override("panel", ThemeBuilder.box(Palette.SURFACE, 16, Color(color, 0.5), 1, 22, 16))
 	var col := UI.vbox(10)
-	var head := UI.hbox(10)
+	# Long skill names must not force the card (and the whole scroll view) wider than the screen:
+	# on phones the header wraps and the skill gets its own wrapping line, otherwise it is trimmed.
+	var head: Container
+	if portrait():
+		var flow_box := HFlowContainer.new()
+		flow_box.add_theme_constant_override("h_separation", 10)
+		flow_box.add_theme_constant_override("v_separation", 6)
+		head = flow_box
+	else:
+		head = UI.hbox(10)
 	head.add_child(UI.icon("check" if ok else "cross", 22, color))
 	head.add_child(UI.label("#%d" % (i + 1), "SubtitleLabel"))
 	head.add_child(UI.chip(QuestionBank.pool.domain_name(q.domain), Palette.domain_color(q.domain), Palette.domain_icon(q.domain)))
-	var skill := UI.label(QuestionBank.pool.skill_name(q.domain, q.skill), "SmallLabel")
-	skill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(skill)
+	var skill_name: String = QuestionBank.pool.skill_name(q.domain, q.skill)
+	var skill: Label
+	if portrait():
+		skill = UI.wrap_label(skill_name, "SmallLabel")
+	else:
+		skill = UI.label(skill_name, "SmallLabel")
+		skill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		skill.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		skill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		head.add_child(skill)
 	if sel.is_empty():
 		head.add_child(UI.chip("not answered", Palette.FAINT))
 	col.add_child(head)
+	if portrait():
+		col.add_child(skill)
 
 	var text := RichTextLabel.new()
 	text.bbcode_enabled = true
