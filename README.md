@@ -83,7 +83,9 @@ The Web build is a plain static site. It needs no PHP, no database and no server
    - `.pck` must be served as `application/octet-stream`
 
    If they are wrong, the game does not start, or it starts without sound ("Failed to load worklet module … MIME type mismatch").
-3. **Recommended:** use HTTPS, compress `.wasm`/`.pck`/`.js` (gzip or brotli), and cache the large files.
+3. **Recommended:** use HTTPS and compress `.wasm`/`.pck`/`.js` (gzip or brotli).
+
+   **Do not let browsers cache the game files for a fixed time** (`max-age`, `expires 7d`, …). The file names stay the same on every export, so the browser would keep loading the old `index.pck` (game code and questions) until the time is up. Even the service worker would then store the old file as the new version. Send `Cache-Control: no-cache` instead. The browser then checks the file on every start, and if nothing changed the server answers `304 Not Modified` without sending the file again.
 4. Open `index.html`. Progress (XP, Leitner boxes, highscores) is stored per browser in IndexedDB, so it stays on that device and browser.
 
 **Apache** (`.htaccess` in the game directory, needs `mod_mime`, and `mod_deflate`/`mod_headers` for the optional parts):
@@ -97,16 +99,18 @@ AddType application/octet-stream .pck
     AddOutputFilterByType DEFLATE application/wasm text/javascript application/octet-stream text/html
 </IfModule>
 <IfModule mod_headers.c>
-    <FilesMatch "\.(wasm|pck)$">
-        Header set Cache-Control "public, max-age=86400"
-    </FilesMatch>
+    Header set Cache-Control "no-cache"
+    Header unset Expires
+</IfModule>
+<IfModule mod_expires.c>
+    ExpiresActive Off
 </IfModule>
 ```
 
-**nginx** (inside the `server { … }` block):
+**nginx** (inside the `server { … }` block; `^~` keeps generic rules such as `location ~* \.(png|wasm)$ { expires 7d; }` from overriding this block):
 
 ```nginx
-location /tccd-quiz/ {
+location ^~ /tccd-quiz/ {
     alias /var/www/tccd-quiz/;
     types {
         text/html                html;
@@ -117,7 +121,9 @@ location /tccd-quiz/ {
     }
     gzip on;
     gzip_types application/wasm text/javascript application/octet-stream;
-    location ~* \.(wasm|pck)$ { add_header Cache-Control "public, max-age=86400"; }
+    # Always revalidate: file names never change between exports.
+    expires off;
+    add_header Cache-Control "no-cache";
 }
 ```
 
