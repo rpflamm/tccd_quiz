@@ -58,6 +58,19 @@ godot --headless --path . --export-release "Windows Desktop" "export/windows/TCC
 godot --headless --path . --export-release "Web" export/web/index.html
 ```
 
+`tools/ci/export_release.sh [version]` runs both exports and packages them in `dist/` as `TCCD-Quizz-<version>-windows-portable.exe`, `TCCD-Quizz-<version>-web.zip` (with `index.html` at the top level) and `SHA256SUMS.txt`. With a version argument (`v1.2.0` or `1.2.0`) it first writes that version into `project.godot` and the Windows file version.
+
+## CI & releases
+
+Both pipelines use `tools/ci/install_godot.sh`, which downloads Godot 4.7.2 for Linux and, for releases, only the two export templates the presets need.
+
+| | Tests | Release |
+|---|---|---|
+| **GitHub Actions** | `.github/workflows/tests.yml` on every push to `main` and every pull request | `.github/workflows/release.yml`: **publish a release** with a tag like `v1.2.0`. The tests run, then the exe, the Web ZIP and `SHA256SUMS.txt` are attached to the release. |
+| **GitLab CI** | `.gitlab-ci.yml`, job `test`, on every branch, merge request and tag | **Push a tag** like `v1.2.0`. The files are uploaded to the generic package registry and the pipeline creates the GitLab release with links to them. Do not create the release in the UI first. |
+
+The release version comes from the tag, so you do not need to bump `config/version` by hand.
+
 ## Hosting & installation
 
 ### Web version on your own web server

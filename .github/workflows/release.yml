@@ -1,0 +1,43 @@
+# Publishing a GitHub release (tag like v1.2.0) runs the tests, exports the game
+# and attaches the portable Windows exe and the Web build as a ZIP to the release.
+name: Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  test:
+    uses: ./.github/workflows/tests.yml
+
+  build:
+    needs: test
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.godot-ci
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-linux-templates
+
+      - name: Install Godot and export templates
+        run: tools/ci/install_godot.sh --templates
+
+      - name: Export Windows and Web builds
+        run: GODOT="$HOME/.godot-ci/godot" tools/ci/export_release.sh "$TAG"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+      - name: Attach builds to the release
+        run: gh release upload "$TAG" dist/* --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
