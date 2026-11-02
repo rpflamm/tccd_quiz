@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.godot-ci
+          key: godot-${{ env.GODOT_VERSION }}-linux
+
+      - name: Install Godot
+        run: tools/ci/install_godot.sh
+
+      - name: Run GUT tests and validate questions
+        run: GODOT="$HOME/.godot-ci/godot" bash tools/run_tests.sh

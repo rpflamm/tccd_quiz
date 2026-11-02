@@ -13,3 +13,8 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+
+# CI
+.ci-cache/
+dist/
+release.env

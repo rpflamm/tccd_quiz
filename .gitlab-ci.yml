@@ -1,0 +1,78 @@
+# Every push / merge request runs the tests. Pushing a tag like v1.2.0 additionally
+# exports the game, uploads the portable Windows exe and the Web ZIP to the
+# generic package registry and creates a GitLab release that links to them.
+stages: [test, build, release]
+
+variables:
+  GODOT_VERSION: "4.7.2"
+  GODOT_HOME: "$CI_PROJECT_DIR/.ci-cache/godot"
+  XDG_DATA_HOME: "$CI_PROJECT_DIR/.ci-cache/xdg-data"
+  GODOT: "$CI_PROJECT_DIR/.ci-cache/godot/godot"
+  PACKAGE_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/tccd-quiz/$CI_COMMIT_TAG"
+
+.godot:
+  image: ubuntu:24.04
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq --no-install-recommends curl ca-certificates unzip zip python3 libfontconfig1 >/dev/null
+
+.release-tag:
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+
+test:
+  extends: .godot
+  stage: test
+  cache:
+    key: godot-$GODOT_VERSION
+    paths: [.ci-cache/godot]
+  script:
+    - tools/ci/install_godot.sh
+    - bash tools/run_tests.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+build:
+  extends: [.godot, .release-tag]
+  stage: build
+  cache:
+    key: godot-$GODOT_VERSION-templates
+    paths: [.ci-cache]
+  script:
+    - tools/ci/install_godot.sh --templates
+    - tools/ci/export_release.sh "$CI_COMMIT_TAG"
+    - |
+      for f in dist/*; do
+        curl --fail -sS --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$f" "$PACKAGE_URL/$(basename "$f")"
+      done
+    - echo "VERSION=${CI_COMMIT_TAG#v}" > release.env
+  artifacts:
+    paths: [dist/]
+    expire_in: 1 week
+    reports:
+      dotenv: release.env
+
+release:
+  extends: .release-tag
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs: [build]
+  script:
+    - echo "Creating release $CI_COMMIT_TAG"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: $CI_COMMIT_TAG
+    description: "TCCD Quizz $CI_COMMIT_TAG"
+    assets:
+      links:
+        - name: Windows (portable exe)
+          url: "$PACKAGE_URL/TCCD-Quizz-${VERSION}-windows-portable.exe"
+          link_type: package
+        - name: Web build (ZIP)
+          url: "$PACKAGE_URL/TCCD-Quizz-${VERSION}-web.zip"
+          link_type: package
+        - name: SHA256SUMS.txt
+          url: "$PACKAGE_URL/SHA256SUMS.txt"
+          link_type: other
